@@ -1,0 +1,6 @@
+# Research Orchestrator Dependencies
+# Minimal dependencies - only anthropic SDK beyond stdlib
+
+anthropic>=0.39.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.0

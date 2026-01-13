@@ -1,0 +1,59 @@
+# Competitive Research Configuration Template
+# Use this template for competitive benchmarking studies
+
+# Inherit from defaults
+extends: "../../build/config/defaults.yaml"
+
+# Execution metadata
+execution:
+  id: "{run_id}"
+  description: "Competitive analysis: {description}"
+  started_date: null
+
+# Research targets
+verticals:
+  # Will be filled by elicitation agent
+
+title_clusters:
+  # Will be filled by elicitation agent
+
+# Priority combinations
+priority_combinations:
+  # Will be generated
+
+# Company context - BASELINE + COMPETITIVE
+company_context:
+  name: "{company_name}"
+  description: "{company_description}"
+
+  services:
+    # Will be filled from context/baseline.yaml
+
+  # Competitive context
+  competitors:
+    direct: []  # Will be filled by elicitation agent
+    indirect: []  # Will be filled by elicitation agent
+
+  current_customers:
+    primary_verticals: []
+    company_sizes: []
+    typical_deal_size: null
+
+  # Context files for competitive
+  context_files:
+    services_doc: "runs/{run_id}/context/services_detailed.md"
+    current_messaging: "runs/{run_id}/context/messaging_current.md"  # For comparison
+    competitive_intel: "runs/{run_id}/context/competitive_intel.md"  # Existing competitive knowledge
+
+# Advanced settings for competitive research
+advanced:
+  tools:
+    web_search_enabled: true
+    web_fetch_enabled: true
+    max_tool_calls_per_agent: 120  # More searches for competitive
+
+  validation:
+    require_sources: true
+    min_sources_per_section: 3
+    flag_low_confidence: true
+    competitive_comparison: true  # Enable side-by-side comparison

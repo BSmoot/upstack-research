@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Research Run Manifest",
+  "description": "Tracks all research runs with their status, configuration, and results",
+  "type": "object",
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "description": "Version of the manifest schema"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this manifest was first created"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "runs": {
+      "type": "array",
+      "description": "Array of research runs",
+      "items": {
+        "$ref": "#/definitions/ResearchRun"
+      }
+    }
+  },
+  "required": ["manifest_version", "created", "updated", "runs"],
+  "definitions": {
+    "ResearchRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "description": "Unique run identifier (e.g., healthcare_discovery_20250113)",
+          "pattern": "^[a-z0-9_]+_[0-9]{8}$"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When run was created"
+        },
+        "research_type": {
+          "type": "string",
+          "enum": ["pure_discovery", "validation", "competitive"],
+          "description": "Type of research being conducted"
+        },
+        "verticals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target verticals/industries"
+        },
+        "title_clusters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target buyer personas/titles"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "running", "paused", "review_required", "completed", "failed", "cancelled"],
+          "description": "Current run status"
+        },
+        "execution_id": {
+          "type": "string",
+          "description": "Execution ID used by orchestrator (for checkpoint/log lookup)"
+        },
+        "estimated_cost": {
+          "type": "string",
+          "description": "Estimated cost range (e.g., $24-26)"
+        },
+        "actual_cost": {
+          "type": ["number", "null"],
+          "description": "Actual cost in USD (null until complete)"
+        },
+        "context_used": {
+          "type": "string",
+          "enum": ["baseline_only", "baseline_plus_detailed", "baseline_plus_competitive"],
+          "description": "What context was included"
+        },
+        "started": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When execution started (null if not started)"
+        },
+        "completed": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When execution completed (null if not complete)"
+        },
+        "outputs_path": {
+          "type": "string",
+          "description": "Path to research outputs (relative to repository root)"
+        },
+        "config_path": {
+          "type": "string",
+          "description": "Path to run configuration file"
+        },
+        "checkpoint_path": {
+          "type": ["string", "null"],
+          "description": "Path to checkpoint file (null if not started)"
+        },
+        "error": {
+          "type": ["object", "null"],
+          "description": "Error details if run failed",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "agent": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "deliverables": {
+          "type": "array",
+          "description": "Packages created from this run",
+          "items": {
+            "type": "object",
+            "properties": {
+              "package_type": {
+                "type": "string",
+                "enum": ["executive", "tactical", "strategic", "custom"]
+              },
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "path": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes about this run"
+        }
+      },
+      "required": [
+        "run_id",
+        "created",
+        "research_type",
+        "verticals",
+        "title_clusters",
+        "status",
+        "execution_id",
+        "estimated_cost",
+        "context_used",
+        "outputs_path",
+        "config_path"
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+# Baseline Company Context
+# This file contains company information that is SHARED across all research runs
+# Update this file when company facts change
+# Do NOT include detailed messaging, positioning, or materials here
+
+company:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  # High-level service categories (not detailed descriptions)
+  services:
+    - "Network connectivity advisory"
+    - "Data center and colocation consulting"
+    - "Cloud infrastructure strategy"
+    - "Unified communications advisory"
+    - "Technology vendor selection and negotiation"
+
+  # Geographic focus
+  geography:
+    primary_markets:
+      - "United States"
+    secondary_markets: []
+
+  # Target market segments (general)
+  target_segments:
+    company_sizes:
+      - "mid_market"      # 100-999 employees
+      - "enterprise"      # 1000+ employees
+
+    # General vertical categories (not run-specific)
+    vertical_focus:
+      - "Healthcare"
+      - "Financial Services"
+      - "Manufacturing"
+      - "Technology"
+      - "Professional Services"
+
+# Metadata
+updated: "2025-01-13"
+version: "1.0"
+notes: "Baseline context shared across all research runs. Do not include detailed materials here."

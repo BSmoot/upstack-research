@@ -1,0 +1,55 @@
+# Validation Research Configuration Template
+# Use this template when testing existing messaging/approach against market reality
+
+# Inherit from defaults
+extends: "../../build/config/defaults.yaml"
+
+# Execution metadata
+execution:
+  id: "{run_id}"
+  description: "Validation study: {description}"
+  started_date: null
+
+# Research targets
+verticals:
+  # Will be filled by elicitation agent
+
+title_clusters:
+  # Will be filled by elicitation agent
+
+# Priority combinations
+priority_combinations:
+  # Will be generated
+
+# Company context - BASELINE + DETAILED for validation
+company_context:
+  name: "{company_name}"
+  description: "{company_description}"
+
+  services:
+    # Will be filled from context/baseline.yaml
+
+  current_customers:
+    primary_verticals: []  # Can include for context
+    company_sizes: []
+    typical_deal_size: null
+
+  # INCLUDE detailed context files for validation
+  context_files:
+    services_doc: "runs/{run_id}/context/services_detailed.md"
+    current_messaging: "runs/{run_id}/context/messaging_current.md"
+    case_studies: "runs/{run_id}/context/case_studies.md"  # Optional
+    pricing: null  # Optional
+
+# Advanced settings for validation
+advanced:
+  tools:
+    web_search_enabled: true
+    web_fetch_enabled: true
+    max_tool_calls_per_agent: 100
+
+  validation:
+    require_sources: true
+    min_sources_per_section: 3  # Higher standard for validation
+    flag_low_confidence: true
+    gap_analysis: true  # Enable gap analysis between market and current approach

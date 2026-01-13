@@ -1,0 +1,51 @@
+# Discovery Research Configuration Template
+# Use this template for pure market discovery without bias
+
+# Inherit from defaults (model strategy, execution settings)
+extends: "../../build/config/defaults.yaml"
+
+# Execution metadata
+execution:
+  id: "{run_id}"  # Will be filled by elicitation agent
+  description: "{description}"  # User's research objective
+  started_date: null  # Auto-populated on run
+
+# Research targets
+verticals:
+  # Will be filled by elicitation agent
+  # Example: ["Healthcare Providers", "Financial Services"]
+
+title_clusters:
+  # Will be filled by elicitation agent
+  # Example: ["CFO/Finance Leadership", "CIO/Technology Leadership"]
+
+# Priority combinations for playbooks
+priority_combinations:
+  # Will be generated based on verticals × title_clusters
+  # High priority combinations first
+
+# Company context - BASELINE ONLY for discovery
+company_context:
+  name: "{company_name}"
+  description: "{company_description}"
+
+  services:
+    # High-level service categories only
+    # Will be filled from context/baseline.yaml
+
+  current_customers:
+    primary_verticals: []  # Leave empty for pure discovery
+    company_sizes: []
+    typical_deal_size: null
+
+  # NO detailed context files for discovery
+  context_files: null
+
+# Model strategy override (optional)
+# Uncomment to use different models than defaults
+# model_strategy_override:
+#   layers:
+#     layer_1:
+#       default: "claude-haiku-4-20250514"
+#       agents:
+#         gtm_synthesis: "claude-sonnet-4-20250514"  # Use Sonnet for synthesis
