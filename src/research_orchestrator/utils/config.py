@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 from .config_models import load_config_with_inheritance
+from .constants import Models
 
 
 def load_config(config_path: Path) -> Dict[str, Any]:
@@ -62,7 +63,7 @@ def _validate_config(config: Dict[str, Any]):
     defaults = {
         'max_concurrent_agents': 5,
         'api': {
-            'model': 'claude-sonnet-4-20250514',
+            'model': Models.HIGH_QUALITY,
             'max_tokens': 16000,
             'temperature': 1.0,
             'timeout_seconds': 300

@@ -1,9 +1,12 @@
 # Environment and secrets
 .env
+.env.local
+.env.*.local
 *.pem
 *.key
-secrets/
 *.secret
+credentials*.json
+secrets/
 
 # Python
 __pycache__/
@@ -11,7 +14,8 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+build/*
+!build/config/
 develop-eggs/
 dist/
 downloads/
@@ -26,6 +30,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.pyc
+*.pyo
 
 # Virtual environments
 venv/
@@ -41,6 +47,9 @@ env/
 *~
 
 # Research outputs (can be large)
+checkpoints/
+outputs/
+logs/
 src/outputs/
 src/checkpoints/
 src/logs/

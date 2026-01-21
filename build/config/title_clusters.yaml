@@ -1,0 +1,52 @@
+# Title cluster configurations for research orchestrator
+
+cfo_cluster:
+  name: 'C-Suite (CFO, CEO, COO)'
+  titles:
+    - CFO
+    - CEO
+    - COO
+    - President
+    - General Manager
+  decision_authority: 'Final approval for strategic/large investments'
+  key_focus: 'Business outcomes, financial performance, strategic risk'
+
+cio_cto_cluster:
+  name: 'Technology Leadership (CIO, CTO, CISO)'
+  titles:
+    - CIO
+    - CTO
+    - CISO
+    - VP IT
+    - VP Engineering
+  decision_authority: 'Primary authority for most infrastructure decisions'
+  key_focus: 'Technology debt, innovation vs stability, talent shortage'
+
+vp_it_operations:
+  name: 'IT Operations (VP IT, Director IT, Manager)'
+  titles:
+    - VP IT Operations
+    - Director IT
+    - IT Manager
+    - Network Manager
+  decision_authority: 'Tactical decisions, influence strategic'
+  key_focus: 'Vendor management burden, resource constraints, firefighting'
+
+procurement:
+  name: 'Procurement & Sourcing'
+  titles:
+    - VP Procurement
+    - Director Sourcing
+    - Strategic Sourcing Manager
+  decision_authority: 'Vendor selection process, contract negotiation'
+  key_focus: 'Cost optimization, supplier management, contract compliance'
+
+business_unit:
+  name: 'Business Unit Leaders'
+  titles:
+    - VP Sales
+    - VP Customer Success
+    - VP Operations
+    - Regional GM
+  decision_authority: 'Department-level technology decisions'
+  key_focus: 'Business outcomes, speed, minimal IT dependency'

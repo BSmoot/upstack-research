@@ -6,6 +6,9 @@ Prompt templates for title-specific buyer persona research agents.
 These create role-specific messaging for decision-maker personas.
 """
 
+import logging
+import yaml
+from pathlib import Path
 from typing import Dict, Any, List
 from .types import TitleClusterConfig
 from .context_helpers import (
@@ -13,9 +16,11 @@ from .context_helpers import (
     format_layer_2_context_for_title
 )
 
+logger = logging.getLogger('research_orchestrator')
 
-# Title cluster configurations
-TITLE_CLUSTERS: Dict[str, TitleClusterConfig] = {
+
+# Hardcoded title cluster configurations (fallback)
+_HARDCODED_TITLE_CLUSTERS: Dict[str, TitleClusterConfig] = {
     'cfo_cluster': {
         'name': 'C-Suite (CFO, CEO, COO)',
         'titles': ['CFO', 'CEO', 'COO', 'President', 'General Manager'],
@@ -47,6 +52,27 @@ TITLE_CLUSTERS: Dict[str, TitleClusterConfig] = {
         'key_focus': 'Business outcomes, speed, minimal IT dependency'
     }
 }
+
+
+def _load_title_clusters() -> Dict[str, TitleClusterConfig]:
+    """Load title clusters from YAML with fallback to hardcoded values."""
+    yaml_path = Path(__file__).parent.parent.parent.parent / "build" / "config" / "title_clusters.yaml"
+
+    if yaml_path.exists():
+        try:
+            with open(yaml_path, 'r', encoding='utf-8') as f:
+                loaded_data = yaml.safe_load(f)
+                logger.info(f"Loaded title clusters from {yaml_path}")
+                return loaded_data
+        except Exception as e:
+            logger.warning(f"Failed to load title_clusters.yaml: {e}. Using hardcoded defaults.")
+    else:
+        logger.warning(f"title_clusters.yaml not found at {yaml_path}. Using hardcoded defaults.")
+
+    return _HARDCODED_TITLE_CLUSTERS
+
+
+TITLE_CLUSTERS: Dict[str, TitleClusterConfig] = _load_title_clusters()
 
 
 TITLE_AGENT_PROMPT_TEMPLATE = """

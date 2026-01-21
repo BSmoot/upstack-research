@@ -12,6 +12,8 @@ import asyncio
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 
+from .utils.constants import Models
+
 
 class ResearchSession:
     """
@@ -24,7 +26,7 @@ class ResearchSession:
         self, 
         agent_name: str, 
         anthropic_client: AsyncAnthropic,
-        model: str = "claude-sonnet-4-20250514",
+        model: str = Models.HIGH_QUALITY,
         max_tokens: int = 16000,
         max_searches: int = 60,
         logger: Optional[logging.Logger] = None
@@ -52,6 +54,8 @@ class ResearchSession:
         self.searches_performed = 0
         self.total_turns = 0
         self.tokens_used = 0
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
         self.estimated_cost_usd = 0.0
         self.start_time: Optional[datetime] = None
         self.end_time: Optional[datetime] = None
@@ -116,12 +120,14 @@ class ResearchSession:
                         "response": response.model_dump() if hasattr(response, 'model_dump') else str(response)
                     })
                     
-                    # Track usage and costs
+                    # Track usage and costs with actual input/output tokens
                     if hasattr(response, 'usage'):
                         turn_input = response.usage.input_tokens
                         turn_output = response.usage.output_tokens
-                        self.tokens_used += turn_input + turn_output
-                        self.estimated_cost_usd = self._estimate_cost(self.tokens_used)
+                        self.total_input_tokens += turn_input
+                        self.total_output_tokens += turn_output
+                        self.tokens_used = self.total_input_tokens + self.total_output_tokens
+                        self.estimated_cost_usd = self._calculate_cost()
                         
                         # Log turn-level token usage for visibility
                         self.logger.info(
@@ -328,22 +334,17 @@ class ResearchSession:
                     return content
         return ""
     
-    def _estimate_cost(self, total_tokens: int) -> float:
+    def _calculate_cost(self) -> float:
         """
-        Estimate API cost based on tokens used.
-        
-        Claude Sonnet 4 pricing (as of 2025):
-        - Input: $3 per MTok
-        - Output: $15 per MTok
-        
-        Rough estimate: assume 40% input, 60% output
+        Calculate actual cost based on tracked token counts and model-specific pricing.
+
+        Uses Models.get_pricing() to retrieve current pricing for the model being used.
+        Returns exact cost based on actual input/output token usage.
         """
-        input_tokens = int(total_tokens * 0.4)
-        output_tokens = int(total_tokens * 0.6)
-        
-        input_cost = (input_tokens / 1_000_000) * 3.0
-        output_cost = (output_tokens / 1_000_000) * 15.0
-        
+        input_price, output_price = Models.get_pricing(self.model)
+        input_cost = (self.total_input_tokens / 1_000_000) * input_price
+        output_cost = (self.total_output_tokens / 1_000_000) * output_price
+
         return input_cost + output_cost
     
     def get_summary(self) -> Dict[str, Any]:

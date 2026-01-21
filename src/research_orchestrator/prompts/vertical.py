@@ -6,13 +6,18 @@ Prompt templates for vertical-specific industry research agents.
 These adapt horizontal findings to specific industry verticals.
 """
 
+import logging
+import yaml
+from pathlib import Path
 from typing import Dict, Any
 from .types import VerticalConfig
 from .context_helpers import format_layer_1_context_for_vertical
 
+logger = logging.getLogger('research_orchestrator')
 
-# Vertical industry configurations
-VERTICALS: Dict[str, VerticalConfig] = {
+
+# Hardcoded vertical industry configurations (fallback)
+_HARDCODED_VERTICALS: Dict[str, VerticalConfig] = {
     'healthcare': {
         'name': 'Healthcare',
         'description': 'Hospitals, health systems, payers, pharma, medtech',
@@ -44,6 +49,27 @@ VERTICALS: Dict[str, VerticalConfig] = {
         'key_challenges': 'Rapid scaling + efficiency at scale'
     }
 }
+
+
+def _load_verticals() -> Dict[str, VerticalConfig]:
+    """Load verticals from YAML with fallback to hardcoded values."""
+    yaml_path = Path(__file__).parent.parent.parent.parent / "build" / "config" / "verticals.yaml"
+
+    if yaml_path.exists():
+        try:
+            with open(yaml_path, 'r', encoding='utf-8') as f:
+                loaded_data = yaml.safe_load(f)
+                logger.info(f"Loaded verticals from {yaml_path}")
+                return loaded_data
+        except Exception as e:
+            logger.warning(f"Failed to load verticals.yaml: {e}. Using hardcoded defaults.")
+    else:
+        logger.warning(f"verticals.yaml not found at {yaml_path}. Using hardcoded defaults.")
+
+    return _HARDCODED_VERTICALS
+
+
+VERTICALS: Dict[str, VerticalConfig] = _load_verticals()
 
 
 VERTICAL_AGENT_PROMPT_TEMPLATE = """

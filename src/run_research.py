@@ -122,24 +122,35 @@ def main():
         print("Error: Must provide either --config or --resume")
         sys.exit(1)
     
-    if args.resume and (args.config or args.layer or args.agents):
-        print("Error: --resume cannot be used with --config, --layer, or --agents")
+    if args.resume and (args.layer or args.agents):
+        print("Error: --resume cannot be used with --layer or --agents")
         sys.exit(1)
-    
+
     try:
         # Initialize orchestrator
         if args.resume:
+            if not args.config:
+                print("Error: --config is required when using --resume")
+                sys.exit(1)
+
+            config_path = args.config
+            if not config_path.exists():
+                print(f"Error: Configuration file not found: {config_path}")
+                sys.exit(1)
+
             print(f"Resuming execution: {args.resume}")
-            # For resume, we need to find and load the config
-            # For now, we'll require config even for resume
-            print("Note: Please also provide --config for resume functionality")
-            sys.exit(1)
+            print(f"Loading configuration: {config_path}")
+
+            orchestrator = ResearchOrchestrator(
+                config_path=config_path,
+                execution_id=args.resume
+            )
         else:
             config_path = args.config
             if not config_path.exists():
                 print(f"Error: Configuration file not found: {config_path}")
                 sys.exit(1)
-            
+
             print(f"Loading configuration: {config_path}")
             orchestrator = ResearchOrchestrator(config_path=config_path)
         
@@ -180,7 +191,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nExecution interrupted by user")
         print("Progress has been saved to checkpoint file")
-        print("Resume with: python run_research.py --resume <execution_id>")
+        print("Resume with: python run_research.py --resume <execution_id> --config <path>")
         sys.exit(0)
     
     except Exception as e:

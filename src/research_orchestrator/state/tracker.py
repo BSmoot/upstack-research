@@ -106,8 +106,8 @@ class StateTracker:
             if 'tmp_path' in locals():
                 try:
                     os.unlink(tmp_path)
-                except:
-                    pass
+                except OSError as cleanup_error:
+                    self.logger.warning(f"Failed to cleanup temp file {tmp_path}: {cleanup_error}")
     
     def is_agent_complete(self, agent_name: str) -> bool:
         """

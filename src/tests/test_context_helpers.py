@@ -7,13 +7,14 @@ Tests the extraction and formatting of context between research layers.
 
 import pytest
 from pathlib import Path
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, patch
 from research_orchestrator.prompts.context_helpers import (
     get_layer_1_context,
     get_layer_2_context,
     extract_summary,
     format_layer_1_context_for_vertical,
-    format_layer_2_context_for_title
+    format_layer_2_context_for_title,
+    _validate_output_path
 )
 
 
@@ -159,30 +160,54 @@ This is detailed content that should not be included.
         assert len(result) <= 104  # 100 + "..."
         assert result.endswith('...')
     
-    def test_reads_from_output_path_if_available(self, tmp_path):
-        """Test that content is read from file if output_path exists."""
+    @patch('research_orchestrator.prompts.context_helpers._validate_output_path')
+    def test_reads_from_output_path_if_available(self, mock_validate, tmp_path):
+        """Test that content is read from file if output_path exists and passes validation."""
+        # Mock validation to return True for test files
+        mock_validate.return_value = True
+
         # Create temp file
         test_file = tmp_path / "test_output.md"
         test_file.write_text("## Executive Summary\n\nFile content")
-        
+
         agent_output = {
             'output_path': str(test_file)
         }
-        
+
         result = extract_summary(agent_output)
-        
+
         assert 'File content' in result
-    
+
     def test_falls_back_to_content_field(self):
-        """Test fallback to content field when output_path doesn't exist."""
+        """Test fallback to content field when output_path not provided."""
         agent_output = {
-            'output_path': '/nonexistent/path.md',
             'content': '## Executive Summary\n\nContent field data'
         }
-        
+
         result = extract_summary(agent_output)
-        
+
         assert 'Content field data' in result
+
+    def test_blocks_path_traversal_attempts(self):
+        """Test that path traversal attempts are blocked."""
+        agent_output = {
+            'output_path': '../../etc/passwd',
+            'content': 'Fallback content'
+        }
+
+        result = extract_summary(agent_output)
+
+        # Should return not available due to blocked path
+        assert result == "Summary not available"
+
+    def test_path_validation_rejects_outside_outputs(self):
+        """Test _validate_output_path rejects paths outside outputs directory."""
+        from pathlib import Path
+
+        # Path outside outputs dir should be rejected
+        assert _validate_output_path(Path("/etc/passwd")) is False
+        assert _validate_output_path(Path("../etc/passwd")) is False
+        assert _validate_output_path(Path("../../sensitive")) is False
     
     def test_handles_missing_executive_summary(self):
         """Test fallback when Executive Summary section not found."""

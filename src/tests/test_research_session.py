@@ -87,31 +87,35 @@ class TestResearchSessionTokenTracking:
     """Test token usage tracking and cost estimation."""
     
     def test_estimate_cost(self, mock_anthropic_client, mock_logger):
-        """Test cost estimation formula."""
+        """Test cost calculation with tracked tokens."""
         session = ResearchSession(
             agent_name="test_agent",
             anthropic_client=mock_anthropic_client,
             logger=mock_logger
         )
-        
-        # Test with 1,000 tokens (400 input, 600 output)
-        cost = session._estimate_cost(1000)
-        
+
+        # Set tracked tokens (400 input, 600 output)
+        session.total_input_tokens = 400
+        session.total_output_tokens = 600
+        cost = session._calculate_cost()
+
         # Expected: (400/1M * $3) + (600/1M * $15) = $0.0012 + $0.009 = $0.0102
         expected_cost = 0.0102
         assert abs(cost - expected_cost) < 0.0001
     
     def test_estimate_cost_large_numbers(self, mock_anthropic_client, mock_logger):
-        """Test cost estimation with large token counts."""
+        """Test cost calculation with large token counts."""
         session = ResearchSession(
             agent_name="test_agent",
             anthropic_client=mock_anthropic_client,
             logger=mock_logger
         )
-        
-        # Test with 100,000 tokens
-        cost = session._estimate_cost(100000)
-        
+
+        # Set tracked tokens (40k input, 60k output)
+        session.total_input_tokens = 40000
+        session.total_output_tokens = 60000
+        cost = session._calculate_cost()
+
         # Expected: (40k/1M * $3) + (60k/1M * $15) = $0.12 + $0.90 = $1.02
         expected_cost = 1.02
         assert abs(cost - expected_cost) < 0.01

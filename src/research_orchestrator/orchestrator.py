@@ -125,7 +125,37 @@ class ResearchOrchestrator:
         self.logger.info(f"Configuration loaded: {config_path}")
         self.logger.info(f"Execution ID: {self.state.execution_id}")
         self.logger.info(f"Checkpoint file: {self.state.checkpoint_file}")
-    
+
+    def _update_budget(self, searches: int, cost: float) -> None:
+        """
+        Update budget tracking with new usage.
+
+        Args:
+            searches: Number of searches performed
+            cost: Estimated cost in USD
+        """
+        self.budget['current_searches'] += searches
+        self.budget['current_cost_usd'] += cost
+
+    def _check_budget_limits(self) -> None:
+        """
+        Check if budget limits exceeded and raise BudgetExceededError if so.
+
+        Raises:
+            BudgetExceededError: If search count or cost exceeds configured limits
+        """
+        if self.budget['current_searches'] >= self.budget['max_total_searches']:
+            self.logger.error("SEARCH BUDGET EXCEEDED - halting execution")
+            raise BudgetExceededError(
+                f"Search budget exceeded: {self.budget['current_searches']}/{self.budget['max_total_searches']}"
+            )
+
+        if self.budget['current_cost_usd'] >= self.budget['max_total_cost_usd']:
+            self.logger.error("COST BUDGET EXCEEDED - halting execution")
+            raise BudgetExceededError(
+                f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
+            )
+
     async def execute_full_research(self):
         """
         Execute complete three-layer research program.
@@ -389,9 +419,11 @@ class ResearchOrchestrator:
             )
             
             # Update budget tracking
-            self.budget['current_searches'] += result['searches_performed']
-            self.budget['current_cost_usd'] += result.get('estimated_cost_usd', 0.0)
-            
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+
+            # Check budget limits
+            self._check_budget_limits()
+
             self.logger.info(f"Completed agent: {agent_name}")
             self.logger.info(f"  Searches: {result['searches_performed']}")
             self.logger.info(f"  Turns: {result['total_turns']}")
@@ -401,19 +433,6 @@ class ResearchOrchestrator:
             self.logger.info(f"Budget Status:")
             self.logger.info(f"  Total searches: {self.budget['current_searches']}/{self.budget['max_total_searches']}")
             self.logger.info(f"  Total cost: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}")
-            
-            # Check budget limits
-            if self.budget['current_searches'] >= self.budget['max_total_searches']:
-                self.logger.error("SEARCH BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Search budget exceeded: {self.budget['current_searches']}/{self.budget['max_total_searches']}"
-                )
-            
-            if self.budget['current_cost_usd'] >= self.budget['max_total_cost_usd']:
-                self.logger.error("COST BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
-                )
             
         except BudgetExceededError:
             # Re-raise budget errors without marking as failed
@@ -493,28 +512,20 @@ class ResearchOrchestrator:
             )
             
             # Update budget tracking
-            self.budget['current_searches'] += result['searches_performed']
-            self.budget['current_cost_usd'] += result.get('estimated_cost_usd', 0.0)
-            
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+
+            # Check budget limits
+            self._check_budget_limits()
+
             self.logger.info(f"Completed vertical agent: {vertical}")
             self.logger.info(f"  Searches: {result['searches_performed']}")
             self.logger.info(f"  Turns: {result['total_turns']}")
             self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
             self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
             self.logger.info(f"  Output: {output_path}")
-            
-            # Check budget limits
-            if self.budget['current_searches'] >= self.budget['max_total_searches']:
-                self.logger.error("SEARCH BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Search budget exceeded: {self.budget['current_searches']}/{self.budget['max_total_searches']}"
-                )
-            
-            if self.budget['current_cost_usd'] >= self.budget['max_total_cost_usd']:
-                self.logger.error("COST BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
-                )
+            self.logger.info(f"Budget Status:")
+            self.logger.info(f"  Total searches: {self.budget['current_searches']}/{self.budget['max_total_searches']}")
+            self.logger.info(f"  Total cost: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}")
             
         except BudgetExceededError:
             raise
@@ -594,28 +605,20 @@ class ResearchOrchestrator:
             )
             
             # Update budget tracking
-            self.budget['current_searches'] += result['searches_performed']
-            self.budget['current_cost_usd'] += result.get('estimated_cost_usd', 0.0)
-            
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+
+            # Check budget limits
+            self._check_budget_limits()
+
             self.logger.info(f"Completed title agent: {title_cluster}")
             self.logger.info(f"  Searches: {result['searches_performed']}")
             self.logger.info(f"  Turns: {result['total_turns']}")
             self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
             self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
             self.logger.info(f"  Output: {output_path}")
-            
-            # Check budget limits
-            if self.budget['current_searches'] >= self.budget['max_total_searches']:
-                self.logger.error("SEARCH BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Search budget exceeded: {self.budget['current_searches']}/{self.budget['max_total_searches']}"
-                )
-            
-            if self.budget['current_cost_usd'] >= self.budget['max_total_cost_usd']:
-                self.logger.error("COST BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
-                )
+            self.logger.info(f"Budget Status:")
+            self.logger.info(f"  Total searches: {self.budget['current_searches']}/{self.budget['max_total_searches']}")
+            self.logger.info(f"  Total cost: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}")
             
         except BudgetExceededError:
             raise
@@ -712,28 +715,20 @@ class ResearchOrchestrator:
             )
             
             # Update budget tracking
-            self.budget['current_searches'] += result['searches_performed']
-            self.budget['current_cost_usd'] += result.get('estimated_cost_usd', 0.0)
-            
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+
+            # Check budget limits
+            self._check_budget_limits()
+
             self.logger.info(f"Completed playbook: {vertical} × {title}")
             self.logger.info(f"  Searches: {result['searches_performed']}")
             self.logger.info(f"  Turns: {result['total_turns']}")
             self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
             self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
             self.logger.info(f"  Output: {output_path}")
-            
-            # Check budget limits
-            if self.budget['current_searches'] >= self.budget['max_total_searches']:
-                self.logger.error("SEARCH BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Search budget exceeded: {self.budget['current_searches']}/{self.budget['max_total_searches']}"
-                )
-            
-            if self.budget['current_cost_usd'] >= self.budget['max_total_cost_usd']:
-                self.logger.error("COST BUDGET EXCEEDED - halting execution")
-                raise BudgetExceededError(
-                    f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
-                )
+            self.logger.info(f"Budget Status:")
+            self.logger.info(f"  Total searches: {self.budget['current_searches']}/{self.budget['max_total_searches']}")
+            self.logger.info(f"  Total cost: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}")
             
         except BudgetExceededError:
             raise

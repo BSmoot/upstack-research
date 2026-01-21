@@ -7,6 +7,8 @@ from typing import Dict, Any, Optional, Tuple
 from pathlib import Path
 import yaml
 
+from .constants import Models
+
 
 def load_config_with_inheritance(config_path: Path) -> Dict[str, Any]:
     """
@@ -41,19 +43,23 @@ def load_config_with_inheritance(config_path: Path) -> Dict[str, Any]:
     # Check for inheritance
     if 'extends' in project_config:
         parent_path = config_path.parent / project_config['extends']
-        
+
         # Recursive load to support multi-level inheritance
         parent_config = load_config_with_inheritance(parent_path)
-        
+
         # Merge configs (project overrides parent)
         merged = deep_merge(parent_config, project_config)
-        
+
         # Remove 'extends' from final config
         merged.pop('extends', None)
-        
-        return merged
-    
-    return project_config
+
+        config = merged
+    else:
+        config = project_config
+
+    # Validate with Pydantic schema and apply defaults
+    from .config_schema import validate_research_config
+    return validate_research_config(config)
 
 
 def deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
@@ -144,7 +150,7 @@ def get_model_for_agent(
         return strategy['default']
     
     # 5. Hardcoded fallback
-    return 'claude-haiku-4-20250514'
+    return Models.DEFAULT
 
 
 def get_model_config(

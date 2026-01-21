@@ -1,0 +1,31 @@
+# Industry vertical configurations for research orchestrator
+
+healthcare:
+  name: Healthcare
+  description: Hospitals, health systems, payers, pharma, medtech
+  key_regulations: HIPAA, HITECH, state privacy laws
+  key_challenges: Digital transformation + compliance + cost pressure
+
+financial_services:
+  name: Financial Services
+  description: Banks, credit unions, insurance, wealth management, fintech
+  key_regulations: SOX, PCI-DSS, GLBA, FFIEC
+  key_challenges: Innovation vs risk management balance
+
+manufacturing:
+  name: Manufacturing
+  description: Discrete manufacturing, process manufacturing, distribution
+  key_regulations: Varies by sub-sector (FDA, EPA, etc.)
+  key_challenges: Industry 4.0 transformation + supply chain resilience
+
+retail:
+  name: Retail
+  description: Traditional retail, e-commerce, omnichannel, grocery
+  key_regulations: PCI-DSS, state privacy laws
+  key_challenges: E-commerce competition + margin pressure
+
+technology:
+  name: Technology/Software
+  description: SaaS, software vendors, technology services
+  key_regulations: SOC 2, ISO 27001, GDPR, CCPA
+  key_challenges: Rapid scaling + efficiency at scale

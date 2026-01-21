@@ -8,6 +8,9 @@ prior layers, maintaining continuity and building upon previous research.
 
 from typing import Dict, Any, List, Optional
 from pathlib import Path
+import logging
+
+logger = logging.getLogger('research_orchestrator')
 
 
 def get_layer_1_context(state_tracker) -> Dict[str, Any]:
@@ -96,6 +99,28 @@ def get_layer_3_context(state_tracker, title_clusters: List[str]) -> Dict[str, A
     return context
 
 
+def _validate_output_path(path: Path, base_dir: Optional[Path] = None) -> bool:
+    """
+    Validate that path is within allowed directory (prevents path traversal).
+
+    Args:
+        path: The path to validate
+        base_dir: The base directory to check against (defaults to ./outputs)
+
+    Returns:
+        True if path is within base_dir, False otherwise
+    """
+    if base_dir is None:
+        base_dir = Path.cwd() / "outputs"
+
+    try:
+        resolved = path.resolve()
+        base_resolved = base_dir.resolve()
+        return resolved.is_relative_to(base_resolved)
+    except (ValueError, RuntimeError):
+        return False
+
+
 def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
     """
     Extract concise summary from agent output for context injection.
@@ -120,6 +145,9 @@ def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
     if 'output_path' in agent_output:
         try:
             output_path = Path(agent_output['output_path'])
+            if not _validate_output_path(output_path):
+                logger.warning(f"Path traversal attempt blocked: {output_path}")
+                return "Summary not available"
             if output_path.exists():
                 with open(output_path, 'r', encoding='utf-8') as f:
                     content = f.read()
