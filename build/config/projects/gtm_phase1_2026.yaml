@@ -1,8 +1,10 @@
 # GTM Phase 1: Foundation Research
 # Purpose: Inform marketing automation deployment and AEO strategy before Q2
 #
-# Agents: buyer_journey, channels_competitive, gtm_synthesis
-# (customer_expansion and messaging_positioning skipped for Phase 1)
+# Agents: All 5 Layer 1 agents
+# - buyer_journey, channels_competitive, customer_expansion (parallel)
+# - messaging_positioning (depends on above)
+# - gtm_synthesis (depends on all, uses Opus 4.5)
 
 extends: "../defaults.yaml"
 
@@ -50,17 +52,21 @@ research_focus:
     - "Why do buyers go direct to vendors instead of using advisors?"
 
   output_usage:
-    buyer_journey: "AEO content strategy, search optimization"
-    channels_competitive: "Channel gap analysis, visibility strategy"
-    gtm_synthesis: "Marketing automation inputs, demand gen playbook"
+    buyer_journey: "AEO content strategy, search optimization, advisory model positioning"
+    channels_competitive: "Channel gap analysis, visibility strategy, competitor messaging"
+    customer_expansion: "Cross-sell playbook, expansion signals, account management"
+    messaging_positioning: "Objection handling scripts, proof point library, AEO content angles"
+    gtm_synthesis: "Q1 2026 campaign architecture, budget allocation, measurement framework"
 
-# Budget for Phase 1 (3 agents only)
+# Budget for Phase 1 (5 agents)
 # buyer_journey: ~$2 (Haiku)
 # channels_competitive: ~$2 (Haiku)
-# gtm_synthesis: ~$6 (Sonnet for synthesis quality)
-# Total: ~$10
+# customer_expansion: ~$2 (Haiku)
+# messaging_positioning: ~$2 (Haiku)
+# gtm_synthesis: ~$25 (Opus 4.5 for strategic synthesis)
+# Total: ~$33
 budget:
-  max_cost_usd: 25.0  # Buffer for extended research
-  max_searches: 150
+  max_cost_usd: 50.0  # Buffer for extended research
+  max_searches: 300
 
 # Expected timeline: 2-3 days execution

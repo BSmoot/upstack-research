@@ -1,0 +1,131 @@
+# Global Research Configuration Defaults
+# This file defines your standard model selection strategy
+# Reference this from all project configs using: extends: "../config/defaults.yaml"
+
+# Model Strategy - Define once, reuse across all projects
+model_strategy:
+  # Default model for all agents (if no layer-specific override)
+  default: "claude-haiku-4-20250514"
+  
+  # Per-layer model configuration
+  layers:
+    # Layer 1: Horizontal Research (5 agents)
+    layer_1:
+      # Default for all Layer 1 agents
+      default: "claude-haiku-4-20250514"
+      
+      # Per-agent overrides (optional)
+      agents:
+        # Use Opus 4.5 for final synthesis (best strategic reasoning)
+        gtm_synthesis: "claude-opus-4-5-20251101"
+    
+    # Layer 2: Vertical Research (use Haiku for cost efficiency)
+    layer_2: "claude-haiku-4-20250514"
+    
+    # Layer 3: Title Research (use Haiku for cost efficiency)
+    layer_3: "claude-haiku-4-20250514"
+    
+    # Playbooks: Integration (use Sonnet for quality)
+    playbooks: "claude-sonnet-4-20250514"
+  
+  # Model-specific configuration
+  model_configs:
+    "claude-haiku-4-20250514":
+      max_tokens: 8000
+      temperature: 1.0
+      timeout_seconds: 300
+
+    "claude-sonnet-4-20250514":
+      max_tokens: 16000
+      temperature: 1.0
+      timeout_seconds: 300
+
+    "claude-opus-4-5-20251101":
+      max_tokens: 32000
+      temperature: 1.0
+      timeout_seconds: 600  # Longer timeout for deeper reasoning
+  
+  # Budget settings per model
+  budgets:
+    "claude-haiku-4-20250514":
+      max_searches_per_agent: 15
+      estimated_cost_per_agent: 1.0
+
+    "claude-sonnet-4-20250514":
+      max_searches_per_agent: 20
+      estimated_cost_per_agent: 8.0
+
+    "claude-opus-4-5-20251101":
+      max_searches_per_agent: 25
+      estimated_cost_per_agent: 25.0  # ~5x Sonnet pricing
+
+# API settings (reusable)
+api:
+  timeout_seconds: 300
+  retry:
+    max_attempts: 3
+    backoff_multiplier: 2
+
+# Execution settings (reusable)
+execution_defaults:
+  max_concurrent_agents: 5
+  research_depth: "comprehensive"
+  
+  checkpointing:
+    enabled: true
+    frequency: "per_agent"
+    directory: "checkpoints"
+  
+  review_gates:
+    after_layer_1: true
+    after_layer_2: true
+    after_layer_3: false
+  
+  outputs:
+    directory: "outputs"
+    format: "markdown"
+    include_conversation_history: false
+  
+  logging:
+    level: "INFO"
+    directory: "logs"
+    console_output: true
+  
+  # Budget controls
+  budget:
+    max_searches: 200
+    max_cost_usd: 50.0
+
+# Advanced settings
+advanced:
+  tools:
+    web_search_enabled: true
+    web_fetch_enabled: true
+    max_tool_calls_per_agent: 100
+  
+  validation:
+    require_sources: true
+    min_sources_per_section: 2
+    flag_low_confidence: true
+
+# Alternative configurations you can copy/paste:
+
+# HIGH QUALITY (Use Sonnet everywhere)
+# model_strategy:
+#   default: "claude-sonnet-4-20250514"
+#   # All layers use Sonnet
+#   # Expected cost: $150-230 per full run
+
+# ULTRA BUDGET (Use Haiku everywhere)
+# model_strategy:
+#   default: "claude-haiku-4-20250514"
+#   layers:
+#     layer_1: "claude-haiku-4-20250514"
+#     layer_2: "claude-haiku-4-20250514"
+#     layer_3: "claude-haiku-4-20250514"
+#     playbooks: "claude-haiku-4-20250514"
+#   # Expected cost: $20-30 per full run
+
+# HYBRID (Default in this file)
+# Haiku for research, Sonnet for synthesis
+# Expected cost: $35-50 per full run
