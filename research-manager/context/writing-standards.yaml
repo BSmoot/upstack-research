@@ -1,0 +1,113 @@
+# Writing Standards
+# SHARED CONTEXT: Research agents should follow these guidelines for all output
+# Goal: Natural communication that's direct and clear
+
+# =============================================================================
+# CORE PRINCIPLE
+# =============================================================================
+# Write like a human, not a language model.
+#
+# Not minimum words. Not robotic efficiency.
+# Writing that sounds like someone you'd want to work with.
+
+# =============================================================================
+# LLM PATTERNS TO AVOID
+# =============================================================================
+avoid_patterns:
+  - pattern: "This isn't about X, it's about Y"
+    problem: "Performative positioning"
+    fix: "Just say Y"
+
+  - pattern: "I need to surface X. Here's X:"
+    problem: "Announcing what you're about to do"
+    fix: "Just do it"
+
+  - pattern: "Let me explain..."
+    problem: "Filler"
+    fix: "Start explaining"
+
+  - pattern: "It's important to note that..."
+    problem: "If it's important, the content shows it"
+    fix: "State the important thing directly"
+
+  - pattern: "This matters because..."
+    problem: "Usually redundant after a good explanation"
+    fix: "Cut it or integrate the reason naturally"
+
+  - pattern: "Em-dash chains"
+    problem: "Overuse breaks reading rhythm"
+    fix: "One per paragraph max. Use periods."
+
+  - pattern: "Before we dive into..."
+    problem: "Delays the point"
+    fix: "Start with the point"
+
+  - pattern: "Here's the thing:"
+    problem: "False buildup"
+    fix: "Just say the thing"
+
+  - pattern: "Additionally, Furthermore, Moreover"
+    problem: "Formal filler words"
+    fix: "Use 'And,' 'But,' 'So' instead"
+
+  - pattern: "As mentioned above"
+    problem: "Probably repeating yourself"
+    fix: "Cut it or restructure"
+
+# =============================================================================
+# NATURAL WRITING GUIDELINES
+# =============================================================================
+natural_writing:
+  sentence_rhythm:
+    - "Vary sentence length"
+    - "Short sentences punch"
+    - "Longer ones carry nuance when the thought needs room"
+
+  voice_test:
+    - "Read it out loud"
+    - "If it sounds like a robot or corporate memo, rewrite it"
+
+  pronouns:
+    - "Use 'you' and 'we' like a colleague would"
+
+  contractions:
+    - "Contractions are fine"
+    - "'It's' beats 'it is' in most contexts"
+
+  paragraph_structure:
+    - "One idea per paragraph"
+    - "But let ideas connect naturally"
+
+# =============================================================================
+# DENSITY GUIDELINES
+# =============================================================================
+# Stay dense, not terse.
+
+density:
+  principle: "Every sentence should add something. Cut filler."
+
+  but_also:
+    - "Don't strip out the connective tissue that makes writing flow"
+
+  word_choices:
+    cut:
+      - "Additionally"
+      - "Furthermore"
+      - "Moreover"
+      - "It should be noted that"
+      - "In conclusion"
+      - "To summarize"
+    prefer:
+      - "And"
+      - "But"
+      - "So"
+      - "Still"
+      - "Yet"
+
+# =============================================================================
+# METADATA
+# =============================================================================
+metadata:
+  updated: "2026-01-23"
+  version: "1.0"
+  notes: "Writing standards for research agent output. All deliverables should reflect these guidelines."

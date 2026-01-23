@@ -7,13 +7,56 @@ company:
   name: "UPSTACK"
   description: "Infrastructure technology advisory services"
 
-  # High-level service categories (not detailed descriptions)
+  # Service categories with subcategories
   services:
-    - "Network connectivity advisory"
-    - "Data center and colocation consulting"
-    - "Cloud infrastructure strategy"
-    - "Unified communications advisory"
-    - "Technology vendor selection and negotiation"
+    data_center:
+      name: "Data Center & Colocation"
+      subcategories:
+        - "Colocation (cabinet space, power, cooling)"
+        - "Interconnection services"
+        - "Edge computing infrastructure"
+
+    network:
+      name: "Network & Connectivity"
+      subcategories:
+        - "Dedicated Internet Access (DIA)"
+        - "MPLS and Ethernet services"
+        - "SD-WAN (software-defined WAN)"
+        - "Cloud direct connects"
+        - "Fixed wireless"
+
+    communications:
+      name: "Communications & Voice"
+      subcategories:
+        - "UCaaS (unified communications)"
+        - "SIP trunking"
+        - "Cloud PBX and hosted voice"
+        - "Video conferencing"
+
+    customer_experience:
+      name: "Customer Experience (CX)"
+      subcategories:
+        - "CCaaS (cloud contact center)"
+        - "Omnichannel engagement (voice, chat, email, SMS)"
+        - "AI virtual agents and chatbots"
+        - "Workforce optimization"
+
+    security:
+      name: "Network Security"
+      subcategories:
+        - "EDR (endpoint detection and response)"
+        - "MDR (managed detection and response)"
+        - "IAM (identity and access management)"
+        - "SASE (secure access service edge)"
+        - "ZTNA (zero trust network access)"
+        - "CSPM (cloud security posture management)"
+
+    cloud:
+      name: "Cloud Infrastructure"
+      subcategories:
+        - "Cloud strategy and migration"
+        - "Multi-cloud architecture"
+        - "AI/ML infrastructure"
 
   # Geographic focus
   geography:
@@ -27,7 +70,11 @@ company:
       - "mid_market"      # 100-999 employees
       - "enterprise"      # 1000+ employees
 
+    excluded_segments:
+      - "smb"             # Too small to benefit from advisory model
+
     # General vertical categories (not run-specific)
+    # Priority verticals are determined per research run
     vertical_focus:
       - "Healthcare"
       - "Financial Services"
@@ -35,7 +82,111 @@ company:
       - "Technology"
       - "Professional Services"
 
+# Business Model
+business_model:
+  compensation: "vendor_reimbursed"
+  description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+
+  engagement_type: "ongoing_advisory"
+  engagement_description: "Retained relationships for ongoing technology decisions"
+
+  # Value proposition to buyers
+  value_proposition:
+    primary: "Optimize IT infrastructure through expert advisory"
+    dimensions:
+      - "Lower costs through vendor negotiation and market knowledge"
+      - "Improve reliability through proper vendor selection"
+      - "Mitigate risk through due diligence and expertise"
+      - "Source and procure with confidence"
+      - "Execute as an extension of client's team"
+      - "Enable better, faster decision-making through insights"
+
+  # Trust model - how UPSTACK addresses vendor-reimbursed skepticism
+  trust_model:
+    vendor_agnostic: "Recommend from all vendors, not just those who pay us"
+    transparency: "Disclose compensation model upfront"
+    aligned_interests: "Only paid when buyer is satisfied and project succeeds"
+    track_record: "Recommendations validated by client outcomes"
+
+  # Primary differentiator
+  differentiation:
+    primary: "End-to-end solutions throughout the full technology lifecycle"
+    enablers:
+      - "Technology platform for better decisions"
+      - "Depth of domain expertise"
+
+# Competitive Landscape
+competitive_landscape:
+  primary_competition: "direct_vendor_sales"
+  description: "Buyers going directly to carriers/cloud providers without advisory"
+
+  # Why buyers go direct instead of using an advisor
+  direct_buyer_reasons:
+    - "Unaware that technology advisors exist as a category"
+    - "Existing vendor relationships"
+
+  # Other advisors exist but are not primary competition
+  secondary_competition: "other_technology_advisors"
+  secondary_notes: "A few comparable firms exist"
+
+  # How technology advisors differ from adjacent business models
+  adjacent_models:
+    vars:
+      name: "Value-Added Resellers (VARs)"
+      distinction: "VARs buy and resell products with markup; advisors provide vendor-neutral guidance without taking title to goods"
+    msps:
+      name: "Managed Service Providers (MSPs)"
+      distinction: "MSPs operate technology daily under recurring contracts; advisors focus on procurement and vendor management, not ongoing operations"
+    consultants:
+      name: "IT Consultants (Big 4, etc.)"
+      distinction: "Consultants charge clients directly ($150-500+/hr); advisors are free to buyers with vendor-funded commissions"
+    platforms:
+      name: "Procurement Platforms (Coupa, SAP Ariba)"
+      distinction: "Platforms offer self-service automation; advisors provide high-touch customized guidance"
+
+# Buyer Personas
+buyer_personas:
+  primary_buyer:
+    title: "CIO/CTO"
+    description: "Chief Information/Technology Officer - primary decision maker"
+
+  buying_committee:
+    description: "Buying committees are expanding in size"
+    typical_members:
+      - title: "CIO/CTO"
+        role: "Primary decision maker"
+      - title: "VP/Director of IT"
+        role: "Technical evaluation"
+      - title: "CFO/Finance"
+        role: "Budget approval, cost validation"
+      - title: "Procurement"
+        role: "Vendor management, contract negotiation"
+      - title: "CX Leaders"
+        role: "Involved when CX solutions are in scope"
+
+  # Buying triggers - what prompts engagement
+  buying_triggers:
+    - trigger: "Contract renewal"
+      description: "Existing vendor contract is expiring"
+    - trigger: "New initiative"
+      description: "Digital transformation, cloud migration, office relocation"
+    - trigger: "Cost pressure"
+      description: "Mandate to reduce IT spend"
+    - trigger: "Vendor frustration"
+      description: "Poor service or pricing from current provider"
+
+  # Pain points before engaging UPSTACK
+  pain_points:
+    - pain: "Lack of market knowledge"
+      description: "Don't know what options exist or what fair pricing looks like"
+    - pain: "Time constraints"
+      description: "Don't have bandwidth to evaluate vendors properly"
+    - pain: "Risk of wrong choice"
+      description: "Fear of being locked into a bad contract"
+    - pain: "Internal politics"
+      description: "Need third-party validation for internal buy-in"
+
 # Metadata
-updated: "2025-01-13"
-version: "1.0"
-notes: "Baseline context shared across all research runs. Do not include detailed materials here."
+updated: "2026-01-23"
+version: "2.1"
+notes: "Added service subcategories and adjacent model differentiation. See glossary.yaml for terminology."

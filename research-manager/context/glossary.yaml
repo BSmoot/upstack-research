@@ -1,0 +1,1042 @@
+# INFRA Glossary — Enterprise Technology Services & Infrastructure
+# Reference file for research agents to understand technology advisory industry language
+# Usage: Vendor marketing often misuses terms—trust these definitions when evaluating proposals
+
+# =============================================================================
+# NETWORK & CONNECTIVITY
+# =============================================================================
+network:
+  dia:
+    abbrev: "DIA"
+    full: "Dedicated Internet Access"
+    definition: "Symmetrical, unshared bandwidth with SLA guarantees"
+
+  bia:
+    abbrev: "BIA"
+    full: "Best-Efforts Internet Access"
+    definition: "Shared, asymmetrical, no performance SLA—consumer-grade"
+
+  sd_wan:
+    abbrev: "SD-WAN"
+    full: "Software-Defined Wide Area Network"
+    definition: "Overlay technology for dynamic path selection across multiple underlays"
+
+  mpls:
+    abbrev: "MPLS"
+    full: "Multiprotocol Label Switching"
+    definition: "Legacy private WAN technology; predictable but expensive"
+
+  p2p:
+    abbrev: "P2P"
+    full: "Point-to-Point"
+    definition: "Direct connection between two locations (private circuit)"
+
+  vpls:
+    abbrev: "VPLS"
+    full: "Virtual Private LAN Service"
+    definition: "Layer 2 multipoint connectivity over carrier network"
+
+  epl:
+    abbrev: "EPL"
+    full: "Ethernet Private Line"
+    definition: "Dedicated point-to-point Ethernet service"
+
+  evpl:
+    abbrev: "EVPL"
+    full: "Ethernet Virtual Private Line"
+    definition: "Point-to-point with bandwidth sharing on access"
+
+  dark_fiber:
+    full: "Unlit Fiber"
+    definition: "Raw fiber strand; customer provides transmission equipment"
+
+  lit_service:
+    full: "Active/Managed Fiber"
+    definition: "Carrier-managed transmission equipment included"
+
+  type_1_circuit:
+    full: "On-Net Access"
+    definition: "Building has direct carrier fiber—faster install, lower cost"
+
+  type_2_circuit:
+    full: "Off-Net Access"
+    definition: "Requires construction/lease from another carrier—15-30% premium"
+
+  mrc:
+    abbrev: "MRC"
+    full: "Monthly Recurring Charge"
+    definition: "Ongoing service fee"
+
+  nrc:
+    abbrev: "NRC"
+    full: "Non-Recurring Charge"
+    definition: "One-time installation/activation fee"
+
+  cpe:
+    abbrev: "CPE"
+    full: "Customer Premises Equipment"
+    definition: "Hardware at customer location (routers, firewalls, etc.)"
+
+  demarc:
+    full: "Demarcation Point"
+    definition: "Where carrier responsibility ends and customer begins"
+
+  loa:
+    abbrev: "LOA"
+    full: "Letter of Authorization"
+    definition: "Permission to install/connect in building or cross-connect"
+
+  bgp:
+    abbrev: "BGP"
+    full: "Border Gateway Protocol"
+    definition: "Routing protocol for internet/carrier peering"
+
+  qos:
+    abbrev: "QoS"
+    full: "Quality of Service"
+    definition: "Traffic prioritization mechanisms"
+
+  cos:
+    abbrev: "CoS"
+    full: "Class of Service"
+    definition: "Packet marking for priority treatment"
+
+  jitter:
+    full: "Packet Delay Variation"
+    definition: "Inconsistency in packet arrival times; kills voice/video"
+
+  latency:
+    full: "Round-Trip Time (RTT)"
+    definition: "Time for packet to travel and return"
+
+  cir:
+    abbrev: "CIR"
+    full: "Committed Information Rate"
+    definition: "Guaranteed minimum bandwidth (typically in MPLS/EVPL)"
+
+  burst:
+    full: "Burstable Bandwidth"
+    definition: "Allowance to exceed CIR temporarily"
+
+  oversubscription:
+    full: "Shared Bandwidth Ratio"
+    definition: "How many customers share backhaul (10:1, 20:1, worse)"
+
+# =============================================================================
+# DATA CENTER & COLOCATION
+# =============================================================================
+data_center:
+  colo:
+    full: "Colocation"
+    definition: "Renting cabinet/cage space in shared data center"
+
+  cabinet:
+    full: "42U Equipment Frame"
+    definition: "Standard 19\" wide, 7-foot tall enclosure"
+    notes: "Also called 'rack'"
+
+  cage:
+    full: "Private Enclosure"
+    definition: "Fenced-off space for multiple racks"
+
+  rack_unit:
+    abbrev: "U"
+    full: "Rack Unit"
+    definition: "1.75\" vertical space measurement"
+
+  kw:
+    abbrev: "kW"
+    full: "Kilowatt"
+    definition: "Power allocation per cabinet"
+    notes: "Typical: 3-5kW; high-density: 10-20kW+"
+
+  pue:
+    abbrev: "PUE"
+    full: "Power Usage Effectiveness"
+    definition: "Facility efficiency ratio"
+    notes: "1.0 = perfect; <1.5 = good; >2.0 = poor"
+
+  uptime_tier:
+    full: "Tier I-IV Certification"
+    definition: "Uptime Institute ratings"
+    notes: "Tier III = 99.982% / 1.6hr annual downtime"
+
+  n_plus_1:
+    abbrev: "N+1"
+    full: "Redundancy Level"
+    definition: "One backup component beyond minimum required"
+
+  two_n:
+    abbrev: "2N"
+    full: "Full Redundancy"
+    definition: "100% duplicate systems (double the capacity needed)"
+
+  cross_connect:
+    full: "Inter-Rack Cabling"
+    definition: "Fee-per-connection between customer racks or to carriers"
+
+  mmr:
+    abbrev: "MMR"
+    full: "Meet-Me Room"
+    definition: "Carrier-neutral interconnection space"
+
+  carrier_hotel:
+    full: "Multi-Carrier Facility"
+    definition: "Building with many telecom providers present"
+
+  crac:
+    abbrev: "CRAC"
+    full: "Computer Room Air Conditioner"
+    definition: "Precision cooling unit"
+
+  smart_hands:
+    full: "Remote Technician Service"
+    definition: "On-site assistance for reboots, cable moves, etc."
+
+  hot_cold_aisle:
+    full: "Cooling Layout"
+    definition: "Alternating rack orientation for airflow efficiency"
+
+  sla:
+    abbrev: "SLA"
+    full: "Service Level Agreement"
+    definition: "Uptime/performance guarantees with credits"
+
+  mttr:
+    abbrev: "MTTR"
+    full: "Mean Time to Repair"
+    definition: "Average time to restore after failure"
+
+  rfo:
+    abbrev: "RFO"
+    full: "Reason for Outage"
+    definition: "Post-incident report"
+
+# =============================================================================
+# UNIFIED COMMUNICATIONS (UCaaS)
+# =============================================================================
+ucaas:
+  ucaas:
+    abbrev: "UCaaS"
+    full: "Unified Communications as a Service"
+    definition: "Cloud phone/messaging/conferencing platform"
+
+  pbx:
+    abbrev: "PBX"
+    full: "Private Branch Exchange"
+    definition: "On-premise phone system (legacy)"
+
+  sip:
+    abbrev: "SIP"
+    full: "Session Initiation Protocol"
+    definition: "VoIP signaling standard"
+
+  sip_trunk:
+    full: "VoIP Connection"
+    definition: "Replaces traditional PRIs for call routing"
+
+  did:
+    abbrev: "DID"
+    full: "Direct Inward Dialing"
+    definition: "Individual phone numbers"
+
+  tfn:
+    abbrev: "TFN"
+    full: "Toll-Free Number"
+    definition: "800/888/877/etc. numbers"
+
+  lnp:
+    abbrev: "LNP"
+    full: "Local Number Portability"
+    definition: "Process to move numbers between carriers"
+
+  e911:
+    abbrev: "E911"
+    full: "Enhanced 911"
+    definition: "Location-enabled emergency calling"
+
+  auto_attendant:
+    full: "IVR Menu"
+    definition: "\"Press 1 for Sales\" system"
+
+  call_queue:
+    full: "Hold/Distribution System"
+    definition: "Manage inbound call flow"
+
+  hunt_group:
+    full: "Ring Group"
+    definition: "Multiple extensions ring simultaneously"
+
+  softphone:
+    full: "Desktop/Mobile App"
+    definition: "Software-based phone client"
+
+  pstn:
+    abbrev: "PSTN"
+    full: "Public Switched Telephone Network"
+    definition: "Traditional phone network"
+
+  codec:
+    full: "Audio Compression"
+    definition: "Audio encoding format"
+    notes: "G.711 (uncompressed), G.729 (compressed), Opus (modern)"
+
+  mos:
+    abbrev: "MOS"
+    full: "Mean Opinion Score"
+    definition: "Voice quality metric (1-5 scale)"
+    notes: "4+ is good"
+
+  jitter_buffer:
+    full: "Packet Smoothing"
+    definition: "Compensates for network variability"
+
+# =============================================================================
+# CONTACT CENTER (CCaaS)
+# =============================================================================
+ccaas:
+  ccaas:
+    abbrev: "CCaaS"
+    full: "Contact Center as a Service"
+    definition: "Cloud contact center platform"
+
+  acd:
+    abbrev: "ACD"
+    full: "Automatic Call Distribution"
+    definition: "Intelligent call routing to agents"
+
+  ivr:
+    abbrev: "IVR"
+    full: "Interactive Voice Response"
+    definition: "Automated menu system"
+
+  cti:
+    abbrev: "CTI"
+    full: "Computer Telephony Integration"
+    definition: "Links phone system to CRM"
+
+  crm:
+    abbrev: "CRM"
+    full: "Customer Relationship Management"
+    definition: "Salesforce, ServiceNow, etc."
+
+  omnichannel:
+    full: "Unified Interaction Management"
+    definition: "Voice, chat, email, SMS, social in one interface"
+
+  agent_desktop:
+    full: "Unified Interface"
+    definition: "Single pane of glass for agent tools"
+
+  wfm:
+    abbrev: "WFM"
+    full: "Workforce Management"
+    definition: "Scheduling and forecasting tools"
+
+  wfo:
+    abbrev: "WFO"
+    full: "Workforce Optimization"
+    definition: "WFM + QM + analytics + coaching"
+
+  qm:
+    abbrev: "QM"
+    full: "Quality Management"
+    definition: "Call recording, evaluation, coaching"
+
+  screen_pop:
+    full: "Automatic CRM Display"
+    definition: "Customer record appears when call connects"
+
+  skill_routing:
+    full: "Skill-Based Routing"
+    definition: "Route calls based on agent expertise"
+
+  queue_callback:
+    full: "Virtual Hold"
+    definition: "Customer keeps place in line; gets callback"
+
+  whisper_coaching:
+    full: "Agent Assistance"
+    definition: "Supervisor speaks to agent without customer hearing"
+
+  barge_in:
+    full: "Supervisor Takeover"
+    definition: "Jump into live call"
+
+  aht:
+    abbrev: "AHT"
+    full: "Average Handle Time"
+    definition: "Mean call duration including hold/wrap"
+
+  asa:
+    abbrev: "ASA"
+    full: "Average Speed of Answer"
+    definition: "Mean time customer waits before agent pickup"
+
+  fcr:
+    abbrev: "FCR"
+    full: "First Call Resolution"
+    definition: "Percentage resolved without callback"
+
+  abandonment_rate:
+    full: "Hang-Up Percentage"
+    definition: "Customers who leave queue before connecting"
+
+  service_level:
+    abbrev: "SL"
+    full: "Service Level"
+    definition: "Percent of calls answered within target"
+    notes: "e.g., 80/20 = 80% in 20 sec"
+
+  concurrency:
+    full: "Simultaneous Sessions"
+    definition: "Agents handling multiple chat/email interactions"
+
+# =============================================================================
+# CUSTOMER EXPERIENCE & AI
+# =============================================================================
+cx:
+  cx:
+    abbrev: "CX"
+    full: "Customer Experience"
+    definition: "End-to-end customer journey management"
+
+  cxaas:
+    abbrev: "CXaaS"
+    full: "Customer Experience as a Service"
+    definition: "Integrated CX platform (CCaaS + analytics + AI)"
+
+  nlp:
+    abbrev: "NLP"
+    full: "Natural Language Processing"
+    definition: "AI understanding of human language"
+
+  nlu:
+    abbrev: "NLU"
+    full: "Natural Language Understanding"
+    definition: "Subset of NLP focused on intent/meaning"
+
+  conversational_ai:
+    full: "Intelligent Chatbot/IVA"
+    definition: "AI-driven automated interactions"
+
+  iva:
+    abbrev: "IVA"
+    full: "Intelligent Virtual Assistant"
+    definition: "Advanced AI bot (vs. basic chatbot)"
+
+  intent_detection:
+    full: "Purpose Identification"
+    definition: "AI determines what customer wants"
+
+  sentiment_analysis:
+    full: "Emotion Detection"
+    definition: "Real-time assessment of customer mood"
+
+  predictive_routing:
+    full: "AI-Driven Distribution"
+    definition: "Route based on predicted outcome"
+
+  agent_assist:
+    full: "Real-Time AI Guidance"
+    definition: "Suggestions/answers appear during interaction"
+
+  knowledge_base:
+    full: "Self-Service Repository"
+    definition: "Articles, FAQs, troubleshooting guides"
+
+  csat:
+    abbrev: "CSAT"
+    full: "Customer Satisfaction Score"
+    definition: "Post-interaction rating"
+
+  nps:
+    abbrev: "NPS"
+    full: "Net Promoter Score"
+    definition: "Loyalty metric (0-10 scale)"
+
+  ces:
+    abbrev: "CES"
+    full: "Customer Effort Score"
+    definition: "Ease-of-resolution metric"
+
+  journey_analytics:
+    full: "Cross-Channel Tracking"
+    definition: "Map customer path across touchpoints"
+
+# =============================================================================
+# SECURITY & SASE
+# =============================================================================
+security:
+  sase:
+    abbrev: "SASE"
+    full: "Secure Access Service Edge"
+    definition: "Converged network + security (SD-WAN + SSE)"
+
+  sse:
+    abbrev: "SSE"
+    full: "Security Service Edge"
+    definition: "Cloud-delivered security bundle (SWG + CASB + ZTNA)"
+
+  zero_trust:
+    full: "Never Trust, Always Verify"
+    definition: "Security model—no implicit trust based on location"
+
+  ztna:
+    abbrev: "ZTNA"
+    full: "Zero Trust Network Access"
+    definition: "Replaces VPN with identity-based access"
+
+  swg:
+    abbrev: "SWG"
+    full: "Secure Web Gateway"
+    definition: "Cloud-based URL filtering and threat protection"
+
+  casb:
+    abbrev: "CASB"
+    full: "Cloud Access Security Broker"
+    definition: "Visibility/control for SaaS applications"
+
+  dlp:
+    abbrev: "DLP"
+    full: "Data Loss Prevention"
+    definition: "Blocks sensitive data exfiltration"
+
+  fwaas:
+    abbrev: "FWaaS"
+    full: "Firewall as a Service"
+    definition: "Cloud-delivered firewall"
+
+  ids_ips:
+    abbrev: "IDS/IPS"
+    full: "Intrusion Detection/Prevention"
+    definition: "Threat monitoring and blocking"
+
+  ngfw:
+    abbrev: "NGFW"
+    full: "Next-Generation Firewall"
+    definition: "Deep packet inspection, application awareness"
+
+  edr:
+    abbrev: "EDR"
+    full: "Endpoint Detection & Response"
+    definition: "Threat detection on devices"
+
+  xdr:
+    abbrev: "XDR"
+    full: "Extended Detection & Response"
+    definition: "Cross-platform threat correlation"
+
+  siem:
+    abbrev: "SIEM"
+    full: "Security Information & Event Management"
+    definition: "Log aggregation and analysis"
+
+  soc:
+    abbrev: "SOC"
+    full: "Security Operations Center"
+    definition: "Team monitoring threats"
+
+  mdr:
+    abbrev: "MDR"
+    full: "Managed Detection & Response"
+    definition: "Outsourced threat hunting/response"
+
+  mfa:
+    abbrev: "MFA"
+    full: "Multi-Factor Authentication"
+    definition: "Additional verification beyond password"
+
+  sso:
+    abbrev: "SSO"
+    full: "Single Sign-On"
+    definition: "One login for multiple applications"
+
+  pki:
+    abbrev: "PKI"
+    full: "Public Key Infrastructure"
+    definition: "Certificate-based authentication"
+
+  tls:
+    abbrev: "TLS"
+    full: "Transport Layer Security"
+    definition: "Encryption protocol (replaced SSL)"
+
+  vpn:
+    abbrev: "VPN"
+    full: "Virtual Private Network"
+    definition: "Encrypted tunnel for remote access"
+    notes: "Legacy approach"
+
+  waf:
+    abbrev: "WAF"
+    full: "Web Application Firewall"
+    definition: "Protects against web-based attacks"
+
+  ddos:
+    abbrev: "DDoS"
+    full: "Distributed Denial of Service"
+    definition: "Attack overwhelming systems with traffic"
+
+# =============================================================================
+# IoT & M2M
+# =============================================================================
+iot:
+  iot:
+    abbrev: "IoT"
+    full: "Internet of Things"
+    definition: "Connected devices with sensors/actuators"
+
+  m2m:
+    abbrev: "M2M"
+    full: "Machine-to-Machine"
+    definition: "Automated device-to-device communication"
+
+  lte_m:
+    abbrev: "LTE-M"
+    full: "LTE for Machines"
+    definition: "Cellular IoT standard—low power, wide coverage"
+
+  nb_iot:
+    abbrev: "NB-IoT"
+    full: "Narrowband IoT"
+    definition: "Ultra-low power cellular for simple sensors"
+
+  lorawan:
+    abbrev: "LoRaWAN"
+    full: "Long Range WAN"
+    definition: "Low-power, long-range wireless for IoT"
+
+  lpwan:
+    abbrev: "LPWAN"
+    full: "Low-Power Wide-Area Network"
+    definition: "Category including LoRa, Sigfox, NB-IoT"
+
+  edge_computing:
+    full: "Local Processing"
+    definition: "Compute at/near data source vs. cloud"
+
+  gateway:
+    full: "Protocol Translator"
+    definition: "Device bridging IoT sensors to network"
+
+  mqtt:
+    abbrev: "MQTT"
+    full: "Message Queuing Telemetry Transport"
+    definition: "Lightweight IoT messaging protocol"
+
+  coap:
+    abbrev: "CoAP"
+    full: "Constrained Application Protocol"
+    definition: "HTTP-like protocol for resource-limited devices"
+
+  sim:
+    abbrev: "SIM"
+    full: "Subscriber Identity Module"
+    definition: "Carrier identity chip"
+
+  esim:
+    abbrev: "eSIM"
+    full: "Embedded SIM"
+    definition: "Programmable, non-removable SIM"
+
+  isim:
+    abbrev: "iSIM"
+    full: "Integrated SIM"
+    definition: "SIM functionality built into device processor"
+
+  apn:
+    abbrev: "APN"
+    full: "Access Point Name"
+    definition: "Gateway between cellular network and internet"
+
+  roaming:
+    full: "Cross-Carrier Connectivity"
+    definition: "Device connects via non-home network"
+
+  device_management:
+    full: "Remote Provisioning/Control"
+    definition: "Platform for configuring/updating IoT devices at scale"
+
+  ota:
+    abbrev: "OTA"
+    full: "Over-the-Air"
+    definition: "Firmware/config pushed to devices wirelessly"
+
+# =============================================================================
+# CLOUD & INFRASTRUCTURE
+# =============================================================================
+cloud:
+  iaas:
+    abbrev: "IaaS"
+    full: "Infrastructure as a Service"
+    definition: "Virtualized compute/storage/network"
+    notes: "AWS EC2, Azure VMs"
+
+  paas:
+    abbrev: "PaaS"
+    full: "Platform as a Service"
+    definition: "Development environment"
+    notes: "Heroku, Google App Engine"
+
+  saas:
+    abbrev: "SaaS"
+    full: "Software as a Service"
+    definition: "Ready-to-use applications"
+    notes: "Salesforce, Office 365"
+
+  hybrid_cloud:
+    full: "On-Prem + Public Cloud"
+    definition: "Workloads split between environments"
+
+  multi_cloud:
+    full: "Multiple Cloud Providers"
+    definition: "AWS + Azure + GCP, etc."
+
+  private_cloud:
+    full: "Dedicated Infrastructure"
+    definition: "Virtualized but not shared with other tenants"
+
+  public_cloud:
+    full: "Shared Infrastructure"
+    definition: "AWS, Azure, GCP standard offerings"
+
+  hyperscaler:
+    full: "Massive Cloud Provider"
+    definition: "AWS, Azure, GCP"
+
+  hypervisor:
+    full: "Virtualization Layer"
+    definition: "VMware ESXi, Hyper-V, KVM"
+
+  bare_metal:
+    full: "Physical Server"
+    definition: "Non-virtualized dedicated hardware"
+
+  container:
+    full: "Lightweight Virtualization"
+    definition: "Docker, Kubernetes pods"
+
+  kubernetes:
+    abbrev: "K8s"
+    full: "Container Orchestration"
+    definition: "Manages containerized applications at scale"
+
+  serverless:
+    full: "Function-as-a-Service"
+    definition: "Code runs on-demand without managing servers"
+    notes: "Lambda, Azure Functions"
+
+  object_storage:
+    full: "Unstructured Data Store"
+    definition: "Scalable but not file system"
+    notes: "S3, Azure Blob"
+
+  block_storage:
+    full: "Volume/Disk Storage"
+    definition: "Traditional disk performance"
+    notes: "EBS, Azure Disk"
+
+  cdn:
+    abbrev: "CDN"
+    full: "Content Delivery Network"
+    definition: "Distributed caching for fast content delivery"
+
+  api_gateway:
+    full: "API Management Layer"
+    definition: "Rate limiting, authentication, routing for APIs"
+
+  load_balancer:
+    full: "Traffic Distribution"
+    definition: "Spreads requests across multiple servers"
+
+# =============================================================================
+# MANAGED SERVICES & OPERATIONS
+# =============================================================================
+operations:
+  msp:
+    abbrev: "MSP"
+    full: "Managed Service Provider"
+    definition: "Third-party managing IT infrastructure/operations"
+
+  noc:
+    abbrev: "NOC"
+    full: "Network Operations Center"
+    definition: "24/7 monitoring and incident response"
+
+  sow:
+    abbrev: "SOW"
+    full: "Statement of Work"
+    definition: "Defines project scope, deliverables, timeline"
+
+  ola:
+    abbrev: "OLA"
+    full: "Operational Level Agreement"
+    definition: "Internal team commitments (no financial penalties)"
+
+  itil:
+    abbrev: "ITIL"
+    full: "IT Infrastructure Library"
+    definition: "IT service management framework"
+
+  itsm:
+    abbrev: "ITSM"
+    full: "IT Service Management"
+    definition: "Processes for delivering IT services"
+
+  incident:
+    full: "Service Disruption"
+    definition: "Unplanned outage or degradation"
+
+  change_management:
+    full: "Controlled Modifications"
+    definition: "Process for approving/implementing changes"
+
+  rca:
+    abbrev: "RCA"
+    full: "Root Cause Analysis"
+    definition: "Post-incident investigation"
+
+  escalation_path:
+    full: "Support Tiers"
+    definition: "L1 → L2 → L3 → Engineering"
+
+  priority_levels:
+    abbrev: "P1/P2/P3/P4"
+    full: "Priority Levels"
+    definition: "Severity classification"
+    notes: "P1 = critical outage"
+
+  mtbf:
+    abbrev: "MTBF"
+    full: "Mean Time Between Failures"
+    definition: "Average operational time before failure"
+
+  runbook:
+    full: "Operational Procedure"
+    definition: "Step-by-step instructions for common tasks"
+
+  playbook:
+    full: "Response Framework"
+    definition: "Procedures for specific scenarios (outage, security incident)"
+
+  war_room:
+    full: "Crisis Response"
+    definition: "Live coordination during major incidents"
+
+# =============================================================================
+# COMPLIANCE & REGULATORY
+# =============================================================================
+compliance:
+  hipaa:
+    abbrev: "HIPAA"
+    full: "Health Insurance Portability & Accountability Act"
+    definition: "US healthcare data protection"
+
+  pci_dss:
+    abbrev: "PCI DSS"
+    full: "Payment Card Industry Data Security Standard"
+    definition: "Credit card security requirements"
+
+  sox:
+    abbrev: "SOX"
+    full: "Sarbanes-Oxley Act"
+    definition: "Financial reporting controls for public companies"
+
+  fedramp:
+    abbrev: "FedRAMP"
+    full: "Federal Risk Authorization Management Program"
+    definition: "US government cloud security certification"
+
+  fisma:
+    abbrev: "FISMA"
+    full: "Federal Information Security Management Act"
+    definition: "US federal agency security framework"
+
+  gdpr:
+    abbrev: "GDPR"
+    full: "General Data Protection Regulation"
+    definition: "EU data privacy law"
+
+  ccpa:
+    abbrev: "CCPA"
+    full: "California Consumer Privacy Act"
+    definition: "California data privacy law"
+
+  soc2:
+    abbrev: "SOC 2"
+    full: "Service Organization Control 2"
+    definition: "Third-party security/privacy audit"
+
+  iso_27001:
+    abbrev: "ISO 27001"
+    full: "Information Security Standard"
+    definition: "International security management certification"
+
+  nist:
+    abbrev: "NIST"
+    full: "National Institute of Standards & Technology"
+    definition: "US cybersecurity framework"
+
+  baa:
+    abbrev: "BAA"
+    full: "Business Associate Agreement"
+    definition: "HIPAA-required contract for health data handling"
+
+  dpa:
+    abbrev: "DPA"
+    full: "Data Processing Agreement"
+    definition: "GDPR-required contract for data processors"
+
+  pir:
+    abbrev: "PIR"
+    full: "Post-Implementation Review"
+    definition: "Project retrospective"
+
+  ato:
+    abbrev: "ATO"
+    full: "Authority to Operate"
+    definition: "Government approval to use system"
+
+# =============================================================================
+# COMMERCIAL & PROCUREMENT
+# =============================================================================
+commercial:
+  rfp:
+    abbrev: "RFP"
+    full: "Request for Proposal"
+    definition: "Formal vendor solicitation document"
+
+  rfi:
+    abbrev: "RFI"
+    full: "Request for Information"
+    definition: "Pre-RFP market research"
+
+  rfq:
+    abbrev: "RFQ"
+    full: "Request for Quote"
+    definition: "Pricing-focused vendor request"
+
+  msa:
+    abbrev: "MSA"
+    full: "Master Service Agreement"
+    definition: "Umbrella contract for ongoing services"
+
+  tco:
+    abbrev: "TCO"
+    full: "Total Cost of Ownership"
+    definition: "All costs over solution lifetime (not just license)"
+
+  capex:
+    abbrev: "CapEx"
+    full: "Capital Expenditure"
+    definition: "Upfront purchase (asset on balance sheet)"
+
+  opex:
+    abbrev: "OpEx"
+    full: "Operational Expenditure"
+    definition: "Ongoing subscription/rental (expense)"
+
+  mvc:
+    abbrev: "MVC"
+    full: "Minimum Volume Commitment"
+    definition: "Contractual spending floor (or pay anyway)"
+
+  marc:
+    abbrev: "MARC"
+    full: "Minimum Annual Revenue Commitment"
+    definition: "Same as MVC—often in SaaS"
+
+  true_up:
+    full: "Usage Reconciliation"
+    definition: "Paying for overages vs. committed usage"
+
+  auto_renewal:
+    full: "Automatic Contract Extension"
+    definition: "Renews unless notice given"
+    notes: "60-90 days typical notice period"
+
+  evergreen:
+    full: "Continuous Renewal"
+    definition: "Auto-renews indefinitely until terminated"
+
+  t4c:
+    full: "Termination for Convenience"
+    definition: "Exit without cause (often with penalty)"
+
+  liquidated_damages:
+    full: "Pre-Agreed Penalty"
+    definition: "Fixed amount for contract breach"
+
+  sla_credit:
+    full: "Service Failure Refund"
+    definition: "Percentage discount for missing uptime target"
+
+  co_term:
+    full: "Contract Alignment"
+    definition: "Sync multiple agreements to single renewal date"
+
+  ramp:
+    full: "Gradual Deployment"
+    definition: "Phased rollout with increasing commitment"
+
+  poc:
+    abbrev: "POC"
+    full: "Proof of Concept"
+    definition: "Limited trial before full commitment"
+
+  pilot:
+    full: "Small-Scale Deployment"
+    definition: "Real production use with subset of users"
+
+# =============================================================================
+# BUSINESS MODEL TERMS (Technology Advisory Specific)
+# =============================================================================
+business_model:
+  technology_advisor:
+    abbrev: "TA"
+    definition: "Independent consultant or firm that sources technology for enterprise clients"
+    notes: "Modern term replacing 'telecom agent' or 'broker'"
+
+  technology_services_distributor:
+    abbrev: "TSD"
+    definition: "Entity holding direct contracts with multiple suppliers that manages networks of advisors"
+    notes: "Formerly called 'master agent' before industry rebranding in 2020-2021"
+
+  residual_commission:
+    definition: "Ongoing monthly commission paid for the life of a customer contract"
+    notes: "Distinguishes from one-time referral fees; creates long-term alignment"
+
+  vendor_agnostic:
+    definition: "Advisors with no contractual obligation to recommend specific suppliers"
+    notes: "Working across many vendors without quotas"
+
+  book_of_business:
+    definition: "An advisor's portfolio of customer relationships and associated residual commissions"
+    notes: "Often the primary asset in M&A transactions"
+
+  deal_registration:
+    definition: "Process by which advisors claim protection on specific sales opportunities"
+    notes: "Ensures commission credit for the registering advisor"
+
+  channel:
+    definition: "The ecosystem of indirect sales partners helping vendors reach customers"
+
+  var:
+    abbrev: "VAR"
+    full: "Value-Added Reseller"
+    definition: "Company that purchases products, adds customization/integration, and resells"
+
+  cpq:
+    abbrev: "CPQ"
+    full: "Configure, Price, Quote"
+    definition: "Software for generating accurate quotes based on product configurations"
+
+# =============================================================================
+# METADATA
+# =============================================================================
+metadata:
+  updated: "2026-01-23"
+  version: "2.0"
+  notes: "Comprehensive INFRA glossary for enterprise technology services"
+  usage_note: "Vendor marketing often misuses terms—trust these definitions when evaluating proposals. If a vendor's usage differs significantly, that's a red flag worth exploring."

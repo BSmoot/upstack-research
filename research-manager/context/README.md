@@ -5,6 +5,9 @@ This directory contains **baseline context** shared across all research runs.
 ## Files
 
 - `baseline.yaml` - Core company information shared across all runs
+- `glossary.yaml` - Industry terminology and acronyms reference (200+ terms)
+- `audience-personas.yaml` - Enterprise IT decision-maker profiles and communication preferences
+- `writing-standards.yaml` - Voice and tone guidelines for all research output
 
 ## What Goes Here
 
