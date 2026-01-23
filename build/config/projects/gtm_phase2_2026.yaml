@@ -1,0 +1,83 @@
+# GTM Phase 2: Vertical Adaptation
+# Purpose: Produce vertical playbooks for service category expansion
+# Timing: Q2 2026
+#
+# Focus: How do Healthcare and Financial Services buyers evaluate
+# and purchase Security and CX/AI services?
+#
+# Prerequisite: Phase 1 checkpoint (buyer_journey, channels_competitive, gtm_synthesis)
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "gtm_phase2_2026"
+  description: "Vertical research for Security and CX/AI service expansion"
+
+  # Resume from Phase 1 checkpoint to reuse Layer 1 context
+  # Run with: python run_research.py --layer 2 --resume gtm_phase1_2026 --config this_file.yaml
+  depends_on: "gtm_phase1_2026"
+
+# Phase 2 verticals
+verticals:
+  - "Healthcare"
+  - "Financial Services"
+
+# No title clusters yet - Phase 3
+title_clusters: []
+
+# Company context
+company_context:
+  name: "UPSTACK"
+
+  context_files:
+    baseline: "../../research-manager/context/baseline.yaml"
+    glossary: "../../research-manager/context/glossary.yaml"
+    audience_personas: "../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+# Phase 2 research focus: Service category expansion
+research_focus:
+  strategic_goal: "Expand Security and CX/AI service sales in existing customer verticals"
+
+  # These are NOT new vertical entry plays - we have customers here
+  # This is about expanding WHAT we sell to existing relationships
+  expansion_services:
+    - category: "Security"
+      services:
+        - "EDR/MDR (endpoint and managed detection)"
+        - "SASE/ZTNA (secure access)"
+        - "IAM (identity and access management)"
+        - "Security operations consulting"
+
+    - category: "CX/AI"
+      services:
+        - "CCaaS (cloud contact center)"
+        - "Conversational AI / IVA"
+        - "Workforce optimization"
+        - "CX analytics and journey mapping"
+
+  primary_questions:
+    healthcare:
+      - "How do healthcare organizations evaluate security services given HIPAA requirements?"
+      - "What triggers healthcare CX/AI investments (patient experience, labor costs)?"
+      - "Who owns security vs. CX decisions in health systems?"
+      - "What's the typical buying committee for security in healthcare?"
+
+    financial_services:
+      - "How do financial institutions evaluate security given regulatory requirements?"
+      - "What drives CX/AI investment in banking/insurance (digital transformation, cost reduction)?"
+      - "How do FinServ compliance requirements affect security vendor selection?"
+      - "What role does procurement play vs. CISO vs. CIO in security purchases?"
+
+  output_usage:
+    vertical_healthcare: "Healthcare playbook for Security and CX/AI positioning"
+    vertical_financial_services: "FinServ playbook for Security and CX/AI positioning"
+
+# Budget for Phase 2 (2 vertical agents)
+# ~$2-3 per vertical with Haiku
+# Total: ~$6
+budget:
+  max_cost_usd: 15.0
+  max_searches: 100
+
+# Expected timeline: 2-3 days execution

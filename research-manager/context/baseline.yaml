@@ -186,7 +186,31 @@ buyer_personas:
     - pain: "Internal politics"
       description: "Need third-party validation for internal buy-in"
 
+# Strategic Priorities (2026)
+strategic_priorities:
+  focus: "service_category_expansion"
+  description: "Expand Security and CX/AI service sales within existing customer verticals"
+
+  expansion_categories:
+    - name: "Security"
+      services:
+        - "EDR/MDR"
+        - "SASE/ZTNA"
+        - "IAM"
+      driver: "Compliance requirements, threat landscape"
+
+    - name: "CX/AI"
+      services:
+        - "CCaaS"
+        - "Conversational AI"
+        - "Workforce optimization"
+      driver: "Digital transformation, labor cost reduction"
+
+  priority_verticals:
+    - "Healthcare"
+    - "Financial Services"
+
 # Metadata
 updated: "2026-01-23"
-version: "2.1"
-notes: "Added service subcategories and adjacent model differentiation. See glossary.yaml for terminology."
+version: "2.2"
+notes: "Added 2026 strategic priorities (service expansion focus). See glossary.yaml for terminology."

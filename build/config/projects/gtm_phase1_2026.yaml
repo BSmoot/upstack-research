@@ -1,0 +1,66 @@
+# GTM Phase 1: Foundation Research
+# Purpose: Inform marketing automation deployment and AEO strategy before Q2
+#
+# Agents: buyer_journey, channels_competitive, gtm_synthesis
+# (customer_expansion and messaging_positioning skipped for Phase 1)
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "gtm_phase1_2026"
+  description: "Foundation research for demand generation strategy"
+
+# Phase 1 runs partial Layer 1 only - no verticals or titles yet
+# Verticals defined in Phase 2 config
+# Titles defined in Phase 3 config
+verticals: []
+title_clusters: []
+
+# Company context - reference shared context files
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  # Reference to detailed context (agents will be instructed to use these)
+  context_files:
+    baseline: "../../research-manager/context/baseline.yaml"
+    glossary: "../../research-manager/context/glossary.yaml"
+    audience_personas: "../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+  # Key facts for prompt injection
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+
+  # Trust challenge to research
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+# Phase 1 research focus
+research_focus:
+  primary_questions:
+    - "How do enterprise buyers find and evaluate technology advisors?"
+    - "What do buyers search when looking for infrastructure help?"
+    - "Who influences the technology advisory decision?"
+    - "Where do competitors (other advisors) show up in buyer research paths?"
+    - "Why do buyers go direct to vendors instead of using advisors?"
+
+  output_usage:
+    buyer_journey: "AEO content strategy, search optimization"
+    channels_competitive: "Channel gap analysis, visibility strategy"
+    gtm_synthesis: "Marketing automation inputs, demand gen playbook"
+
+# Budget for Phase 1 (3 agents only)
+# buyer_journey: ~$2 (Haiku)
+# channels_competitive: ~$2 (Haiku)
+# gtm_synthesis: ~$6 (Sonnet for synthesis quality)
+# Total: ~$10
+budget:
+  max_cost_usd: 25.0  # Buffer for extended research
+  max_searches: 150
+
+# Expected timeline: 2-3 days execution
