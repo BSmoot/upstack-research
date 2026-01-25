@@ -160,24 +160,27 @@ def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
     
     if not content:
         return "Summary not available"
-    
-    # Try to extract Executive Summary section
-    if '## Executive Summary' in content:
+
+    # Try to extract Executive Summary section (case-insensitive)
+    import re
+    summary_match = re.search(r'^##\s+EXECUTIVE\s+SUMMARY\s*$', content, re.IGNORECASE | re.MULTILINE)
+
+    if summary_match:
         try:
-            # Find the Executive Summary section
-            summary_start = content.index('## Executive Summary')
-            # Find the next section header (starts with ##)
-            content_after_summary = content[summary_start + len('## Executive Summary'):]
-            
-            # Find next ## header
-            next_header_pos = content_after_summary.find('\n##')
-            if next_header_pos != -1:
-                summary_section = content_after_summary[:next_header_pos]
+            # Find content after the Executive Summary header
+            summary_start = summary_match.end()
+            content_after_summary = content[summary_start:]
+
+            # Find next level-2 header (## but not ###)
+            # Use regex to match \n## followed by space (not another #)
+            next_section = re.search(r'\n##\s+[^#]', content_after_summary)
+            if next_section:
+                summary_section = content_after_summary[:next_section.start()]
             else:
                 summary_section = content_after_summary
-            
+
             summary_text = summary_section.strip()
-            
+
             # Return truncated if needed
             if len(summary_text) > max_length:
                 return summary_text[:max_length] + "..."
@@ -185,12 +188,21 @@ def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
         except Exception:
             # If parsing fails, fall through to truncation
             pass
-    
-    # Fallback: return first max_length characters
+
+    # Fallback: find first markdown header and start from there (skip reasoning preamble)
+    first_header = re.search(r'^#\s+.+$', content, re.MULTILINE)
+    if first_header:
+        content_from_header = content[first_header.start():]
+        truncated = content_from_header[:max_length].strip()
+        if len(content_from_header) > max_length:
+            truncated += "..."
+        return truncated
+
+    # Final fallback: return first max_length characters
     truncated = content[:max_length].strip()
     if len(content) > max_length:
         truncated += "..."
-    
+
     return truncated
 
 
