@@ -1,0 +1,74 @@
+# GTM Integration: Playbook Generation
+# Purpose: Generate vertical × title playbooks from completed research
+# Timing: After Layers 1-3 complete
+#
+# Prerequisite: All layers complete in gtm_phase1_2026 checkpoint
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "gtm_phase1_2026"  # Use same checkpoint
+  description: "Generate integration playbooks from completed research"
+  depends_on: "gtm_phase1_2026"
+
+# Must match completed research
+verticals:
+  - "healthcare"
+  - "financial_services"
+
+title_clusters:
+  - "cfo_cluster"
+  - "cio_cto_cluster"
+  - "vp_it_operations"
+  - "procurement"
+  - "business_unit"
+
+# Priority combinations for playbook generation
+# Focus on highest-value combinations first
+priority_combinations:
+  # Healthcare - C-suite and IT leadership are key decision makers
+  - vertical: "healthcare"
+    titles:
+      - "cfo_cluster"
+      - "cio_cto_cluster"
+    priority: 1
+
+  # Financial Services - CFO and CIO/CISO critical for compliance-driven purchases
+  - vertical: "financial_services"
+    titles:
+      - "cfo_cluster"
+      - "cio_cto_cluster"
+    priority: 1
+
+  # Secondary: IT Operations (implementation influencers)
+  - vertical: "healthcare"
+    titles:
+      - "vp_it_operations"
+    priority: 2
+
+  - vertical: "financial_services"
+    titles:
+      - "vp_it_operations"
+    priority: 2
+
+# Company context
+company_context:
+  name: "UPSTACK"
+
+  context_files:
+    baseline: "../../research-manager/context/baseline.yaml"
+    glossary: "../../research-manager/context/glossary.yaml"
+    audience_personas: "../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+# Disable review gates (all prior layers already complete and reviewed)
+execution_settings:
+  review_gates:
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+
+# Budget for playbooks (6 playbooks at ~$3 each with Haiku)
+budget:
+  max_cost_usd: 30.0
+  max_searches: 100
