@@ -13,39 +13,52 @@ from .constants import Models
 def load_config_with_inheritance(config_path: Path) -> Dict[str, Any]:
     """
     Load configuration with inheritance support.
-    
+
     Supports 'extends' keyword to inherit from parent configs.
     Project configs can override parent settings.
-    
+
     Args:
         config_path: Path to project configuration file
-        
+
     Returns:
-        Merged configuration dictionary
-        
+        Merged and validated configuration dictionary
+
     Example:
         # parent.yaml
         model_strategy:
           default: "claude-haiku-4"
-        
+
         # project.yaml
         extends: "../parent.yaml"
         verticals: ["Healthcare"]
-        
+
         # Result: project inherits model_strategy from parent
     """
+    config = _load_config_recursive(config_path)
+
+    # Validate only the final merged config
+    from .config_schema import validate_research_config
+    return validate_research_config(config)
+
+
+def _load_config_recursive(config_path: Path) -> Dict[str, Any]:
+    """
+    Internal: Load and merge configs without validation.
+
+    Validation happens only at the top level after all merging is complete.
+    """
     config_path = Path(config_path)
-    
+
     # Load project config
     with open(config_path, 'r') as f:
         project_config = yaml.safe_load(f)
-    
+
     # Check for inheritance
     if 'extends' in project_config:
         parent_path = config_path.parent / project_config['extends']
 
-        # Recursive load to support multi-level inheritance
-        parent_config = load_config_with_inheritance(parent_path)
+        # Recursive load (no validation during recursion)
+        parent_config = _load_config_recursive(parent_path)
 
         # Merge configs (project overrides parent)
         merged = deep_merge(parent_config, project_config)
@@ -53,13 +66,9 @@ def load_config_with_inheritance(config_path: Path) -> Dict[str, Any]:
         # Remove 'extends' from final config
         merged.pop('extends', None)
 
-        config = merged
-    else:
-        config = project_config
+        return merged
 
-    # Validate with Pydantic schema and apply defaults
-    from .config_schema import validate_research_config
-    return validate_research_config(config)
+    return project_config
 
 
 def deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:

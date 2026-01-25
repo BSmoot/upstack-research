@@ -114,8 +114,9 @@ class ResearchOrchestrator:
         combinations = get_priority_combinations(self.config)
         self.state.initialize_integrations(combinations)
         
-        # Output directory
-        self.output_dir = Path(self.config['execution_settings']['outputs']['directory'])
+        # Output directory (scoped to execution ID to prevent overwrites)
+        base_output_dir = Path(self.config['execution_settings']['outputs']['directory'])
+        self.output_dir = base_output_dir / self.state.execution_id
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create layer output directories
@@ -155,6 +156,34 @@ class ResearchOrchestrator:
             raise BudgetExceededError(
                 f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
             )
+
+    def _check_gather_results(self, results: List[Any]) -> None:
+        """
+        Check asyncio.gather() results for BudgetExceededError and propagate.
+
+        Args:
+            results: List of results from asyncio.gather(..., return_exceptions=True)
+
+        Raises:
+            BudgetExceededError: If any result is a BudgetExceededError
+
+        Notes:
+            - Other exception types remain captured (handled by mark_failed in agent methods)
+            - Logs which agent(s) exceeded budget before raising
+        """
+        budget_errors = []
+
+        for idx, result in enumerate(results):
+            if isinstance(result, BudgetExceededError):
+                budget_errors.append((idx, result))
+
+        if budget_errors:
+            # Log all budget errors found
+            for idx, error in budget_errors:
+                self.logger.error(f"Task {idx} exceeded budget: {error}")
+
+            # Re-raise the first budget error to halt execution
+            raise budget_errors[0][1]
 
     async def execute_full_research(self):
         """
@@ -237,9 +266,10 @@ class ResearchOrchestrator:
                 tasks.append(self._execute_agent(agent_name, layer='layer_1'))
             else:
                 self.logger.info(f"Skipping {agent_name} (already complete)")
-        
+
         if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
         
         # Phase 2: Messaging agent (depends on phase 1)
         self.logger.info("Phase 2: Executing messaging_positioning agent")
@@ -292,40 +322,71 @@ class ResearchOrchestrator:
                 tasks.append(self._execute_vertical_agent(vertical))
             else:
                 self.logger.info(f"Skipping {vertical} (already complete)")
-        
+
         if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
         
         self.logger.info("Layer 2 complete!")
         self._print_layer_status('layer_2')
     
+    async def _staggered_gather(self, coroutines: list, stagger_delay: float = 2.0):
+        """
+        Execute coroutines in parallel with staggered start times.
+
+        Prevents rate limiting by adding delay between concurrent API calls.
+
+        Args:
+            coroutines: List of coroutine functions (not awaited yet)
+            stagger_delay: Seconds between starting each coroutine
+
+        Returns:
+            List of results (same as asyncio.gather with return_exceptions=True)
+        """
+        async def delayed_start(coro_func, delay: float):
+            """Wrap coroutine with initial delay."""
+            if delay > 0:
+                await asyncio.sleep(delay)
+            return await coro_func
+
+        # Create tasks with staggered delays
+        tasks = []
+        for i, coro in enumerate(coroutines):
+            delay = i * stagger_delay
+            tasks.append(delayed_start(coro, delay))
+
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
     async def execute_layer_3_parallel(self):
-        """Execute all configured title clusters in parallel."""
+        """Execute all configured title clusters in parallel with staggered starts."""
         self.logger.info("Executing Layer 3: Title Research")
-        
+
         # Check if Layer 1 and 2 are complete
         if not self.state.is_layer_complete('layer_1'):
             self.logger.error("Cannot execute Layer 3: Layer 1 not complete")
             return
-        
+
         if not self.state.is_layer_complete('layer_2'):
             self.logger.error("Cannot execute Layer 3: Layer 2 not complete")
             return
-        
+
         title_clusters = self.config['title_clusters']
-        self.logger.info(f"Launching {len(title_clusters)} title agents in parallel")
-        
-        tasks = []
+        self.logger.info(f"Launching {len(title_clusters)} title agents with staggered starts")
+
+        # Build list of coroutines (not executed yet)
+        coroutines = []
         for title_cluster in title_clusters:
             agent_name = f"title_{title_cluster}"
             if not self.state.is_agent_complete(agent_name):
-                tasks.append(self._execute_title_agent(title_cluster))
+                coroutines.append(self._execute_title_agent(title_cluster))
             else:
                 self.logger.info(f"Skipping {title_cluster} (already complete)")
-        
-        if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
-        
+
+        if coroutines:
+            # Use staggered execution to prevent rate limiting (2s delay between starts)
+            results = await self._staggered_gather(coroutines, stagger_delay=2.0)
+            self._check_gather_results(results)
+
         self.logger.info("Layer 3 complete!")
         self._print_layer_status('layer_3')
     
@@ -343,9 +404,10 @@ class ResearchOrchestrator:
                 tasks.append(self._execute_playbook(vertical, title))
             else:
                 self.logger.info(f"Skipping {vertical}_{title} playbook (already complete)")
-        
+
         if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
         
         self.logger.info("Integration complete!")
         self._print_layer_status('integrations')
@@ -401,10 +463,17 @@ class ResearchOrchestrator:
                 context=context,
                 max_turns=50
             )
-            
+
+            # Check if research session ended in error (e.g., API errors)
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Agent {agent_name} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer=layer)
+                return
+
             # Save output
             output_path = self._save_agent_output(agent_name, layer, result)
-            
+
             # Mark complete in state
             self.state.mark_complete(
                 agent_name=agent_name,
@@ -417,7 +486,7 @@ class ResearchOrchestrator:
                 },
                 layer=layer
             )
-            
+
             # Update budget tracking
             self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
 
@@ -494,10 +563,17 @@ class ResearchOrchestrator:
                 context=layer_1_context,
                 max_turns=50
             )
-            
+
+            # Check if research session ended in error (e.g., API errors)
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Vertical agent {vertical} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='layer_2')
+                return
+
             # Save output
             output_path = self._save_agent_output(agent_name, 'layer_2', result)
-            
+
             # Mark complete in state
             self.state.mark_complete(
                 agent_name=agent_name,
@@ -510,7 +586,7 @@ class ResearchOrchestrator:
                 },
                 layer='layer_2'
             )
-            
+
             # Update budget tracking
             self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
 
@@ -556,7 +632,22 @@ class ResearchOrchestrator:
             
             # Extract Layer 1 and Layer 2 context
             layer_1_context = get_layer_1_context(self.state)
-            layer_2_context = get_layer_2_context(self.state, self.config['verticals'])
+
+            # Get verticals from config, or extract from checkpoint if empty
+            # (Phase 3 config may have verticals: [] but checkpoint has Layer 2 data)
+            verticals_for_context = self.config['verticals']
+            if not verticals_for_context:
+                # Extract vertical names from checkpoint's layer_2 keys
+                layer_2_data = self.state.state.get('layer_2', {})
+                verticals_for_context = [
+                    key.replace('vertical_', '')
+                    for key in layer_2_data.keys()
+                    if key.startswith('vertical_')
+                ]
+                if verticals_for_context:
+                    self.logger.info(f"Using verticals from checkpoint: {verticals_for_context}")
+
+            layer_2_context = get_layer_2_context(self.state, verticals_for_context)
             
             # Build title-specific prompt
             prompt = build_title_prompt(title_cluster, layer_1_context, layer_2_context)
@@ -587,10 +678,17 @@ class ResearchOrchestrator:
                 context={'layer_1': layer_1_context, 'layer_2': layer_2_context},
                 max_turns=50
             )
-            
+
+            # Check if research session ended in error (e.g., API errors)
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Title agent {title_cluster} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='layer_3')
+                return
+
             # Save output
             output_path = self._save_agent_output(agent_name, 'layer_3', result)
-            
+
             # Mark complete in state
             self.state.mark_complete(
                 agent_name=agent_name,
@@ -603,7 +701,7 @@ class ResearchOrchestrator:
                 },
                 layer='layer_3'
             )
-            
+
             # Update budget tracking
             self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
 
@@ -697,10 +795,17 @@ class ResearchOrchestrator:
                 },
                 max_turns=50
             )
-            
+
+            # Check if research session ended in error (e.g., API errors)
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Playbook {vertical}_{title} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='integrations')
+                return
+
             # Save output
             output_path = self._save_agent_output(agent_name, 'integrations', result)
-            
+
             # Mark complete in state
             self.state.mark_complete(
                 agent_name=agent_name,
@@ -713,7 +818,7 @@ class ResearchOrchestrator:
                 },
                 layer='integrations'
             )
-            
+
             # Update budget tracking
             self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
 

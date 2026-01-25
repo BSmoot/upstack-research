@@ -67,8 +67,8 @@ class ExecutionConfig(BaseModel):
 class ResearchConfig(BaseModel):
     """Top-level research configuration schema."""
     execution: ExecutionConfig
-    verticals: List[str] = Field(min_length=1)
-    title_clusters: List[str] = Field(min_length=1)
+    verticals: List[str] = Field(default_factory=list)
+    title_clusters: List[str] = Field(default_factory=list)
     execution_settings: ExecutionSettings = Field(default_factory=ExecutionSettings)
     model_strategy: Optional[Dict[str, Any]] = None
     priority_combinations: Optional[List[Dict[str, Any]]] = None
@@ -79,9 +79,7 @@ class ResearchConfig(BaseModel):
     @field_validator('verticals', 'title_clusters')
     @classmethod
     def validate_non_empty_strings(cls, v: List[str]) -> List[str]:
-        """Ensure list items are non-empty strings."""
-        if not v:
-            raise ValueError("List cannot be empty")
+        """Ensure list items (if any) are non-empty strings."""
         for item in v:
             if not isinstance(item, str) or not item.strip():
                 raise ValueError(f"List items must be non-empty strings, got: {item}")

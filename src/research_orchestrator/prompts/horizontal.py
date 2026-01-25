@@ -6,6 +6,8 @@ Prompt templates for the 5 horizontal research agents.
 These establish baseline understanding before vertical/title specialization.
 """
 
+from research_orchestrator.prompts.context_helpers import extract_summary
+
 BUYER_JOURNEY_PROMPT = """
 You are the Buyer Journey Intelligence Agent.
 
@@ -449,23 +451,35 @@ Begin synthesis now.
 
 
 def get_context_section(context: dict = None) -> str:
-    """Format context from prior agents for prompts"""
+    """
+    Format context from prior agents for prompts.
+
+    Reads actual file content from output_path using extract_summary()
+    to provide meaningful context to dependent agents.
+
+    Args:
+        context: Dictionary mapping agent names to their checkpoint data
+                 (which includes output_path, metadata, but NOT summary/findings)
+
+    Returns:
+        Formatted markdown string with context from prior agents
+    """
     if not context:
         return ""
-    
+
     sections = []
     for agent_name, output in context.items():
+        # Extract summary from actual output file
+        summary = extract_summary(output, max_length=400)
+
         sections.append(f"""
 CONTEXT FROM {agent_name.upper()}:
 
-{output.get('summary', 'Summary not available')}
-
-Key Findings:
-{output.get('key_findings', 'Findings not available')}
+{summary}
 
 [Full output: {output.get('output_path', 'N/A')}]
 """)
-    
+
     return f"""
 PRIOR RESEARCH CONTEXT:
 

@@ -17,10 +17,10 @@ execution:
   # Run with: python run_research.py --layer 2 --resume gtm_phase1_2026 --config this_file.yaml
   depends_on: "gtm_phase1_2026"
 
-# Phase 2 verticals
+# Phase 2 verticals (must match identifiers in prompts/vertical.py)
 verticals:
-  - "Healthcare"
-  - "Financial Services"
+  - "healthcare"
+  - "financial_services"
 
 # No title clusters yet - Phase 3
 title_clusters: []

@@ -5,14 +5,14 @@
 # Model Strategy - Define once, reuse across all projects
 model_strategy:
   # Default model for all agents (if no layer-specific override)
-  default: "claude-haiku-4-20250514"
+  default: "claude-haiku-4-5-20251001"
   
   # Per-layer model configuration
   layers:
     # Layer 1: Horizontal Research (5 agents)
     layer_1:
       # Default for all Layer 1 agents
-      default: "claude-haiku-4-20250514"
+      default: "claude-haiku-4-5-20251001"
       
       # Per-agent overrides (optional)
       agents:
@@ -20,18 +20,18 @@ model_strategy:
         gtm_synthesis: "claude-opus-4-5-20251101"
     
     # Layer 2: Vertical Research (use Haiku for cost efficiency)
-    layer_2: "claude-haiku-4-20250514"
+    layer_2: "claude-haiku-4-5-20251001"
     
     # Layer 3: Title Research (use Haiku for cost efficiency)
-    layer_3: "claude-haiku-4-20250514"
+    layer_3: "claude-haiku-4-5-20251001"
     
     # Playbooks: Integration (use Sonnet for quality)
     playbooks: "claude-sonnet-4-20250514"
   
   # Model-specific configuration
   model_configs:
-    "claude-haiku-4-20250514":
-      max_tokens: 8000
+    "claude-haiku-4-5-20251001":
+      max_tokens: 16000
       temperature: 1.0
       timeout_seconds: 300
 
@@ -47,7 +47,7 @@ model_strategy:
   
   # Budget settings per model
   budgets:
-    "claude-haiku-4-20250514":
+    "claude-haiku-4-5-20251001":
       max_searches_per_agent: 15
       estimated_cost_per_agent: 1.0
 
@@ -118,12 +118,12 @@ advanced:
 
 # ULTRA BUDGET (Use Haiku everywhere)
 # model_strategy:
-#   default: "claude-haiku-4-20250514"
+#   default: "claude-haiku-4-5-20251001"
 #   layers:
-#     layer_1: "claude-haiku-4-20250514"
-#     layer_2: "claude-haiku-4-20250514"
-#     layer_3: "claude-haiku-4-20250514"
-#     playbooks: "claude-haiku-4-20250514"
+#     layer_1: "claude-haiku-4-5-20251001"
+#     layer_2: "claude-haiku-4-5-20251001"
+#     layer_3: "claude-haiku-4-5-20251001"
+#     playbooks: "claude-haiku-4-5-20251001"
 #   # Expected cost: $20-30 per full run
 
 # HYBRID (Default in this file)

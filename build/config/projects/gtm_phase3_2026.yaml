@@ -1,0 +1,117 @@
+# GTM Phase 3: Title Cluster Research
+# Purpose: Produce role-specific messaging for decision-maker personas
+# Timing: Q2 2026
+#
+# Focus: How do different buyer personas (CFO, CIO/CTO, VP IT, Procurement, Business Unit)
+# evaluate and purchase infrastructure advisory services?
+#
+# Prerequisite: Phase 1 checkpoint (buyer_journey, channels_competitive, gtm_synthesis)
+#              Phase 2 checkpoint (vertical_healthcare, vertical_financial_services)
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "gtm_phase3_2026"
+  description: "Title cluster research for role-specific messaging and outreach"
+
+  # Resume from Phase 1 checkpoint to reuse Layer 1 context
+  # Layer 2 context will also be available from prior runs
+  # Run with: python run_research.py --layer 3 --resume gtm_phase1_2026 --config this_file.yaml
+  depends_on: "gtm_phase1_2026"
+
+# No verticals in Phase 3 - this is title cluster research
+verticals: []
+
+# Phase 3 title clusters (must match identifiers in prompts/title.py)
+title_clusters:
+  - "cfo_cluster"
+  - "cio_cto_cluster"
+  - "vp_it_operations"
+  - "procurement"
+  - "business_unit"
+
+# Company context
+company_context:
+  name: "UPSTACK"
+
+  context_files:
+    baseline: "../../research-manager/context/baseline.yaml"
+    glossary: "../../research-manager/context/glossary.yaml"
+    audience_personas: "../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+# Phase 3 research focus: Role-specific messaging
+research_focus:
+  strategic_goal: "Create precision messaging that resonates with each buyer persona's specific pressures"
+
+  # Target roles and their focus areas
+  title_clusters:
+    - cluster: "cfo_cluster"
+      name: "C-Suite (CFO, CEO, COO)"
+      roles: ["CFO", "CEO", "COO", "President", "General Manager"]
+      focus: "Business outcomes, financial performance, strategic risk"
+
+    - cluster: "cio_cto_cluster"
+      name: "Technology Leadership (CIO, CTO, CISO)"
+      roles: ["CIO", "CTO", "CISO", "VP IT", "VP Engineering"]
+      focus: "Technology debt, innovation vs stability, talent shortage"
+
+    - cluster: "vp_it_operations"
+      name: "IT Operations (VP IT, Director IT, Manager)"
+      roles: ["VP IT Operations", "Director IT", "IT Manager", "Network Manager"]
+      focus: "Vendor management burden, resource constraints, firefighting"
+
+    - cluster: "procurement"
+      name: "Procurement & Sourcing"
+      roles: ["VP Procurement", "Director Sourcing", "Strategic Sourcing Manager"]
+      focus: "Cost optimization, supplier management, contract compliance"
+
+    - cluster: "business_unit"
+      name: "Business Unit Leaders"
+      roles: ["VP Sales", "VP Customer Success", "VP Operations", "Regional GM"]
+      focus: "Business outcomes, speed, minimal IT dependency"
+
+  primary_questions:
+    cfo_cluster:
+      - "What are CFO/CEO top priorities for infrastructure investment decisions?"
+      - "How do C-suite executives evaluate advisory partnerships?"
+      - "What business outcomes and ROI metrics matter most to CFOs?"
+      - "What objections do C-suite executives raise about advisory services?"
+
+    cio_cto_cluster:
+      - "What are CIO/CTO day-to-day pressures and pain points?"
+      - "How do technology leaders evaluate vendors and advisors?"
+      - "What triggers CIOs to seek outside help?"
+      - "What messaging resonates vs. turns off technology leadership?"
+
+    vp_it_operations:
+      - "What are VP IT Operations biggest challenges today?"
+      - "How do IT operations leaders engage with vendors?"
+      - "What proof points validate value to IT operations?"
+      - "What communication preferences do IT managers have?"
+
+    procurement:
+      - "How does procurement evaluate and select technology vendors?"
+      - "What criteria matter most in procurement decisions?"
+      - "How does procurement process involvement vary by deal size?"
+      - "What objections does procurement typically raise?"
+
+    business_unit:
+      - "How do business unit leaders think about technology decisions?"
+      - "What triggers business leaders to seek infrastructure help?"
+      - "What value propositions resonate with non-IT executives?"
+      - "How do business units collaborate with IT on vendor selection?"
+
+  output_usage:
+    title_cfo_cluster: "C-Suite messaging playbook and outreach sequences"
+    title_cio_cto_cluster: "Technology leadership messaging playbook"
+    title_vp_it_operations: "IT operations messaging playbook"
+    title_procurement: "Procurement engagement playbook"
+    title_business_unit: "Business unit leader messaging playbook"
+
+# Budget for Phase 3 (5 title cluster agents)
+# ~$2-3 per cluster with Haiku
+# Total: ~$12-15
+budget:
+  max_cost_usd: 25.0
+  max_searches: 200

@@ -43,18 +43,13 @@ def load_config(config_path: Path) -> Dict[str, Any]:
 
 def _validate_config(config: Dict[str, Any]):
     """Validate configuration structure."""
-    
+
     # Check execution section
     if 'execution' not in config:
         config['execution'] = {'id': 'research_default'}
-    
-    # Check verticals
-    if 'verticals' not in config or not config['verticals']:
-        raise ValueError("Configuration must specify at least one vertical")
-    
-    # Check title clusters
-    if 'title_clusters' not in config or not config['title_clusters']:
-        raise ValueError("Configuration must specify at least one title cluster")
+
+    # Note: verticals and title_clusters can be empty for partial runs (e.g., Layer 1 only)
+    # Layer-specific validation happens at runtime in the orchestrator
     
     # Set defaults for execution settings
     if 'execution_settings' not in config:
@@ -104,14 +99,15 @@ def _validate_config(config: Dict[str, Any]):
 def get_priority_combinations(config: Dict[str, Any]) -> list:
     """
     Extract priority vertical x title combinations from config.
-    
+
     Returns:
         List of (vertical, title) tuples
     """
     combinations = []
-    
-    if 'priority_combinations' in config:
-        for combo in config['priority_combinations']:
+
+    priority_combos = config.get('priority_combinations')
+    if priority_combos:
+        for combo in priority_combos:
             vertical = combo.get('vertical')
             titles = combo.get('titles', [])
             for title in titles:
@@ -123,5 +119,5 @@ def get_priority_combinations(config: Dict[str, Any]) -> list:
         for vertical in verticals:
             for title in titles:
                 combinations.append((vertical, title))
-    
+
     return combinations

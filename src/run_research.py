@@ -122,9 +122,11 @@ def main():
         print("Error: Must provide either --config or --resume")
         sys.exit(1)
     
-    if args.resume and (args.layer or args.agents):
-        print("Error: --resume cannot be used with --layer or --agents")
+    if args.resume and args.agents:
+        print("Error: --resume cannot be used with --agents")
         sys.exit(1)
+
+    # --resume with --layer IS allowed (e.g., Phase 2 using Phase 1 checkpoint)
 
     try:
         # Initialize orchestrator
