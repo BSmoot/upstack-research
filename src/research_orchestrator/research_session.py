@@ -410,8 +410,8 @@ class ResearchSession:
         if not text_blocks:
             return ""
 
-        # Step 2: Concatenate into single document
-        full_text = "\n".join(text_blocks)
+        # Step 2: Concatenate into single document (double newline for paragraph separation)
+        full_text = "\n\n".join(text_blocks)
 
         # Step 3: If we have thinking blocks, text should already be clean
         if has_thinking_blocks:

@@ -29,3 +29,9 @@ technology:
   description: SaaS, software vendors, technology services
   key_regulations: SOC 2, ISO 27001, GDPR, CCPA
   key_challenges: Rapid scaling + efficiency at scale
+
+legal:
+  name: Legal Services
+  description: Law firms, corporate legal departments, legal technology providers
+  key_regulations: ABA Model Rules, state bar ethics rules, client confidentiality requirements
+  key_challenges: Digital transformation + client data security + efficiency pressure + talent retention

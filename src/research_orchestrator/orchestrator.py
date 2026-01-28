@@ -33,6 +33,8 @@ from .prompts.horizontal import (
     GTM_SYNTHESIS_PROMPT,
     get_context_section
 )
+from .utils.brand_context import BrandContextLoader
+from .prompts.brand_alignment import build_brand_alignment_prompt
 
 
 class BudgetExceededError(Exception):
@@ -120,8 +122,21 @@ class ResearchOrchestrator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create layer output directories
-        for layer in ['layer_1', 'layer_2', 'layer_3', 'playbooks']:
+        for layer in ['layer_1', 'layer_2', 'layer_3', 'playbooks', 'brand_alignment']:
             (self.output_dir / layer).mkdir(parents=True, exist_ok=True)
+
+        # Initialize brand context loader if brand alignment enabled
+        brand_config = self.config.get('brand_alignment', {})
+        if brand_config.get('enabled', False):
+            context_files = brand_config.get('context_files', {})
+            config_dir = Path(config_path).parent
+            self.brand_context_loader = BrandContextLoader(
+                config_dir=config_dir,
+                context_files=context_files,
+                logger=self.logger
+            )
+        else:
+            self.brand_context_loader = None
         
         self.logger.info(f"Configuration loaded: {config_path}")
         self.logger.info(f"Execution ID: {self.state.execution_id}")
@@ -234,7 +249,21 @@ class ResearchOrchestrator:
             self.logger.info("INTEGRATION: Generating Playbooks")
             self.logger.info("=" * 80)
             await self.generate_playbooks_parallel()
-            
+
+            # Brand Alignment (if enabled)
+            brand_config = self.config.get('brand_alignment', {})
+            if brand_config.get('enabled', False):
+                # Human review gate before brand alignment (optional)
+                if brand_config.get('review_gates', {}).get('after_playbooks', False):
+                    if not self._prompt_for_review("Playbooks"):
+                        self.logger.info("Research halted by user after Playbooks")
+                        return
+
+                self.logger.info("\n" + "=" * 80)
+                self.logger.info("BRAND ALIGNMENT: Aligning Outputs")
+                self.logger.info("=" * 80)
+                await self.execute_brand_alignment()
+
             # Final summary
             self.logger.info("\n" + "=" * 80)
             self.logger.info("RESEARCH PROGRAM COMPLETE")
@@ -411,7 +440,157 @@ class ResearchOrchestrator:
         
         self.logger.info("Integration complete!")
         self._print_layer_status('integrations')
-    
+
+    async def execute_brand_alignment(self):
+        """Execute brand alignment for configured targets."""
+        self.logger.info("Executing brand alignment")
+
+        brand_config = self.config.get('brand_alignment', {})
+        align_targets = brand_config.get('align_targets', ['playbooks'])
+
+        # Determine which outputs to align
+        agents_to_align = []
+
+        if 'playbooks' in align_targets:
+            # Align all completed playbooks
+            integrations = self.state.state.get('integrations', {})
+            for agent_name, agent_data in integrations.items():
+                if agent_data.get('status') == 'complete' and agent_name.startswith('playbook_'):
+                    agents_to_align.append(agent_name)
+
+        if not agents_to_align:
+            self.logger.warning("No outputs found to align")
+            return
+
+        self.logger.info(f"Aligning {len(agents_to_align)} outputs")
+
+        # Initialize brand alignment tracking
+        alignment_agent_names = [f"align_{name}" for name in agents_to_align]
+        self.state.initialize_brand_alignment(alignment_agent_names)
+
+        # Execute alignment agents in parallel
+        tasks = []
+        for agent_name in agents_to_align:
+            alignment_agent_name = f"align_{agent_name}"
+            if not self.state.is_agent_complete(alignment_agent_name):
+                tasks.append(self._execute_alignment_agent(agent_name))
+            else:
+                self.logger.info(f"Skipping {agent_name} alignment (already complete)")
+
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
+
+        self.logger.info("Brand alignment complete!")
+        self._print_layer_status('brand_alignment')
+
+    async def _execute_alignment_agent(self, original_agent_name: str):
+        """
+        Execute brand alignment for a single output.
+
+        Args:
+            original_agent_name: Name of the original agent whose output will be aligned
+        """
+        alignment_agent_name = f"align_{original_agent_name}"
+
+        try:
+            self.logger.info(f"Starting brand alignment: {original_agent_name}")
+            self.state.mark_in_progress(alignment_agent_name, 'brand_alignment')
+
+            # Load original output
+            original_output = self.state.get_agent_output(original_agent_name)
+            if not original_output or 'output_path' not in original_output:
+                self.logger.error(f"Cannot align {original_agent_name}: no output found")
+                return
+
+            original_path = Path(original_output['output_path'])
+            if not original_path.exists():
+                self.logger.error(f"Cannot align {original_agent_name}: output file not found at {original_path}")
+                return
+
+            with open(original_path, 'r', encoding='utf-8') as f:
+                original_content = f.read()
+
+            # Load brand context
+            if self.brand_context_loader is None:
+                self.logger.error("Brand context loader not initialized")
+                return
+
+            brand_context_data = self.brand_context_loader.load_all()
+            brand_context_formatted = self.brand_context_loader.format_for_prompt(brand_context_data)
+
+            # Build alignment prompt
+            prompt = build_brand_alignment_prompt(original_content, brand_context_formatted)
+
+            # Get brand alignment model configuration
+            brand_config = self.config.get('brand_alignment', {})
+            model = brand_config.get('model', 'claude-haiku-4-5-20251001')
+            model_config = get_model_config(self.config, model)
+            # Set max_searches=1 to allow API call (model won't use search for alignment)
+            # Note: max_searches=0 causes immediate exit before any API call
+            max_searches = 1
+
+            self.logger.info(
+                f"[{alignment_agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}"
+            )
+
+            # Execute alignment session (no search tools needed)
+            session = ResearchSession(
+                agent_name=alignment_agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={'original_content': original_content},
+                max_turns=5  # Alignment should be quick
+            )
+
+            # Check if alignment session ended in error
+            if result.get('completion_status') == 'error':
+                error_msg = f"Alignment session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Alignment {original_agent_name} failed: {error_msg}")
+                self.state.mark_failed(alignment_agent_name, error_msg, layer='brand_alignment')
+                return
+
+            # Save aligned output
+            output_path = self._save_agent_output(alignment_agent_name, 'brand_alignment', result)
+
+            # Mark complete in state
+            self.state.mark_complete(
+                agent_name=alignment_agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'original_agent': original_agent_name,
+                    'original_path': str(original_path),
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status']
+                },
+                layer='brand_alignment'
+            )
+
+            # Update budget tracking (minimal cost for alignment)
+            self._update_budget(0, result.get('estimated_cost_usd', 0.0))
+
+            self.logger.info(f"Completed brand alignment: {original_agent_name}")
+            self.logger.info(f"  Turns: {result['total_turns']}")
+            self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
+            self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
+            self.logger.info(f"  Output: {output_path}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Brand alignment {original_agent_name} failed: {e}", exc_info=True)
+            self.state.mark_failed(alignment_agent_name, str(e), layer='brand_alignment')
+            raise
+
     async def _execute_agent(self, agent_name: str, layer: str = 'layer_1'):
         """
         Execute a single research agent with per-agent model selection.
@@ -868,6 +1047,8 @@ class ResearchOrchestrator:
             output_dir = self.output_dir / 'layer_3'
         elif layer == 'integrations':
             output_dir = self.output_dir / 'playbooks'
+        elif layer == 'brand_alignment':
+            output_dir = self.output_dir / 'brand_alignment'
         else:
             output_dir = self.output_dir / layer
         
@@ -932,8 +1113,8 @@ class ResearchOrchestrator:
         self.logger.info(f"  Completed: {summary['last_updated']}")
         self.logger.info("")
         self.logger.info("Layer Status:")
-        
-        for layer_name in ['layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status']:
+
+        for layer_name in ['layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'brand_alignment_status']:
             status = summary[layer_name]
             layer_label = layer_name.replace('_status', '').replace('_', ' ').title()
             self.logger.info(f"  {layer_label}: {status['complete']}/{status['total']} complete")

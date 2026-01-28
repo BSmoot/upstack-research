@@ -3,5 +3,6 @@
 
 from .logging_setup import setup_logging
 from .config import load_config
+from .brand_context import BrandContextLoader
 
-__all__ = ['setup_logging', 'load_config']
+__all__ = ['setup_logging', 'load_config', 'BrandContextLoader']

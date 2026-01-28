@@ -33,6 +33,11 @@ from .playbook import (
     build_playbook_prompt
 )
 
+from .brand_alignment import (
+    BRAND_ALIGNMENT_PROMPT,
+    build_brand_alignment_prompt
+)
+
 __all__ = [
     'BUYER_JOURNEY_PROMPT',
     'CHANNELS_COMPETITIVE_PROMPT',
@@ -50,5 +55,7 @@ __all__ = [
     'extract_summary',
     'format_layer_1_context_for_vertical',
     'format_layer_2_context_for_title',
-    'build_playbook_prompt'
+    'build_playbook_prompt',
+    'BRAND_ALIGNMENT_PROMPT',
+    'build_brand_alignment_prompt'
 ]

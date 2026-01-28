@@ -30,6 +30,7 @@ class ReviewGatesConfig(BaseModel):
     after_layer_1: bool = True
     after_layer_2: bool = True
     after_layer_3: bool = False
+    after_playbooks: bool = False
 
 
 class OutputsConfig(BaseModel):
@@ -44,6 +45,21 @@ class LoggingConfig(BaseModel):
     level: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR'] = 'INFO'
     directory: str = 'logs'
     console_output: bool = True
+
+
+class BrandAlignmentOutputConfig(BaseModel):
+    """Brand alignment output settings."""
+    suffix: str = ".aligned"
+    replace_original: bool = False
+
+
+class BrandAlignmentConfig(BaseModel):
+    """Brand alignment configuration."""
+    enabled: bool = False
+    context_files: Dict[str, str] = Field(default_factory=dict)
+    align_targets: List[str] = Field(default_factory=lambda: ["playbooks"])
+    model: str = "claude-haiku-4-5-20251001"
+    output: BrandAlignmentOutputConfig = Field(default_factory=BrandAlignmentOutputConfig)
 
 
 class ExecutionSettings(BaseModel):
@@ -73,6 +89,7 @@ class ResearchConfig(BaseModel):
     model_strategy: Optional[Dict[str, Any]] = None
     priority_combinations: Optional[List[Dict[str, Any]]] = None
     company_context: Optional[Dict[str, Any]] = None
+    brand_alignment: Optional[BrandAlignmentConfig] = None
 
     model_config = {"extra": "allow"}
 

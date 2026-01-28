@@ -1,0 +1,74 @@
+# Healthcare Market Research 2025
+# This project config inherits from defaults.yaml
+# Only project-specific settings are defined here
+
+# Inherit model strategy and execution defaults
+extends: "../defaults.yaml"
+
+# Execution metadata (project-specific)
+execution:
+  id: "healthcare_research_2025"
+  description: "Healthcare market penetration research - Q1 2025"
+  started_date: null  # Auto-populated
+
+# Verticals to research (project-specific)
+verticals:
+  - "Healthcare Providers"
+  - "Health Insurance"
+  - "Medical Devices"
+
+# Title clusters (project-specific)
+title_clusters:
+  - "CFO/Finance Leadership"
+  - "CIO/Technology Leadership"
+  - "VP Operations"
+
+# Priority combinations for playbooks (project-specific)
+priority_combinations:
+  - vertical: "Healthcare Providers"
+    titles:
+      - "CFO/Finance Leadership"
+      - "CIO/Technology Leadership"
+    priority: 1
+  
+  - vertical: "Health Insurance"
+    titles:
+      - "CFO/Finance Leadership"
+    priority: 1
+  
+  - vertical: "Medical Devices"
+    titles:
+      - "CIO/Technology Leadership"
+    priority: 2
+
+# Company context (optional - helps inform research)
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+  
+  services:
+    - "Network connectivity advisory"
+    - "Data center and colocation consulting"
+    - "Cloud infrastructure strategy"
+    - "Unified communications advisory"
+    - "Technology vendor selection and negotiation"
+  
+  current_customers:
+    primary_verticals: ["Healthcare", "Financial Services"]
+    company_sizes: ["mid_market", "enterprise"]
+    typical_deal_size: "$50K-$250K"
+
+# Optional: Override model strategy for this specific project
+# (Uncomment to override defaults.yaml)
+# model_strategy_override:
+#   layers:
+#     layer_1:
+#       agents:
+#         buyer_journey: "claude-sonnet-4-20250514"  # Use Sonnet for this agent only
+
+# Expected costs (with defaults.yaml hybrid strategy):
+# - Layer 1: $6-8
+# - Layer 2: $3
+# - Layer 3: $3
+# - Playbooks: $12 (6 playbooks × $2)
+# - Total: $24-26

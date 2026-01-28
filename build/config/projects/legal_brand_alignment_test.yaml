@@ -1,0 +1,109 @@
+# Legal Industry Brand Alignment Test
+# Purpose: End-to-end test of brand alignment capabilities for legal vertical
+#
+# Layers: All 3 layers + playbooks + brand alignment
+# Vertical: Legal services only
+# Title clusters: CFO and CIO/CTO (primary decision makers)
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "legal_brand_alignment_test"
+  description: "End-to-end test of brand alignment with legal industry focus"
+
+# Single vertical for focused testing
+verticals:
+  - "legal"
+
+# Key decision-maker clusters for playbook generation
+title_clusters:
+  - "cfo_cluster"
+  - "cio_cto_cluster"
+
+# Priority combinations for playbook generation (2 playbooks)
+priority_combinations:
+  - vertical: "legal"
+    titles:
+      - "cfo_cluster"
+      - "cio_cto_cluster"
+    priority: 1
+
+# Company context - reference shared context files
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  context_files:
+    baseline: "../../research-manager/context/baseline.yaml"
+    glossary: "../../research-manager/context/glossary.yaml"
+    audience_personas: "../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+# Legal industry research focus
+research_focus:
+  primary_questions:
+    - "How do law firms and corporate legal departments evaluate technology partners?"
+    - "What are the unique compliance and security concerns in legal technology decisions?"
+    - "How does the billable hour model influence technology investment decisions?"
+    - "What triggers law firms to seek external technology advisory services?"
+    - "How do legal industry buyers differ from other enterprise buyers?"
+
+  output_usage:
+    buyer_journey: "Legal industry buyer mapping, ABA/compliance positioning"
+    channels_competitive: "Legal tech vendor landscape, Am Law visibility strategy"
+    customer_expansion: "Matter-based cross-sell opportunities, practice area expansion"
+    messaging_positioning: "Confidentiality-focused messaging, trust building strategies"
+    gtm_synthesis: "Legal vertical GTM strategy, campaign architecture"
+
+# Budget for full end-to-end test
+# Layer 1: 5 agents (~$33 with Opus synthesis)
+# Layer 2: 1 vertical (~$2)
+# Layer 3: 2 titles (~$4)
+# Playbooks: 2 playbooks (~$16 with Sonnet)
+# Brand alignment: 2 alignments (~$2 with Haiku)
+# Total: ~$57
+budget:
+  max_cost_usd: 75.0  # Buffer for extended research
+  max_searches: 300
+
+# Enable brand alignment for this test
+brand_alignment:
+  enabled: true
+
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+
+  # Align final playbook outputs
+  align_targets:
+    - "playbooks"
+
+  # Use Haiku for cost-efficient alignment
+  model: "claude-haiku-4-5-20251001"
+
+  output:
+    suffix: ".aligned"
+    replace_original: false  # Keep original for comparison
+
+  # Optional review gate before alignment
+  review_gates:
+    after_playbooks: false  # Disable for automated testing
+
+# Execution settings - disable review gates for automated testing
+execution_settings:
+  review_gates:
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false

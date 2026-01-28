@@ -108,6 +108,30 @@ advanced:
     min_sources_per_section: 2
     flag_low_confidence: true
 
+# Brand alignment settings (reusable)
+brand_alignment:
+  # Disabled by default - enable in project configs when needed
+  enabled: false
+
+  # Context files for brand alignment (relative to project config)
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+
+  # What to align (default: only final outputs)
+  align_targets:
+    - "playbooks"  # Final playbook outputs only
+
+  # Model for alignment pass (use Haiku for cost efficiency)
+  model: "claude-haiku-4-5-20251001"
+
+  # Output settings
+  output:
+    suffix: ".aligned"  # Adds suffix to aligned files
+    replace_original: false  # Keep original for comparison
+
 # Alternative configurations you can copy/paste:
 
 # HIGH QUALITY (Use Sonnet everywhere)

@@ -311,47 +311,69 @@ class TestResearchSessionIntegration:
 @pytest.mark.asyncio
 class TestResearchSessionRetryLogic:
     """Test retry logic for API errors."""
-    
+
     async def test_retry_on_rate_limit(self, mock_logger):
         """Test retry behavior on rate limit errors."""
         from anthropic import RateLimitError
         from anthropic.types import Message, Usage
-        
+
         # Create mock client that fails twice then succeeds
         mock_client = AsyncMock()
-        
+
         # Create mock response for successful call
         mock_response = Mock()
         mock_response.content = []
         mock_response.stop_reason = "end_turn"
         mock_response.usage = Usage(input_tokens=10, output_tokens=20)
-        
-        # Fail twice, succeed on third
-        mock_client.messages.create = AsyncMock(
-            side_effect=[
-                RateLimitError("Rate limited", response=Mock(headers={'retry-after': '0'}), body={}),
-                RateLimitError("Rate limited", response=Mock(headers={'retry-after': '0'}), body={}),
-                mock_response
-            ]
-        )
-        
+
+        # Track call count for the stream mock
+        call_count = 0
+
+        async def mock_stream_generator():
+            """Async context manager that simulates stream behavior."""
+            nonlocal call_count
+            call_count += 1
+
+            if call_count <= 2:
+                # First two calls raise RateLimitError
+                raise RateLimitError(
+                    "Rate limited",
+                    response=Mock(headers={'retry-after': '0'}),
+                    body={}
+                )
+
+            # Third call succeeds - return mock stream
+            mock_stream = AsyncMock()
+            mock_stream.get_final_message = AsyncMock(return_value=mock_response)
+            return mock_stream
+
+        # Create async context manager mock for messages.stream()
+        class MockStreamContextManager:
+            async def __aenter__(self):
+                return await mock_stream_generator()
+
+            async def __aexit__(self, exc_type, exc_val, exc_tb):
+                return False
+
+        mock_client.messages.stream = Mock(return_value=MockStreamContextManager())
+
         session = ResearchSession(
             agent_name="retry_test",
             anthropic_client=mock_client,
             logger=mock_logger
         )
-        
+
         # Execute research - should succeed after retries
         result = await session.execute_research(
             prompt="Test",
             max_turns=1
         )
-        
+
         # Should have completed successfully
         assert result['completion_status'] == 'complete'
-        
+
         # Should have been called 3 times (2 failures + 1 success)
-        assert mock_client.messages.create.call_count == 3
+        assert call_count == 3
 
 
 # Test runner configuration

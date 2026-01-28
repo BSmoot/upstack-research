@@ -132,38 +132,39 @@ class TestFullSystemIntegration:
                 # Verify Layer 1 completion
                 assert orchestrator.state.is_layer_complete('layer_1')
                 
-                # Verify Layer 1 outputs exist
+                # Verify Layer 1 outputs exist (outputs are scoped by execution_id)
+                execution_id = mock_config['execution']['id']
                 layer_1_agents = ['buyer_journey', 'channels_competitive', 'customer_expansion',
                                   'messaging_positioning', 'gtm_synthesis']
                 for agent in layer_1_agents:
-                    output_file = temp_dirs / 'outputs' / 'layer_1' / f'{agent}.md'
+                    output_file = temp_dirs / 'outputs' / execution_id / 'layer_1' / f'{agent}.md'
                     assert output_file.exists(), f"Layer 1 output missing: {agent}"
-                
+
                 # Execute Layer 2
                 await orchestrator.execute_layer_2_parallel()
-                
+
                 # Verify Layer 2 completion
                 assert orchestrator.state.is_layer_complete('layer_2')
-                
+
                 # Verify Layer 2 outputs exist
-                output_file = temp_dirs / 'outputs' / 'layer_2' / 'vertical_healthcare.md'
+                output_file = temp_dirs / 'outputs' / execution_id / 'layer_2' / 'vertical_healthcare.md'
                 assert output_file.exists()
-                
+
                 # Execute Layer 3
                 await orchestrator.execute_layer_3_parallel()
-                
+
                 # Verify Layer 3 completion
                 assert orchestrator.state.is_layer_complete('layer_3')
-                
+
                 # Verify Layer 3 outputs exist
-                output_file = temp_dirs / 'outputs' / 'layer_3' / 'title_cfo_cluster.md'
+                output_file = temp_dirs / 'outputs' / execution_id / 'layer_3' / 'title_cfo_cluster.md'
                 assert output_file.exists()
-                
+
                 # Execute Integration
                 await orchestrator.generate_playbooks_parallel()
-                
+
                 # Verify playbook outputs exist
-                output_file = temp_dirs / 'outputs' / 'playbooks' / 'playbook_healthcare_cfo_cluster.md'
+                output_file = temp_dirs / 'outputs' / execution_id / 'playbooks' / 'playbook_healthcare_cfo_cluster.md'
                 assert output_file.exists(), f"Playbook output missing"
                 
                 # Verify playbook completion in state

@@ -73,7 +73,8 @@ class StateTracker:
             },
             "layer_2": {},
             "layer_3": {},
-            "integrations": {}
+            "integrations": {},
+            "brand_alignment": {}
         }
         
         self._save_state(state)
@@ -120,11 +121,11 @@ class StateTracker:
             True if agent status is 'complete'
         """
         # Check in all layers
-        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations']:
+        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations', 'brand_alignment']:
             layer = self.state.get(layer_name, {})
             if agent_name in layer:
                 return layer[agent_name].get('status') == 'complete'
-        
+
         return False
     
     def can_execute_layer_2(self, vertical: str) -> bool:
@@ -259,13 +260,13 @@ class StateTracker:
             # Search in specific layer
             layer_data = self.state.get(layer, {})
             return layer_data.get(agent_name)
-        
+
         # Search in all layers
-        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations']:
+        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations', 'brand_alignment']:
             layer_data = self.state.get(layer_name, {})
             if agent_name in layer_data:
                 return layer_data[agent_name]
-        
+
         return None
     
     def get_context_for_agent(self, agent_name: str) -> Dict[str, Any]:
@@ -307,7 +308,13 @@ class StateTracker:
             context['layer_1'] = self.state.get('layer_1', {})
             context['layer_2'] = self.state.get('layer_2', {})
             context['layer_3'] = self.state.get('layer_3', {})
-        
+
+        # For brand alignment agents, provide original content
+        elif agent_name.startswith('align_'):
+            # Extract original file path from agent name (e.g., align_playbook_healthcare_cfo)
+            original_name = agent_name.replace('align_', '')
+            context['original_content'] = self.state.get('integrations', {}).get(original_name, {})
+
         return context
     
     def get_pending_agents(self, layer: str = "layer_1") -> List[str]:
@@ -369,7 +376,15 @@ class StateTracker:
                 self.state['integrations'][agent_name] = {"status": "pending"}
         
         self._save_state()
-    
+
+    def initialize_brand_alignment(self, agent_names: List[str]):
+        """Initialize brand alignment state with agent names."""
+        for agent_name in agent_names:
+            if agent_name not in self.state['brand_alignment']:
+                self.state['brand_alignment'][agent_name] = {"status": "pending"}
+
+        self._save_state()
+
     def get_execution_summary(self) -> Dict[str, Any]:
         """Get overall execution summary."""
         return {
@@ -380,5 +395,6 @@ class StateTracker:
             'layer_2_status': self.get_layer_status('layer_2'),
             'layer_3_status': self.get_layer_status('layer_3'),
             'integration_status': self.get_layer_status('integrations'),
+            'brand_alignment_status': self.get_layer_status('brand_alignment'),
             'checkpoint_file': str(self.checkpoint_file)
         }
