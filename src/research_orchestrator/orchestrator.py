@@ -67,6 +67,8 @@ class ResearchOrchestrator:
             force_agents: Optional list of agent names to force re-run (even if complete)
         """
         self.force_agents = force_agents or []
+        # Store config path for later path resolution
+        self.config_path = Path(config_path)
         # Load configuration
         self.config = load_config(config_path)
         
@@ -427,8 +429,10 @@ class ResearchOrchestrator:
             self.logger.info(f"Starting service category agent: {category}")
             self.state.mark_in_progress(agent_name, 'layer_0')
 
-            # Initialize context injector with baseline path
-            baseline_path = Path(self.config.get('config_path', '.')).parent / 'context' / 'baseline.yaml'
+            # Initialize context injector with baseline path from config
+            context_files = self.config.get('company_context', {}).get('context_files', {})
+            baseline_relative = context_files.get('baseline', 'context/baseline.yaml')
+            baseline_path = (self.config_path.parent / baseline_relative).resolve()
             context_injector = ResearchContextInjector(baseline_path, self.logger)
 
             # Build service category-specific prompt
@@ -1482,7 +1486,9 @@ class ResearchOrchestrator:
                 return
 
             # Load service category config from baseline.yaml
-            baseline_path = Path(self.config.get('config_path', '.')).parent / 'context' / 'baseline.yaml'
+            context_files = self.config.get('company_context', {}).get('context_files', {})
+            baseline_relative = context_files.get('baseline', 'context/baseline.yaml')
+            baseline_path = (self.config_path.parent / baseline_relative).resolve()
             context_injector = ResearchContextInjector(baseline_path, self.logger)
             service_category_config = context_injector.get_service_category(service_category)
 

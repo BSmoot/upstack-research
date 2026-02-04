@@ -1,0 +1,123 @@
+# Minimal End-to-End Test Configuration
+# Purpose: Test complete research flow with minimal scope
+# Date: 2026-02-04
+#
+# Layers: L0 + L1 + L2 + L3 + Playbooks + Validation + Brand Alignment
+# Vertical: Healthcare (1)
+# Title cluster: CIO/CTO (1)
+# Service category: Security (1)
+# 3D Playbook: healthcare × cio_cto_cluster × security (1)
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "e2e_minimal_test"
+  description: "Minimal end-to-end test: 1 vertical × 1 title × 1 service category"
+
+# Single vertical for minimal testing
+verticals:
+  - "healthcare"
+
+# Single title cluster for minimal testing
+title_clusters:
+  - "cio_cto_cluster"
+
+# Single service category for Layer 0 research
+service_categories:
+  - "security"
+
+# Single 3D playbook combination
+priority_combinations:
+  - vertical: "healthcare"
+    titles:
+      - "cio_cto_cluster"
+    service_categories:
+      - "security"
+    priority: 1
+
+# Company context - reference shared context files
+# Path: from build/config/projects/ go up 3 levels to project root, then to research-manager/context/
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+# Research focus
+research_focus:
+  primary_questions:
+    - "How do healthcare CIOs/CTOs evaluate security technology partners?"
+    - "What security compliance requirements drive purchasing decisions in healthcare?"
+    - "How does HIPAA influence security vendor selection?"
+    - "What triggers healthcare organizations to seek external security advisory?"
+
+  output_usage:
+    buyer_journey: "Healthcare buyer mapping, HIPAA/HITRUST positioning"
+    channels_competitive: "Healthcare security vendor landscape"
+    customer_expansion: "Security cross-sell opportunities"
+    messaging_positioning: "Compliance-focused messaging"
+    gtm_synthesis: "Healthcare security GTM strategy"
+
+# Minimal budget for single-path test
+# Layer 0: 1 service category (~$2)
+# Layer 1: 5 agents (~$33 with Opus synthesis)
+# Layer 2: 1 vertical (~$2)
+# Layer 3: 1 title (~$2)
+# Playbooks: 1 3D playbook (~$8)
+# Validation: 1 validation (~$1)
+# Brand alignment: 1 alignment (~$1)
+# Total: ~$49
+budget:
+  max_cost_usd: 60.0  # Buffer for extended research
+  max_searches: 200
+
+# Enable validation for this test
+validation:
+  enabled: true
+  model: "claude-haiku-4-5-20251001"
+  min_score: 70  # Minimum passing score (out of 100)
+
+# Enable brand alignment for this test
+brand_alignment:
+  enabled: true
+
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+
+  align_targets:
+    - "playbooks"
+
+  model: "claude-haiku-4-5-20251001"
+
+  output:
+    suffix: ".aligned"
+    replace_original: false  # Keep original for comparison
+
+  review_gates:
+    after_playbooks: false  # Disable for automated testing
+
+# Execution settings - disable review gates for automated testing
+execution_settings:
+  review_gates:
+    after_layer_0: false
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+    after_validation: false
