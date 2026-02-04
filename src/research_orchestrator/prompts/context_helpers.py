@@ -6,14 +6,40 @@ These utilities enable downstream agents to access and use outputs from
 prior layers, maintaining continuity and building upon previous research.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Any
 from pathlib import Path
 import logging
 
 logger = logging.getLogger('research_orchestrator')
 
 
-def get_layer_1_context(state_tracker) -> Dict[str, Any]:
+def get_layer_0_context(state_tracker, service_categories: list[str]) -> dict[str, Any]:
+    """
+    Extract Layer 0 outputs for downstream agents.
+
+    Args:
+        state_tracker: StateTracker instance
+        service_categories: List of service category names to retrieve
+
+    Returns:
+        Dictionary mapping service category names to their outputs:
+        {
+            'marketing_automation': {...},
+            'sales_enablement': {...},
+            ...
+        }
+    """
+    context = {}
+    for category in service_categories:
+        agent_name = f'service_category_{category}'
+        output = state_tracker.get_agent_output(agent_name, 'layer_0')
+        if output:
+            context[category] = output
+
+    return context
+
+
+def get_layer_1_context(state_tracker) -> dict[str, Any]:
     """
     Extract all Layer 1 outputs for downstream agents.
     
@@ -47,7 +73,7 @@ def get_layer_1_context(state_tracker) -> Dict[str, Any]:
     return context
 
 
-def get_layer_2_context(state_tracker, verticals: List[str]) -> Dict[str, Any]:
+def get_layer_2_context(state_tracker, verticals: list[str]) -> dict[str, Any]:
     """
     Extract Layer 2 outputs for Layer 3 agents.
     
@@ -73,7 +99,7 @@ def get_layer_2_context(state_tracker, verticals: List[str]) -> Dict[str, Any]:
     return context
 
 
-def get_layer_3_context(state_tracker, title_clusters: List[str]) -> Dict[str, Any]:
+def get_layer_3_context(state_tracker, title_clusters: list[str]) -> dict[str, Any]:
     """
     Extract Layer 3 outputs for integration/playbook agents.
     
@@ -99,7 +125,7 @@ def get_layer_3_context(state_tracker, title_clusters: List[str]) -> Dict[str, A
     return context
 
 
-def _validate_output_path(path: Path, base_dir: Optional[Path] = None) -> bool:
+def _validate_output_path(path: Path, base_dir: Path | None = None) -> bool:
     """
     Validate that path is within allowed directory (prevents path traversal).
 
@@ -134,7 +160,7 @@ def _validate_output_path(path: Path, base_dir: Optional[Path] = None) -> bool:
         return False
 
 
-def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
+def extract_summary(agent_output: dict[str, Any], max_length: int = 500) -> str:
     """
     Extract concise summary from agent output for context injection.
     
@@ -219,7 +245,45 @@ def extract_summary(agent_output: Dict[str, Any], max_length: int = 500) -> str:
     return truncated
 
 
-def format_layer_1_context_for_vertical(layer_1_context: Dict[str, Any]) -> str:
+def format_layer_0_context_for_layer_1(layer_0_context: dict[str, Any]) -> str:
+    """
+    Format Layer 0 service category research for Layer 1 agents.
+
+    Includes:
+    - Category-specific buyer discovery patterns
+    - Vendor positioning insights
+    - Search term vocabulary for buyer-centric research
+    - Key evaluation criteria discovered
+
+    Args:
+        layer_0_context: Dictionary of Layer 0 service category agent outputs
+
+    Returns:
+        Formatted markdown string with service category insights
+    """
+    if not layer_0_context:
+        return "No Layer 0 service category research available."
+
+    sections = []
+
+    for category_name, output in layer_0_context.items():
+        summary = extract_summary(output, max_length=400)
+
+        sections.append(f"""
+### {category_name.upper().replace('_', ' ')} CATEGORY INSIGHTS
+
+{summary}
+
+---
+""")
+
+    if not sections:
+        return "No Layer 0 service category research available."
+
+    return "\n".join(sections)
+
+
+def format_layer_1_context_for_vertical(layer_1_context: dict[str, Any]) -> str:
     """
     Format Layer 1 outputs for inclusion in vertical agent prompts.
     
@@ -262,7 +326,7 @@ def format_layer_1_context_for_vertical(layer_1_context: Dict[str, Any]) -> str:
     return "\n".join(sections)
 
 
-def format_layer_2_context_for_title(layer_2_context: Dict[str, Any]) -> str:
+def format_layer_2_context_for_title(layer_2_context: dict[str, Any]) -> str:
     """
     Format Layer 2 vertical research for inclusion in title agent prompts.
     

@@ -5,13 +5,13 @@ Configuration loading and validation.
 
 import yaml
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 
 from .config_models import load_config_with_inheritance
 from .constants import Models
 
 
-def load_config(config_path: Path) -> Dict[str, Any]:
+def load_config(config_path: Path) -> dict[str, Any]:
     """
     Load and validate research configuration from YAML file.
     
@@ -41,7 +41,7 @@ def load_config(config_path: Path) -> Dict[str, Any]:
     return config
 
 
-def _validate_config(config: Dict[str, Any]):
+def _validate_config(config: dict[str, Any]):
     """Validate configuration structure."""
 
     # Check execution section
@@ -96,12 +96,12 @@ def _validate_config(config: Dict[str, Any]):
                     config['execution_settings'][key][subkey] = subvalue
 
 
-def get_priority_combinations(config: Dict[str, Any]) -> list:
+def get_priority_combinations(config: dict[str, Any]) -> list:
     """
     Extract priority vertical x title combinations from config.
 
     Returns:
-        List of (vertical, title) tuples
+        List of (vertical, title) tuples for 2D playbooks
     """
     combinations = []
 
@@ -121,3 +121,34 @@ def get_priority_combinations(config: Dict[str, Any]) -> list:
                 combinations.append((vertical, title))
 
     return combinations
+
+
+def get_priority_combinations_3d(config: dict[str, Any]) -> list:
+    """
+    Extract priority vertical x title x service_category combinations from config.
+
+    For 3D playbooks (V × T × SC), combines:
+    - priority_combinations (or all verticals x titles)
+    - priority_service_categories
+
+    Returns:
+        List of (vertical, title, service_category) tuples for 3D playbooks.
+        Empty list if priority_service_categories is not configured.
+    """
+    # Get priority service categories
+    priority_service_categories = config.get('priority_service_categories', [])
+    if not priority_service_categories:
+        return []
+
+    # Get 2D combinations (V × T)
+    vt_combinations = get_priority_combinations(config)
+    if not vt_combinations:
+        return []
+
+    # Generate 3D combinations (V × T × SC)
+    combinations_3d = []
+    for vertical, title in vt_combinations:
+        for service_category in priority_service_categories:
+            combinations_3d.append((vertical, title, service_category))
+
+    return combinations_3d

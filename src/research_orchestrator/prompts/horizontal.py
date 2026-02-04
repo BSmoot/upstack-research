@@ -6,12 +6,16 @@ Prompt templates for the 5 horizontal research agents.
 These establish baseline understanding before vertical/title specialization.
 """
 
-from research_orchestrator.prompts.context_helpers import extract_summary
+from typing import Any
+
+from .context_helpers import extract_summary, format_layer_0_context_for_layer_1
 
 BUYER_JOURNEY_PROMPT = """
 You are the Buyer Journey Intelligence Agent.
 
 MISSION: Research how enterprises in target verticals currently discover, evaluate, and select technology solutions - and where vendor-neutral advisory fits (or not).
+
+{layer_0_context_section}
 
 {context_section}
 
@@ -94,9 +98,26 @@ DELIVERABLES (Markdown format):
 METHODOLOGY:
 - Use 50-70 web_search operations
 - Prioritize: B2B buyer research surveys, Gartner/Forrester procurement studies, IT decision-maker forums (Reddit r/sysadmin, Spiceworks), case studies
-- Search for: "technology procurement process," "IT buying committee," "vendor selection criteria," "technology advisor vs direct," "infrastructure advisory"
 - Every major claim needs source citation
 - Flag low-confidence areas explicitly
+
+BUYER-CENTRIC SEARCH TERMS (use these, not advisory jargon):
+- "how to evaluate CCaaS vendors"
+- "best SD-WAN solutions for enterprise"
+- "contact center platform comparison 2026"
+- "enterprise security vendor selection process"
+- "IT procurement best practices"
+- "CIO technology buying criteria"
+- "cloud networking evaluation checklist"
+- "how companies choose technology vendors"
+
+REQUIRED INFORMATION SOURCES:
+- G2 Crowd, TrustRadius, Gartner Peer Insights (peer reviews)
+- LinkedIn discussions from IT leaders
+- YouTube vendor comparisons and demos
+- Vendor webinars and analyst briefings
+- Reddit r/sysadmin, r/ITManagers, Spiceworks forums
+- Industry events (Gartner Symposium, RSA, Enterprise Connect)
 
 Begin research now.
 """
@@ -104,7 +125,9 @@ Begin research now.
 CHANNELS_COMPETITIVE_PROMPT = """
 You are the Channel & Competitive Intelligence Agent.
 
-MISSION: Research how infrastructure advisory services are marketed, sold, and delivered.
+MISSION: Research the competitive landscape for infrastructure advisory, including BOTH how other advisors compete AND how direct suppliers (vendors) position and sell to buyers. Direct vendor sales are the PRIMARY competition.
+
+{layer_0_context_section}
 
 {context_section}
 
@@ -116,48 +139,70 @@ YOUR RESEARCH QUESTIONS:
 - What are growth trends?
 - What macro trends affect the market?
 
-2. COMPETITIVE LANDSCAPE
-- Who are major players by category?
+2. SUPPLIER DIRECT SALES (PRIMARY COMPETITION)
+CRITICAL: Direct vendor sales teams are the primary competition, not other advisors.
+
+- How do major suppliers position and sell directly to buyers?
+  - Network/Connectivity: AT&T, Verizon, Lumen, Comcast Business
+  - Security: Palo Alto Networks, CrowdStrike, Zscaler, Fortinet
+  - CX/CCaaS: Five9, Genesys, NICE, Talkdesk, Amazon Connect
+  - Cloud: AWS, Azure, Google Cloud and their partner programs
+  - UCaaS: RingCentral, Microsoft Teams, Zoom, Webex
+- What sales motions do vendors use? (direct sales, channel partners, PLG)
+- How do vendors position against using advisors/brokers?
+- What vendor sales objections do buyers face when considering advisors?
+- What exclusive incentives do vendors offer to go direct?
+- How do vendors create lock-in and switching costs?
+- What "free assessments" or "advisory services" do vendors offer themselves?
+
+3. ADVISORY COMPETITIVE LANDSCAPE
+- Who are major advisory players? (AVANT, Telarus, Bluewave, AppSmart, etc.)
 - What market share/presence exists?
 - How are competitors positioned?
 - What are competitive strengths/weaknesses?
+- How do advisors differentiate from each other?
 
-3. CHANNEL STRATEGIES
+4. CHANNEL STRATEGIES
 - What channels do competitors use?
 - Which channels are most effective?
 - How do strategies differ by segment?
 
-4. MARKETING APPROACHES
+5. MARKETING APPROACHES
 - What messaging/positioning is used?
 - What content types are prevalent?
 - What value propositions are common?
 - How do competitors differentiate?
 
-5. SALES APPROACHES
+6. SALES APPROACHES
 - What is the typical sales process?
 - How do they handle pricing transparency?
 - What objections do they address?
 - How do they build trust?
 
-6. SERVICE DELIVERY MODELS
+7. SERVICE DELIVERY MODELS
 - What delivery models exist?
 - How are services priced?
 - What scope variations exist?
 
-7. PARTNERSHIPS & ECOSYSTEM
+8. PARTNERSHIPS & ECOSYSTEM
 - What vendor partnerships are common?
 - What referral models work?
 - How do advisors work with MSPs/VARs?
 
-8. MARKET GAPS & OPPORTUNITIES
+9. MARKET GAPS & OPPORTUNITIES
 - What needs are underserved?
 - Where are competitors weak?
 - What emerging opportunities exist?
+- Where do vendors fail to serve buyers well?
 
 DELIVERABLES (Markdown format):
 - Executive Summary
 - Market Sizing & Segmentation
-- Competitive Landscape Analysis
+- Supplier Direct Sales Analysis (PRIMARY COMPETITION)
+  - How major vendors sell direct
+  - Vendor positioning against advisors
+  - Vendor lock-in strategies
+- Advisory Competitive Landscape Analysis
 - Channel Effectiveness Analysis
 - Marketing & Messaging Analysis
 - Sales Process Intelligence
@@ -169,9 +214,22 @@ DELIVERABLES (Markdown format):
 
 METHODOLOGY:
 - Use 50-70 web_search operations
-- Prioritize: analyst reports, competitor websites, reviews
-- Analyze actual competitor marketing materials
+- Prioritize: vendor sales pages, analyst reports, competitor websites, G2/TrustRadius reviews
+- Research vendor direct sales messaging and positioning
+- Analyze how vendors compete against the advisory model
 - Look for channel effectiveness data
+- Search for buyer complaints about vendor sales tactics
+
+BUYER-CENTRIC SEARCH TERMS:
+Use buyer-problem search terms, not advisory jargon:
+- "CCaaS vendor comparison 2026"
+- "SD-WAN vs MPLS decision"
+- "enterprise security vendor selection"
+- "contact center platform evaluation"
+- "cloud networking comparison"
+- "Five9 vs Genesys vs NICE"
+- "how to choose a network provider"
+- "enterprise voice solutions comparison"
 
 Begin research now.
 """
@@ -180,6 +238,8 @@ CUSTOMER_EXPANSION_PROMPT = """
 You are the Customer Expansion Intelligence Agent.
 
 MISSION: Research how advisory relationships expand over time.
+
+{layer_0_context_section}
 
 {context_section}
 
@@ -240,6 +300,20 @@ METHODOLOGY:
 - Prioritize: B2B customer success research, professional services studies
 - Look for quantitative benchmarks
 
+BUYER-CENTRIC SEARCH TERMS:
+- "enterprise technology vendor switching"
+- "IT infrastructure consolidation trends"
+- "multi-year technology contracts"
+- "technology advisory retention rates"
+- "professional services expansion patterns"
+- "B2B customer lifetime value benchmarks"
+
+REQUIRED INFORMATION SOURCES:
+- G2 Crowd, TrustRadius (customer reviews mentioning long-term relationships)
+- LinkedIn case studies from technology advisory firms
+- SaaS metrics research (for retention/expansion benchmarks)
+- Professional services industry reports
+
 Begin research now.
 """
 
@@ -247,6 +321,8 @@ MESSAGING_POSITIONING_PROMPT = """
 You are the Messaging & Positioning Agent.
 
 MISSION: Research what language, framing, and proof points resonate with enterprise buyers when they encounter vendor-neutral advisory - and what creates confusion or skepticism.
+
+{layer_0_context_section}
 
 {context_section}
 
@@ -366,9 +442,24 @@ METHODOLOGY:
   - IT forums (Reddit r/sysadmin, r/ITManagers, Spiceworks)
   - LinkedIn posts from IT leaders discussing procurement
   - Customer review sites (G2, TrustRadius for adjacent services)
-- Search for: "technology advisor value proposition," "vendor-neutral procurement," "IT buying objections," "infrastructure advisory messaging"
 - Capture actual language used by buyers (direct quotes when possible)
 - Analyze competitor messaging for patterns and gaps
+
+BUYER-CENTRIC SEARCH TERMS (use these, not advisory jargon):
+- "how to evaluate technology vendors objectively"
+- "independent technology advice for enterprises"
+- "technology buying without vendor bias"
+- "enterprise procurement consultant reviews"
+- "IT buying committee challenges"
+- "vendor selection fatigue"
+- "technology evaluation shortcuts"
+
+REQUIRED INFORMATION SOURCES:
+- G2 Crowd, TrustRadius (look for buyer language patterns)
+- LinkedIn posts from CIOs, IT Directors discussing procurement pain
+- Reddit r/sysadmin, r/ITManagers for authentic buyer frustration
+- YouTube vendor comparisons (note how buyers frame questions)
+- Vendor webinars (observe positioning language)
 
 Begin research now.
 """
@@ -377,6 +468,8 @@ GTM_SYNTHESIS_PROMPT = """
 You are the GTM Planning & Synthesis Agent.
 
 MISSION: Synthesize all prior research into actionable go-to-market strategy.
+
+{layer_0_context_section}
 
 {context_section}
 
@@ -488,3 +581,49 @@ PRIOR RESEARCH CONTEXT:
 Build on these findings.
 ---
 """
+
+
+def format_layer_1_prompt(
+    prompt_template: str,
+    layer_0_context: dict[str, Any] | None = None,
+    prior_agent_context: dict[str, Any] | None = None
+) -> str:
+    """
+    Format a Layer 1 prompt with Layer 0 and prior agent context.
+
+    Args:
+        prompt_template: The raw prompt template with placeholders
+        layer_0_context: Dictionary of Layer 0 service category agent outputs
+        prior_agent_context: Dictionary of prior Layer 1 agent outputs (for dependent agents)
+
+    Returns:
+        Formatted prompt string ready for ResearchSession
+    """
+    # Format Layer 0 context
+    if layer_0_context:
+        layer_0_text = format_layer_0_context_for_layer_1(layer_0_context)
+        layer_0_section = f"""
+=== SERVICE CATEGORY INTELLIGENCE (LAYER 0) ===
+
+Use the following service category research to inform your analysis.
+These are buyer-centric insights about how enterprises evaluate specific technology categories.
+
+{layer_0_text}
+
+Apply these category-specific insights to your research.
+---
+"""
+    else:
+        layer_0_section = ""
+
+    # Format prior agent context
+    if prior_agent_context:
+        context_section = get_context_section(prior_agent_context)
+    else:
+        context_section = ""
+
+    # Fill in placeholders
+    return prompt_template.format(
+        layer_0_context_section=layer_0_section,
+        context_section=context_section
+    )

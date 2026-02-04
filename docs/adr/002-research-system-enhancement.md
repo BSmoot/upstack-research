@@ -1,8 +1,9 @@
 # ADR-002: Research System Enhancement
 
-**Status**: Proposed
+**Status**: Implemented
 **Date**: 2026-02-04
 **Authors**: apex-architect, apex-guardian
+**Implemented**: 2026-02-04
 
 ---
 

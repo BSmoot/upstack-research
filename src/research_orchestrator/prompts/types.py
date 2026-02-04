@@ -3,10 +3,10 @@
 Type definitions for the prompt system.
 
 Provides type safety for vertical configurations, title cluster configurations,
-and context summaries used throughout the research orchestration system.
+service category configurations, and context summaries used throughout the
+research orchestration system.
 """
 
-from typing import Dict, Any, List, Optional
 from typing_extensions import TypedDict
 
 
@@ -21,9 +21,17 @@ class VerticalConfig(TypedDict):
 class TitleClusterConfig(TypedDict):
     """Configuration for a title cluster research agent."""
     name: str
-    titles: List[str]
+    titles: list[str]
     decision_authority: str
     key_focus: str
+
+
+class ServiceCategoryConfig(TypedDict):
+    """Configuration for a service category from baseline.yaml."""
+    name: str
+    subcategories: list[str]
+    key_suppliers: list[str]
+    market_notes: list[str] | None
 
 
 class ContextSummary(TypedDict):
@@ -37,13 +45,17 @@ class ContextSummary(TypedDict):
 class AgentOutput(TypedDict, total=False):
     """Complete agent output structure."""
     status: str
-    completed_at: Optional[str]
-    started_at: Optional[str]
-    output_path: Optional[str]
-    searches_performed: Optional[int]
-    total_turns: Optional[int]
-    execution_time_seconds: Optional[float]
-    completion_status: Optional[str]
-    estimated_cost_usd: Optional[float]
-    content: Optional[str]
-    error: Optional[str]
+    completed_at: str | None
+    started_at: str | None
+    output_path: str | None
+    searches_performed: int | None
+    total_turns: int | None
+    execution_time_seconds: float | None
+    completion_status: str | None
+    estimated_cost_usd: float | None
+    content: str | None
+    error: str | None
+
+
+# Type alias for the services dictionary from baseline.yaml
+ServiceCategoriesDict = dict[str, ServiceCategoryConfig]

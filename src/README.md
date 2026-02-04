@@ -1,15 +1,18 @@
 # Research Orchestrator
 
-AI-powered market research system that executes three-layer research through intelligent parallel execution using Claude's web search capabilities.
+AI-powered market research system that executes multi-layer research through intelligent parallel execution using Claude's web search capabilities.
 
 ## Overview
 
 The Research Orchestrator compresses weeks of sequential market research into days through:
 
+- **Layer 0**: Service category research (buyer journey per category, vendor landscape, search terms) ✅ **NEW**
 - **Layer 1**: Horizontal research (buyer journey, competitive landscape, customer expansion, messaging, GTM synthesis) ✅ **COMPLETE**
 - **Layer 2**: Vertical-specific research (industry adaptations) ✅ **COMPLETE**
 - **Layer 3**: Title-specific research (buyer persona insights) ✅ **COMPLETE**
-- **Integration**: Vertical × Title playbook generation ✅ **COMPLETE**
+- **Integration**: 3D Playbook generation (Vertical × Title × Service Category) ✅ **NEW**
+- **Validation**: Quality gate assessment before production use ✅ **NEW**
+- **Brand Alignment**: Align outputs with brand voice and standards ✅ **COMPLETE**
 
 ## Features
 
@@ -19,8 +22,11 @@ The Research Orchestrator compresses weeks of sequential market research into da
 - ✅ **Human Review Gates**: Pause between layers for quality review
 - ✅ **Structured Output**: Markdown reports with proper citations
 - ✅ **Direct API Control**: No framework overhead - just Python + Anthropic SDK
-- ✅ **Three-Layer Research**: Full horizontal, vertical, and title research capability
+- ✅ **Multi-Layer Research**: Full 4-layer research capability (L0 → L1 → L2 → L3)
 - ✅ **Context Flow**: Automatic context extraction and injection between layers
+- ✅ **3D Playbooks**: Service-category-specific playbooks (V × T × SC)
+- ✅ **Validation Agent**: Quality gate scoring (Completeness, Specificity, Actionability, Research Grounding)
+- ✅ **Force Re-run**: Selectively re-run completed agents with `--force`
 
 ## Installation
 
@@ -50,7 +56,44 @@ The `.env` file should contain:
 ANTHROPIC_API_KEY=your_api_key_here
 ```
 
-## Recent Updates (October 2025)
+## Recent Updates (February 2026)
+
+### ✅ ADR-002: Research System Enhancement
+
+Implemented comprehensive enhancements addressing six critical gaps:
+
+**Layer 0: Service Category Research**
+- New research layer runs BEFORE horizontal research
+- Researches how buyers discover and evaluate specific service categories
+- Provides category-specific buyer journey, vendor landscape, search terms
+- Configure via `service_categories` in config YAML
+
+**3D Playbooks (V × T × SC)**
+- Extended playbook generation from `Vertical × Title` to `Vertical × Title × Service Category`
+- Service-category-specific messaging, vendor positioning, and buyer triggers
+- Configure via `priority_service_categories` in config YAML
+
+**Validation Agent**
+- Quality gate assessment after playbook generation
+- Scores on 4 dimensions: Completeness, Specificity, Actionability, Research Grounding
+- Produces validation reports with specific improvement recommendations
+- Auto-runs after playbooks (configurable)
+
+**Force Re-run Capability**
+- Selectively re-run completed agents with `force_agents` parameter
+- Preserves prior output files (renamed with timestamp)
+- Preserves checkpoint history for audit trail
+
+**Enhanced Prompts**
+- Buyer-centric search terms (not advisory jargon)
+- Supplier competition research (direct vendor sales as primary competition)
+- Dynamic context injection from baseline.yaml
+
+See `docs/adr/002-research-system-enhancement.md` for full details.
+
+---
+
+## Previous Updates (October 2025)
 
 ### ✅ Composable Model Selection System
 - Define model strategy once in `build/config/defaults.yaml`
@@ -107,7 +150,18 @@ Or create a new project config that inherits from defaults:
 extends: "../defaults.yaml"  # Inherit model strategy
 
 execution:
-  id: "my_research_2025"
+  id: "my_research_2026"
+
+# NEW: Layer 0 Service Categories (optional)
+service_categories:
+  - security
+  - customer_experience
+  - network
+
+# NEW: 3D Playbooks - which service categories to combine with V × T
+priority_service_categories:
+  - security
+  - customer_experience
 
 verticals:
   - "Your Industry 1"
@@ -203,7 +257,13 @@ python run_research.py --resume research_20251002_143000
 ## Output Structure
 
 ```
-outputs/
+outputs/{execution_id}/
+├── layer_0/                              # Service Category Research (NEW)
+│   ├── service_category_security.md
+│   ├── service_category_customer_experience.md
+│   ├── service_category_network.md
+│   └── ...
+│
 ├── layer_1/
 │   ├── buyer_journey.md
 │   ├── channels_competitive.md
@@ -221,9 +281,16 @@ outputs/
 │   ├── title_cio_cto_cluster.md
 │   └── title_vp_it_operations.md
 │
-└── playbooks/
-    ├── playbook_healthcare_cfo_cluster.md
-    ├── playbook_healthcare_cio_cto_cluster.md
+├── playbooks/
+│   ├── playbook_healthcare_cfo_cluster.md          # 2D: V × T
+│   ├── playbook_healthcare_cfo_cluster_security.md # 3D: V × T × SC (NEW)
+│   └── ...
+│
+├── validation/                           # Quality Gate Reports (NEW)
+│   ├── validate_playbook_healthcare_cfo_cluster.md
+│   └── ...
+│
+└── brand_alignment/
     └── ...
 ```
 
@@ -285,6 +352,10 @@ State is saved after each agent completes to `checkpoints/research_YYYYMMDD_HHMM
 ### Execution Flow
 
 ```
+Layer 0: [service_category_security, service_category_cx, ...] → Parallel (optional)
+              ↓
+         Review Gate (optional)
+              ↓
 Layer 1 Phase 1: [buyer_journey, channels_competitive, customer_expansion] → Parallel
               ↓
 Layer 1 Phase 2: messaging_positioning (depends on Phase 1)
@@ -299,7 +370,17 @@ Layer 2: [vertical_1, vertical_2, ...] → Parallel
               ↓
 Layer 3: [title_1, title_2, ...] → Parallel
               ↓
-    Integration: Generate Playbooks → Parallel
+         Review Gate (optional)
+              ↓
+Integration: Generate 2D Playbooks (V × T) → Parallel
+              ↓
+Integration: Generate 3D Playbooks (V × T × SC) → Parallel (optional)
+              ↓
+Validation: Quality Gate Assessment → Parallel
+              ↓
+         Review Gate (optional)
+              ↓
+Brand Alignment: Align outputs with brand standards → Parallel (optional)
 ```
 
 ## Troubleshooting

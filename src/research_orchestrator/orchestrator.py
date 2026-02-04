@@ -12,13 +12,13 @@ import os
 import logging
 import uuid
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Any
 from datetime import datetime
 
 from .research_session import ResearchSession
 from .state.tracker import StateTracker
 from .utils.logging_setup import setup_logging
-from .utils.config import load_config, get_priority_combinations
+from .utils.config import load_config, get_priority_combinations, get_priority_combinations_3d
 from .utils.config_models import (
     get_model_for_agent,
     get_model_config,
@@ -31,10 +31,13 @@ from .prompts.horizontal import (
     CUSTOMER_EXPANSION_PROMPT,
     MESSAGING_POSITIONING_PROMPT,
     GTM_SYNTHESIS_PROMPT,
-    get_context_section
+    get_context_section,
+    format_layer_1_prompt
 )
+from .prompts.context_helpers import get_layer_0_context
 from .utils.brand_context import BrandContextLoader
 from .prompts.brand_alignment import build_brand_alignment_prompt
+from .prompts.validation import build_validation_prompt
 
 
 class BudgetExceededError(Exception):
@@ -50,17 +53,20 @@ class ResearchOrchestrator:
     """
     
     def __init__(
-        self, 
+        self,
         config_path: Path,
-        execution_id: Optional[str] = None
+        execution_id: str | None = None,
+        force_agents: list[str] | None = None
     ):
         """
         Initialize research orchestrator.
-        
+
         Args:
             config_path: Path to configuration YAML file
             execution_id: Optional execution ID for resume
+            force_agents: Optional list of agent names to force re-run (even if complete)
         """
+        self.force_agents = force_agents or []
         # Load configuration
         self.config = load_config(config_path)
         
@@ -108,6 +114,11 @@ class ResearchOrchestrator:
             logger=self.logger
         )
         
+        # Initialize Layer 0 (service categories) if configured
+        service_categories = self.config.get('service_categories', [])
+        if service_categories:
+            self.state.initialize_layer_0(service_categories)
+
         # Initialize layers in state
         self.state.initialize_layer_2(self.config['verticals'])
         self.state.initialize_layer_3(self.config['title_clusters'])
@@ -122,7 +133,7 @@ class ResearchOrchestrator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create layer output directories
-        for layer in ['layer_1', 'layer_2', 'layer_3', 'playbooks', 'brand_alignment']:
+        for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment']:
             (self.output_dir / layer).mkdir(parents=True, exist_ok=True)
 
         # Initialize brand context loader if brand alignment enabled
@@ -137,10 +148,70 @@ class ResearchOrchestrator:
             )
         else:
             self.brand_context_loader = None
-        
+
+        # Process force_agents: reset completed agents for re-run
+        if self.force_agents:
+            self._process_force_agents()
+
         self.logger.info(f"Configuration loaded: {config_path}")
         self.logger.info(f"Execution ID: {self.state.execution_id}")
         self.logger.info(f"Checkpoint file: {self.state.checkpoint_file}")
+        if self.force_agents:
+            self.logger.info(f"Force re-run agents: {', '.join(self.force_agents)}")
+
+    def _process_force_agents(self) -> None:
+        """
+        Process force_agents list: reset completed agents for re-execution.
+
+        For each agent in force_agents:
+        1. Save checkpoint history
+        2. Preserve prior output file
+        3. Mark agent for rerun
+        """
+        if not self.force_agents:
+            return
+
+        self.logger.info(f"Processing {len(self.force_agents)} agents for force re-run")
+
+        # Save checkpoint history before modifications
+        self.state.save_checkpoint_history()
+
+        for agent_name in self.force_agents:
+            # Get agent output to find prior file path
+            agent_output = self.state.get_agent_output(agent_name)
+
+            if agent_output and 'output_path' in agent_output:
+                # Preserve prior output file
+                self._preserve_prior_output(agent_output['output_path'])
+
+            # Mark agent for rerun (resets status to pending)
+            self.state.mark_for_rerun(agent_name)
+
+    def _preserve_prior_output(self, output_path: str) -> Path | None:
+        """
+        Preserve prior output file by renaming it with timestamp.
+
+        Args:
+            output_path: Path to the existing output file
+
+        Returns:
+            Path to the preserved file, or None if preservation failed
+        """
+        prior_path = Path(output_path)
+        if not prior_path.exists():
+            return None
+
+        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        preserved_name = f"{prior_path.stem}_prior_{timestamp}{prior_path.suffix}"
+        preserved_path = prior_path.parent / preserved_name
+
+        try:
+            prior_path.rename(preserved_path)
+            self.logger.info(f"Preserved prior output: {preserved_path}")
+            return preserved_path
+        except Exception as e:
+            self.logger.error(f"Failed to preserve prior output {output_path}: {e}")
+            return None
 
     def _update_budget(self, searches: int, cost: float) -> None:
         """
@@ -172,7 +243,7 @@ class ResearchOrchestrator:
                 f"Cost budget exceeded: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}"
             )
 
-    def _check_gather_results(self, results: List[Any]) -> None:
+    def _check_gather_results(self, results: list[Any]) -> None:
         """
         Check asyncio.gather() results for BudgetExceededError and propagate.
 
@@ -207,7 +278,21 @@ class ResearchOrchestrator:
         """
         try:
             self.logger.info("Starting full research program")
-            
+
+            # Layer 0: Service Category Research (optional - if configured)
+            service_categories = self.config.get('service_categories', [])
+            if service_categories:
+                self.logger.info("\n" + "=" * 80)
+                self.logger.info("LAYER 0: Service Category Research")
+                self.logger.info("=" * 80)
+                await self.execute_layer_0_parallel()
+
+                # Human review gate (optional)
+                if self.config['execution_settings']['review_gates'].get('after_layer_0', False):
+                    if not self._prompt_for_review("Layer 0"):
+                        self.logger.info("Research halted by user after Layer 0")
+                        return
+
             # Layer 1: Horizontal Research
             self.logger.info("\n" + "=" * 80)
             self.logger.info("LAYER 1: Horizontal Research")
@@ -250,6 +335,26 @@ class ResearchOrchestrator:
             self.logger.info("=" * 80)
             await self.generate_playbooks_parallel()
 
+            # Validation: Quality gate (if enabled)
+            validation_enabled = self.config['execution_settings'].get('validation', {}).get('enabled', True)
+            if validation_enabled:
+                # Human review gate before validation (optional)
+                if self.config['execution_settings']['review_gates'].get('after_playbooks', False):
+                    if not self._prompt_for_review("Playbooks"):
+                        self.logger.info("Research halted by user after Playbooks")
+                        return
+
+                self.logger.info("\n" + "=" * 80)
+                self.logger.info("VALIDATION: Quality Gate Assessment")
+                self.logger.info("=" * 80)
+                await self.execute_validation()
+
+                # Human review gate after validation (optional)
+                if self.config['execution_settings']['review_gates'].get('after_validation', False):
+                    if not self._prompt_for_review("Validation"):
+                        self.logger.info("Research halted by user after Validation")
+                        return
+
             # Brand Alignment (if enabled)
             brand_config = self.config.get('brand_alignment', {})
             if brand_config.get('enabled', False):
@@ -274,10 +379,128 @@ class ResearchOrchestrator:
             self.logger.error(f"Research program failed: {e}", exc_info=True)
             raise
     
+    async def execute_layer_0_parallel(self):
+        """
+        Execute service category research agents in parallel.
+
+        Layer 0 provides baseline market intelligence on service categories
+        before horizontal research begins. This layer is optional and skipped
+        if no service_categories are configured.
+        """
+        service_categories = self.config.get('service_categories', [])
+
+        if not service_categories:
+            self.logger.info("No service categories configured, skipping Layer 0")
+            return
+
+        self.logger.info("Executing Layer 0: Service Category Research")
+        self.logger.info(f"Launching {len(service_categories)} service category agents in parallel")
+
+        tasks = []
+        for category in service_categories:
+            agent_name = f"service_category_{category}"
+            if not self.state.is_agent_complete(agent_name):
+                tasks.append(self._execute_service_category_agent(category))
+            else:
+                self.logger.info(f"Skipping {category} (already complete)")
+
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
+
+        self.logger.info("Layer 0 complete!")
+        self._print_layer_status('layer_0')
+
+    async def _execute_service_category_agent(self, category: str):
+        """
+        Execute a single service category research agent (Layer 0).
+
+        Args:
+            category: Service category identifier (e.g., 'security', 'customer_experience')
+        """
+        from .prompts.service_category import build_service_category_prompt
+        from .prompts.context_injector import ResearchContextInjector
+
+        agent_name = f"service_category_{category}"
+
+        try:
+            self.logger.info(f"Starting service category agent: {category}")
+            self.state.mark_in_progress(agent_name, 'layer_0')
+
+            # Initialize context injector with baseline path
+            baseline_path = Path(self.config.get('config_path', '.')).parent / 'context' / 'baseline.yaml'
+            context_injector = ResearchContextInjector(baseline_path, self.logger)
+
+            # Build service category-specific prompt
+            prompt = build_service_category_prompt(category, context_injector)
+
+            # Resolve model for this agent
+            model = get_model_for_agent(self.config, 'layer_0', agent_name)
+            model_config = get_model_config(self.config, model)
+            max_searches = get_search_budget_for_model(self.config, model)
+
+            self.logger.info(
+                f"[{agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}, "
+                f"Max searches: {max_searches}"
+            )
+
+            # Execute research session
+            session = ResearchSession(
+                agent_name=agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={'category': category},
+                max_turns=50
+            )
+
+            # Check for errors
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Service category agent {category} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='layer_0')
+                return
+
+            # Save output
+            output_path = self._save_agent_output(agent_name, 'layer_0', result)
+
+            # Mark complete
+            self.state.mark_complete(
+                agent_name=agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'searches_performed': result['searches_performed'],
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status']
+                },
+                layer='layer_0'
+            )
+
+            # Update budget
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+            self._check_budget_limits()
+
+            self.logger.info(f"Completed service category agent: {category}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Service category agent {category} failed: {e}", exc_info=True)
+            self.state.mark_failed(agent_name, str(e), layer='layer_0')
+            raise
+
     async def execute_layer_1_parallel(self):
         """
         Execute 5 horizontal agents with proper dependency management.
-        
+
         Phase 1: buyer_journey, channels_competitive, customer_expansion (parallel)
         Phase 2: messaging_positioning (depends on Phase 1)
         Phase 3: gtm_synthesis (depends on all prior)
@@ -420,26 +643,216 @@ class ResearchOrchestrator:
         self._print_layer_status('layer_3')
     
     async def generate_playbooks_parallel(self):
-        """Generate playbooks for priority vertical x title combinations."""
+        """Generate playbooks for priority vertical x title (and optionally service category) combinations."""
         self.logger.info("Generating integration playbooks")
-        
-        combinations = get_priority_combinations(self.config)
-        self.logger.info(f"Generating {len(combinations)} playbooks in parallel")
-        
-        tasks = []
-        for vertical, title in combinations:
+
+        # Phase 1: Generate 2D playbooks (V × T)
+        combinations_2d = get_priority_combinations(self.config)
+        self.logger.info(f"Generating {len(combinations_2d)} 2D playbooks (V × T)")
+
+        tasks_2d = []
+        for vertical, title in combinations_2d:
             agent_name = f"playbook_{vertical}_{title}"
             if not self.state.is_agent_complete(agent_name):
-                tasks.append(self._execute_playbook(vertical, title))
+                tasks_2d.append(self._execute_playbook(vertical, title))
             else:
                 self.logger.info(f"Skipping {vertical}_{title} playbook (already complete)")
+
+        if tasks_2d:
+            results = await asyncio.gather(*tasks_2d, return_exceptions=True)
+            self._check_gather_results(results)
+
+        # Phase 2: Generate 3D playbooks (V × T × SC) if priority_service_categories configured
+        combinations_3d = get_priority_combinations_3d(self.config)
+        if combinations_3d:
+            self.logger.info(f"Generating {len(combinations_3d)} 3D playbooks (V × T × SC)")
+
+            # Initialize 3D playbook tracking in state
+            agent_names_3d = [
+                f"playbook_{v}_{t}_{sc}"
+                for v, t, sc in combinations_3d
+            ]
+            self.state.initialize_integrations_3d(agent_names_3d)
+
+            tasks_3d = []
+            for vertical, title, service_category in combinations_3d:
+                agent_name = f"playbook_{vertical}_{title}_{service_category}"
+                if not self.state.is_agent_complete(agent_name):
+                    tasks_3d.append(self._execute_playbook_3d(vertical, title, service_category))
+                else:
+                    self.logger.info(f"Skipping {vertical}_{title}_{service_category} 3D playbook (already complete)")
+
+            if tasks_3d:
+                results = await asyncio.gather(*tasks_3d, return_exceptions=True)
+                self._check_gather_results(results)
+
+        self.logger.info("Integration complete!")
+        self._print_layer_status('integrations')
+
+    async def execute_validation(self):
+        """
+        Execute validation agents for completed playbooks.
+
+        Runs quality gate assessment on all completed playbooks, producing
+        validation reports with scores and recommendations.
+        """
+        self.logger.info("Executing validation quality gate")
+
+        # Get all completed playbooks
+        integrations = self.state.state.get('integrations', {})
+        playbooks_to_validate = []
+
+        for agent_name, agent_data in integrations.items():
+            if agent_data.get('status') == 'complete' and agent_name.startswith('playbook_'):
+                playbooks_to_validate.append(agent_name)
+
+        if not playbooks_to_validate:
+            self.logger.warning("No playbooks found to validate")
+            return
+
+        self.logger.info(
+            "Validating playbooks",
+            extra={"playbook_count": len(playbooks_to_validate)}
+        )
+
+        # Initialize validation tracking
+        validation_agent_names = [f"validate_{name}" for name in playbooks_to_validate]
+        self.state.initialize_validation(validation_agent_names)
+
+        # Execute validation agents in parallel
+        tasks = []
+        for playbook_name in playbooks_to_validate:
+            validation_agent_name = f"validate_{playbook_name}"
+            if not self.state.is_agent_complete(validation_agent_name):
+                tasks.append(self._execute_validation_agent(playbook_name))
+            else:
+                self.logger.info(f"Skipping {playbook_name} validation (already complete)")
 
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
             self._check_gather_results(results)
-        
-        self.logger.info("Integration complete!")
-        self._print_layer_status('integrations')
+
+        self.logger.info("Validation complete!")
+        self._print_layer_status('validation')
+
+    async def _execute_validation_agent(self, playbook_name: str):
+        """
+        Execute validation for a single playbook.
+
+        Args:
+            playbook_name: Name of the playbook agent to validate
+        """
+        from .prompts.vertical import VERTICALS
+        from .prompts.title import TITLE_CLUSTERS
+
+        validation_agent_name = f"validate_{playbook_name}"
+
+        try:
+            self.logger.info(f"Starting validation: {playbook_name}")
+            self.state.mark_in_progress(validation_agent_name, 'validation')
+
+            # Load playbook output
+            playbook_output = self.state.get_agent_output(playbook_name)
+            if not playbook_output or 'output_path' not in playbook_output:
+                self.logger.error(f"Cannot validate {playbook_name}: no output found")
+                self.state.mark_failed(validation_agent_name, "No playbook output found", layer='validation')
+                return
+
+            playbook_path = Path(playbook_output['output_path'])
+            if not playbook_path.exists():
+                self.logger.error(f"Cannot validate {playbook_name}: file not found at {playbook_path}")
+                self.state.mark_failed(validation_agent_name, f"File not found: {playbook_path}", layer='validation')
+                return
+
+            with open(playbook_path, 'r', encoding='utf-8') as f:
+                playbook_content = f.read()
+
+            # Parse playbook name to extract vertical, title, and optional service category
+            # Format: playbook_{vertical}_{title} or playbook_{vertical}_{title}_{service_category}
+            parts = playbook_name.replace('playbook_', '').split('_')
+
+            # Handle various naming patterns
+            vertical_key = parts[0] if parts else "unknown"
+            title_key = parts[1] if len(parts) > 1 else "unknown"
+            service_category_key = parts[2] if len(parts) > 2 else None
+
+            # Get display names
+            vertical_name = VERTICALS.get(vertical_key, {}).get('name', vertical_key)
+            title_name = TITLE_CLUSTERS.get(title_key, {}).get('name', title_key)
+            service_category_name = service_category_key
+
+            # Build validation prompt
+            prompt = build_validation_prompt(
+                playbook_content=playbook_content,
+                vertical_name=vertical_name,
+                title_name=title_name,
+                service_category_name=service_category_name
+            )
+
+            # Get validation model configuration (use haiku for fast validation)
+            validation_config = self.config['execution_settings'].get('validation', {})
+            model = validation_config.get('model', 'claude-haiku-4-5-20251001')
+            model_config = get_model_config(self.config, model)
+            max_searches = 1  # Validation doesn't need search
+
+            self.logger.info(
+                f"[{validation_agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}"
+            )
+
+            # Execute validation session
+            session = ResearchSession(
+                agent_name=validation_agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={'playbook_content': playbook_content},
+                max_turns=5  # Validation should be quick
+            )
+
+            # Check if validation session ended in error
+            if result.get('completion_status') == 'error':
+                error_msg = f"Validation session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Validation {playbook_name} failed: {error_msg}")
+                self.state.mark_failed(validation_agent_name, error_msg, layer='validation')
+                return
+
+            # Save validation report
+            output_path = self._save_agent_output(validation_agent_name, 'validation', result)
+
+            # Mark complete in state
+            self.state.mark_complete(
+                agent_name=validation_agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'playbook_validated': playbook_name,
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status']
+                },
+                layer='validation'
+            )
+
+            # Update budget tracking (minimal cost for validation)
+            self._update_budget(0, result.get('estimated_cost_usd', 0.0))
+
+            self.logger.info(f"Completed validation: {playbook_name}")
+            self.logger.info(f"  Turns: {result['total_turns']}")
+            self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
+            self.logger.info(f"  Output: {output_path}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Validation {playbook_name} failed: {e}", exc_info=True)
+            self.state.mark_failed(validation_agent_name, str(e), layer='validation')
+            raise
 
     async def execute_brand_alignment(self):
         """Execute brand alignment for configured targets."""
@@ -615,17 +1028,28 @@ class ResearchOrchestrator:
             )
             
             # Get prompt for this agent
-            prompt = self._get_agent_prompt(agent_name)
-            
+            prompt_template = self._get_agent_prompt(agent_name)
+
             # Get context from prior agents
             context = self.state.get_context_for_agent(agent_name)
-            
-            # Format prompt with context
-            if context:
-                context_text = get_context_section(context)
-                prompt = prompt.format(context_section=context_text)
-            else:
-                prompt = prompt.format(context_section="")
+
+            # Get Layer 0 context if available (for Layer 1 agents)
+            service_categories = self.config.get('service_categories', [])
+            layer_0_context = None
+            if service_categories and self.state.is_layer_complete('layer_0'):
+                layer_0_context = get_layer_0_context(self.state, service_categories)
+                if layer_0_context:
+                    self.logger.info(
+                        "Injecting Layer 0 context",
+                        extra={"category_count": len(layer_0_context)}
+                    )
+
+            # Format prompt with Layer 0 and prior agent context
+            prompt = format_layer_1_prompt(
+                prompt_template=prompt_template,
+                layer_0_context=layer_0_context,
+                prior_agent_context=context
+            )
             
             # Execute research session with resolved model settings
             session = ResearchSession(
@@ -1020,7 +1444,162 @@ class ResearchOrchestrator:
             self.logger.error(f"Playbook {vertical}_{title} failed: {e}", exc_info=True)
             self.state.mark_failed(agent_name, str(e), layer='integrations')
             raise
-    
+
+    async def _execute_playbook_3d(self, vertical: str, title: str, service_category: str):
+        """
+        Generate a 3D playbook for vertical × title × service_category combination.
+
+        Args:
+            vertical: Vertical identifier (e.g., 'healthcare')
+            title: Title cluster identifier (e.g., 'cfo_cluster')
+            service_category: Service category key (e.g., 'security')
+        """
+        from .prompts import build_playbook_prompt_3d, get_layer_0_context, get_layer_1_context, get_layer_2_context, get_layer_3_context
+        from .prompts.context_injector import ResearchContextInjector
+
+        agent_name = f"playbook_{vertical}_{title}_{service_category}"
+
+        try:
+            self.logger.info(f"Starting 3D playbook: {vertical} × {title} × {service_category}")
+            self.state.mark_in_progress(agent_name, 'integrations')
+
+            # Verify all layer dependencies (including Layer 0)
+            service_categories = self.config.get('service_categories', [])
+            if service_categories and not self.state.is_layer_complete('layer_0'):
+                self.logger.error(f"Cannot generate {agent_name}: Layer 0 not complete")
+                return
+
+            if not self.state.is_layer_complete('layer_1'):
+                self.logger.error(f"Cannot generate {agent_name}: Layer 1 not complete")
+                return
+
+            if not self.state.is_layer_complete('layer_2'):
+                self.logger.error(f"Cannot generate {agent_name}: Layer 2 not complete")
+                return
+
+            if not self.state.is_layer_complete('layer_3'):
+                self.logger.error(f"Cannot generate {agent_name}: Layer 3 not complete")
+                return
+
+            # Load service category config from baseline.yaml
+            baseline_path = Path(self.config.get('config_path', '.')).parent / 'context' / 'baseline.yaml'
+            context_injector = ResearchContextInjector(baseline_path, self.logger)
+            service_category_config = context_injector.get_service_category(service_category)
+
+            if not service_category_config:
+                self.logger.error(f"Cannot generate {agent_name}: Service category '{service_category}' not found in baseline.yaml")
+                self.state.mark_failed(agent_name, f"Service category not found: {service_category}", layer='integrations')
+                return
+
+            # Extract context from all four layers
+            layer_0_context = get_layer_0_context(self.state, service_categories)
+            layer_1_context = get_layer_1_context(self.state)
+
+            # Get verticals for context (may need to extract from checkpoint)
+            verticals_for_context = self.config['verticals']
+            if not verticals_for_context:
+                layer_2_data = self.state.state.get('layer_2', {})
+                verticals_for_context = [
+                    key.replace('vertical_', '')
+                    for key in layer_2_data.keys()
+                    if key.startswith('vertical_')
+                ]
+
+            layer_2_context = get_layer_2_context(self.state, verticals_for_context)
+            layer_3_context = get_layer_3_context(self.state, self.config['title_clusters'])
+
+            # Build 3D playbook prompt
+            prompt = build_playbook_prompt_3d(
+                vertical_key=vertical,
+                title_key=title,
+                service_category=service_category_config,
+                service_category_key=service_category,
+                layer_0_context=layer_0_context,
+                layer_1_context=layer_1_context,
+                layer_2_context=layer_2_context,
+                layer_3_context=layer_3_context
+            )
+
+            # Resolve model for playbook
+            model = get_model_for_agent(self.config, 'integrations', agent_name)
+            model_config = get_model_config(self.config, model)
+            max_searches = get_search_budget_for_model(self.config, model)
+
+            self.logger.info(
+                f"[{agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}, "
+                f"Max searches: {max_searches}"
+            )
+
+            # Execute research session
+            session = ResearchSession(
+                agent_name=agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={
+                    'layer_0': layer_0_context,
+                    'layer_1': layer_1_context,
+                    'layer_2': layer_2_context,
+                    'layer_3': layer_3_context,
+                    'service_category': service_category
+                },
+                max_turns=50
+            )
+
+            # Check if research session ended in error
+            if result.get('completion_status') == 'error':
+                error_msg = f"Research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"3D Playbook {vertical}_{title}_{service_category} failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='integrations')
+                return
+
+            # Save output
+            output_path = self._save_agent_output(agent_name, 'integrations', result)
+
+            # Mark complete in state
+            self.state.mark_complete(
+                agent_name=agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'searches_performed': result['searches_performed'],
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status'],
+                    'service_category': service_category
+                },
+                layer='integrations'
+            )
+
+            # Update budget tracking
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+
+            # Check budget limits
+            self._check_budget_limits()
+
+            self.logger.info(f"Completed 3D playbook: {vertical} × {title} × {service_category}")
+            self.logger.info(f"  Searches: {result['searches_performed']}")
+            self.logger.info(f"  Turns: {result['total_turns']}")
+            self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
+            self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
+            self.logger.info(f"  Output: {output_path}")
+            self.logger.info(f"Budget Status:")
+            self.logger.info(f"  Total searches: {self.budget['current_searches']}/{self.budget['max_total_searches']}")
+            self.logger.info(f"  Total cost: ${self.budget['current_cost_usd']:.2f}/${self.budget['max_total_cost_usd']:.2f}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(f"3D Playbook {vertical}_{title}_{service_category} failed: {e}", exc_info=True)
+            self.state.mark_failed(agent_name, str(e), layer='integrations')
+            raise
+
     def _get_agent_prompt(self, agent_name: str) -> str:
         """Get prompt template for agent."""
         prompt_map = {
@@ -1036,10 +1615,12 @@ class ResearchOrchestrator:
         
         return prompt_map[agent_name]
     
-    def _save_agent_output(self, agent_name: str, layer: str, result: Dict[str, Any]) -> Path:
+    def _save_agent_output(self, agent_name: str, layer: str, result: dict[str, Any]) -> Path:
         """Save agent output to markdown file."""
         # Determine output directory
-        if layer == 'layer_1':
+        if layer == 'layer_0':
+            output_dir = self.output_dir / 'layer_0'
+        elif layer == 'layer_1':
             output_dir = self.output_dir / 'layer_1'
         elif layer == 'layer_2':
             output_dir = self.output_dir / 'layer_2'
@@ -1047,6 +1628,8 @@ class ResearchOrchestrator:
             output_dir = self.output_dir / 'layer_3'
         elif layer == 'integrations':
             output_dir = self.output_dir / 'playbooks'
+        elif layer == 'validation':
+            output_dir = self.output_dir / 'validation'
         elif layer == 'brand_alignment':
             output_dir = self.output_dir / 'brand_alignment'
         else:
@@ -1074,9 +1657,11 @@ class ResearchOrchestrator:
         self.logger.info("\n" + "=" * 80)
         self.logger.info(f"{layer_name} Complete - Human Review Gate")
         self.logger.info("=" * 80)
-        
+
         # Show output directory
-        if layer_name == "Layer 1":
+        if layer_name == "Layer 0":
+            output_dir = self.output_dir / 'layer_0'
+        elif layer_name == "Layer 1":
             output_dir = self.output_dir / 'layer_1'
         elif layer_name == "Layer 2":
             output_dir = self.output_dir / 'layer_2'
@@ -1114,7 +1699,7 @@ class ResearchOrchestrator:
         self.logger.info("")
         self.logger.info("Layer Status:")
 
-        for layer_name in ['layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'brand_alignment_status']:
+        for layer_name in ['layer_0_status', 'layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'validation_status', 'brand_alignment_status']:
             status = summary[layer_name]
             layer_label = layer_name.replace('_status', '').replace('_', ' ').title()
             self.logger.info(f"  {layer_label}: {status['complete']}/{status['total']} complete")

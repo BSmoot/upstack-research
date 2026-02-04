@@ -27,10 +27,12 @@ class CheckpointingConfig(BaseModel):
 
 class ReviewGatesConfig(BaseModel):
     """Review gates configuration."""
+    after_layer_0: bool = False
     after_layer_1: bool = True
     after_layer_2: bool = True
     after_layer_3: bool = False
     after_playbooks: bool = False
+    after_validation: bool = False
 
 
 class OutputsConfig(BaseModel):
@@ -85,6 +87,8 @@ class ResearchConfig(BaseModel):
     execution: ExecutionConfig
     verticals: List[str] = Field(default_factory=list)
     title_clusters: List[str] = Field(default_factory=list)
+    service_categories: List[str] = Field(default_factory=list)
+    priority_service_categories: List[str] = Field(default_factory=list)
     execution_settings: ExecutionSettings = Field(default_factory=ExecutionSettings)
     model_strategy: Optional[Dict[str, Any]] = None
     priority_combinations: Optional[List[Dict[str, Any]]] = None
@@ -93,7 +97,7 @@ class ResearchConfig(BaseModel):
 
     model_config = {"extra": "allow"}
 
-    @field_validator('verticals', 'title_clusters')
+    @field_validator('verticals', 'title_clusters', 'service_categories', 'priority_service_categories')
     @classmethod
     def validate_non_empty_strings(cls, v: List[str]) -> List[str]:
         """Ensure list items (if any) are non-empty strings."""

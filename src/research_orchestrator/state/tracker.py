@@ -8,7 +8,7 @@ Enables checkpoint/resume capability and tracks layer dependencies.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Any
 from datetime import datetime
 
 
@@ -20,10 +20,10 @@ class StateTracker:
     """
     
     def __init__(
-        self, 
+        self,
         checkpoint_dir: Path,
-        execution_id: Optional[str] = None,
-        logger: Optional[logging.Logger] = None
+        execution_id: str | None = None,
+        logger: logging.Logger | None = None
     ):
         """
         Initialize state tracker.
@@ -48,13 +48,19 @@ class StateTracker:
         """Generate execution ID with timestamp."""
         return f"research_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
     
-    def load_or_initialize(self) -> Dict[str, Any]:
+    def load_or_initialize(self) -> dict[str, Any]:
         """Load existing checkpoint or initialize new state."""
         if self.checkpoint_file.exists():
             self.logger.info(f"Loading checkpoint from: {self.checkpoint_file}")
             try:
                 with open(self.checkpoint_file, 'r') as f:
-                    return json.load(f)
+                    state = json.load(f)
+                    # Backward compatibility: add missing keys
+                    if 'layer_0' not in state:
+                        state['layer_0'] = {}
+                    if 'validation' not in state:
+                        state['validation'] = {}
+                    return state
             except Exception as e:
                 self.logger.error(f"Failed to load checkpoint: {e}")
                 self.logger.info("Initializing new state")
@@ -64,6 +70,7 @@ class StateTracker:
             "execution_id": self.execution_id,
             "started_at": datetime.utcnow().isoformat(),
             "last_updated": datetime.utcnow().isoformat(),
+            "layer_0": {},
             "layer_1": {
                 "buyer_journey": {"status": "pending"},
                 "channels_competitive": {"status": "pending"},
@@ -74,13 +81,14 @@ class StateTracker:
             "layer_2": {},
             "layer_3": {},
             "integrations": {},
+            "validation": {},
             "brand_alignment": {}
         }
         
         self._save_state(state)
         return state
     
-    def _save_state(self, state: Optional[Dict[str, Any]] = None):
+    def _save_state(self, state: dict[str, Any] | None = None):
         """Save current state to checkpoint file with atomic write."""
         import tempfile
         import os
@@ -113,15 +121,15 @@ class StateTracker:
     def is_agent_complete(self, agent_name: str) -> bool:
         """
         Check if specific agent has completed.
-        
+
         Args:
             agent_name: Name of the agent to check
-            
+
         Returns:
             True if agent status is 'complete'
         """
         # Check in all layers
-        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations', 'brand_alignment']:
+        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
             layer = self.state.get(layer_name, {})
             if agent_name in layer:
                 return layer[agent_name].get('status') == 'complete'
@@ -130,14 +138,25 @@ class StateTracker:
     
     def can_execute_layer_2(self, vertical: str) -> bool:
         """
-        Check if Layer 1 dependencies are met for Layer 2 execution.
-        
+        Check if Layer 0 and Layer 1 dependencies are met for Layer 2 execution.
+
         Args:
             vertical: Vertical name to check
-            
+
         Returns:
-            True if all Layer 1 agents are complete
+            True if all Layer 1 agents are complete (Layer 0 is optional)
         """
+        # Layer 0 is optional, check if configured
+        layer_0_agents = list(self.state.get('layer_0', {}).keys())
+        if layer_0_agents:
+            for agent in layer_0_agents:
+                if not self.is_agent_complete(agent):
+                    self.logger.debug(
+                        f"Layer 2 ({vertical}) blocked: {agent} not complete"
+                    )
+                    return False
+
+        # Layer 1 is required
         layer_1_agents = [
             'buyer_journey',
             'channels_competitive',
@@ -145,17 +164,17 @@ class StateTracker:
             'messaging_positioning',
             'gtm_synthesis'
         ]
-        
+
         for agent in layer_1_agents:
             if not self.is_agent_complete(agent):
                 self.logger.debug(
                     f"Layer 2 ({vertical}) blocked: {agent} not complete"
                 )
                 return False
-        
+
         return True
     
-    def can_execute_layer_3(self, title_cluster: str, vertical: Optional[str] = None) -> bool:
+    def can_execute_layer_3(self, title_cluster: str, vertical: str | None = None) -> bool:
         """
         Check if Layer 1 + Layer 2 dependencies are met for Layer 3 execution.
         
@@ -182,9 +201,9 @@ class StateTracker:
         return True
     
     def mark_complete(
-        self, 
-        agent_name: str, 
-        outputs: Dict[str, Any],
+        self,
+        agent_name: str,
+        outputs: dict[str, Any],
         layer: str = "layer_1"
     ):
         """
@@ -227,32 +246,112 @@ class StateTracker:
         self._save_state()
     
     def mark_failed(
-        self, 
-        agent_name: str, 
+        self,
+        agent_name: str,
         error: str,
         layer: str = "layer_1"
     ):
         """Mark agent as failed."""
         if layer not in self.state:
             self.state[layer] = {}
-        
+
         if agent_name not in self.state[layer]:
             self.state[layer][agent_name] = {}
-        
+
         self.state[layer][agent_name]["status"] = "failed"
         self.state[layer][agent_name]["failed_at"] = datetime.utcnow().isoformat()
         self.state[layer][agent_name]["error"] = error
-        
+
         self._save_state()
+
+    def mark_for_rerun(self, agent_name: str, layer: str | None = None) -> bool:
+        """
+        Mark a completed agent for re-execution by resetting its status to pending.
+
+        Used with --force flag to re-run agents that have already completed.
+        Preserves prior run metadata in 'prior_runs' history.
+
+        Args:
+            agent_name: Name of the agent to reset
+            layer: Layer to search in (if None, searches all layers)
+
+        Returns:
+            True if agent was found and reset, False otherwise
+        """
+        # Find the agent in layers
+        target_layer = None
+        if layer:
+            if layer in self.state and agent_name in self.state[layer]:
+                target_layer = layer
+        else:
+            for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
+                if layer_name in self.state and agent_name in self.state[layer_name]:
+                    target_layer = layer_name
+                    break
+
+        if not target_layer:
+            self.logger.warning(f"Agent {agent_name} not found for rerun")
+            return False
+
+        agent_data = self.state[target_layer][agent_name]
+
+        # Only reset if currently complete
+        if agent_data.get('status') != 'complete':
+            self.logger.info(f"Agent {agent_name} is not complete (status: {agent_data.get('status')}), skipping reset")
+            return False
+
+        # Preserve prior run in history
+        prior_runs = agent_data.get('prior_runs', [])
+        prior_run_record = {
+            'completed_at': agent_data.get('completed_at'),
+            'output_path': agent_data.get('output_path'),
+            'searches_performed': agent_data.get('searches_performed'),
+            'total_turns': agent_data.get('total_turns'),
+            'execution_time_seconds': agent_data.get('execution_time_seconds'),
+            'reset_at': datetime.utcnow().isoformat()
+        }
+        prior_runs.append(prior_run_record)
+
+        # Reset to pending while preserving history
+        self.state[target_layer][agent_name] = {
+            'status': 'pending',
+            'prior_runs': prior_runs
+        }
+
+        self.logger.info(f"Agent {agent_name} marked for rerun (prior runs: {len(prior_runs)})")
+        self._save_state()
+        return True
+
+    def save_checkpoint_history(self) -> Path | None:
+        """
+        Save a timestamped copy of the current checkpoint before modification.
+
+        Returns:
+            Path to the saved history file, or None if save failed
+        """
+        history_dir = self.checkpoint_dir / 'history'
+        history_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        history_file = history_dir / f"{self.execution_id}_{timestamp}.json"
+
+        try:
+            with open(history_file, 'w', encoding='utf-8') as f:
+                json.dump(self.state, f, indent=2)
+            self.logger.info(f"Checkpoint history saved: {history_file}")
+            return history_file
+        except Exception as e:
+            self.logger.error(f"Failed to save checkpoint history: {e}")
+            return None
     
-    def get_agent_output(self, agent_name: str, layer: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    def get_agent_output(self, agent_name: str, layer: str | None = None) -> dict[str, Any] | None:
         """
         Retrieve complete output for a specific agent.
-        
+
         Args:
             agent_name: Name of the agent (e.g., 'buyer_journey', 'vertical_healthcare')
             layer: Optional layer name to search in. If not provided, searches all layers.
-            
+
         Returns:
             Agent output dictionary or None if not found
         """
@@ -262,49 +361,72 @@ class StateTracker:
             return layer_data.get(agent_name)
 
         # Search in all layers
-        for layer_name in ['layer_1', 'layer_2', 'layer_3', 'integrations', 'brand_alignment']:
+        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
             layer_data = self.state.get(layer_name, {})
             if agent_name in layer_data:
                 return layer_data[agent_name]
 
         return None
     
-    def get_context_for_agent(self, agent_name: str) -> Dict[str, Any]:
+    def get_context_for_agent(self, agent_name: str) -> dict[str, Any]:
         """
         Retrieve all prior outputs needed by this agent.
-        
+
         Args:
             agent_name: Name of the agent requesting context
-            
+
         Returns:
             Dictionary of prior agent outputs
         """
         context = {}
-        
-        # For Layer 1 agents, check dependencies
+
+        # For Layer 1 agents, include Layer 0 if available
+        if agent_name in ['buyer_journey', 'channels_competitive', 'customer_expansion']:
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
+
+        # For Layer 1 agents with dependencies
         if agent_name == 'messaging_positioning':
             # Needs buyer_journey, channels_competitive, customer_expansion
             for dep in ['buyer_journey', 'channels_competitive', 'customer_expansion']:
                 if dep in self.state.get('layer_1', {}):
                     context[dep] = self.state['layer_1'][dep]
-        
+            # Also include Layer 0 if available
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
+
         elif agent_name == 'gtm_synthesis':
             # Needs all prior Layer 1 agents
             for dep in ['buyer_journey', 'channels_competitive', 'customer_expansion', 'messaging_positioning']:
                 if dep in self.state.get('layer_1', {}):
                     context[dep] = self.state['layer_1'][dep]
-        
-        # For Layer 2 agents, provide all Layer 1 context
+            # Also include Layer 0 if available
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
+
+        # For Layer 2 agents, provide Layer 0 + Layer 1 context
         elif agent_name.startswith('vertical_'):
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
             context['layer_1'] = self.state.get('layer_1', {})
-        
-        # For Layer 3 agents, provide Layer 1 + relevant Layer 2
+
+        # For Layer 3 agents, provide Layer 0 + Layer 1 + Layer 2
         elif agent_name.startswith('title_'):
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
             context['layer_1'] = self.state.get('layer_1', {})
             context['layer_2'] = self.state.get('layer_2', {})
-        
+
         # For integration, provide all layers
         elif agent_name.startswith('playbook_'):
+            layer_0_data = self.state.get('layer_0', {})
+            if layer_0_data:
+                context['layer_0'] = layer_0_data
             context['layer_1'] = self.state.get('layer_1', {})
             context['layer_2'] = self.state.get('layer_2', {})
             context['layer_3'] = self.state.get('layer_3', {})
@@ -317,7 +439,7 @@ class StateTracker:
 
         return context
     
-    def get_pending_agents(self, layer: str = "layer_1") -> List[str]:
+    def get_pending_agents(self, layer: str = "layer_1") -> list[str]:
         """Get list of pending agents in a layer."""
         layer_data = self.state.get(layer, {})
         return [
@@ -326,7 +448,7 @@ class StateTracker:
             if data.get('status') == 'pending'
         ]
     
-    def get_layer_status(self, layer: str = "layer_1") -> Dict[str, int]:
+    def get_layer_status(self, layer: str = "layer_1") -> dict[str, int]:
         """Get status counts for a layer."""
         layer_data = self.state.get(layer, {})
         
@@ -350,16 +472,25 @@ class StateTracker:
         status = self.get_layer_status(layer)
         return status['complete'] == status['total'] and status['total'] > 0
     
-    def initialize_layer_2(self, verticals: List[str]):
+    def initialize_layer_0(self, service_categories: list[str]):
+        """Initialize Layer 0 state with service category names."""
+        for category in service_categories:
+            agent_name = f"service_category_{category}"
+            if agent_name not in self.state['layer_0']:
+                self.state['layer_0'][agent_name] = {"status": "pending"}
+
+        self._save_state()
+
+    def initialize_layer_2(self, verticals: list[str]):
         """Initialize Layer 2 state with vertical names."""
         for vertical in verticals:
             agent_name = f"vertical_{vertical}"
             if agent_name not in self.state['layer_2']:
                 self.state['layer_2'][agent_name] = {"status": "pending"}
-        
+
         self._save_state()
     
-    def initialize_layer_3(self, title_clusters: List[str]):
+    def initialize_layer_3(self, title_clusters: list[str]):
         """Initialize Layer 3 state with title cluster names."""
         for title in title_clusters:
             agent_name = f"title_{title}"
@@ -368,16 +499,40 @@ class StateTracker:
         
         self._save_state()
     
-    def initialize_integrations(self, combinations: List[tuple]):
+    def initialize_integrations(self, combinations: list[tuple]):
         """Initialize integration state with vertical x title combinations."""
         for vertical, title in combinations:
             agent_name = f"playbook_{vertical}_{title}"
             if agent_name not in self.state['integrations']:
                 self.state['integrations'][agent_name] = {"status": "pending"}
-        
+
         self._save_state()
 
-    def initialize_brand_alignment(self, agent_names: List[str]):
+    def initialize_integrations_3d(self, agent_names: list[str]):
+        """
+        Initialize integration state for 3D playbooks (V × T × SC).
+
+        Args:
+            agent_names: List of agent names (e.g., ['playbook_healthcare_cfo_security', ...])
+        """
+        for agent_name in agent_names:
+            if agent_name not in self.state['integrations']:
+                self.state['integrations'][agent_name] = {"status": "pending"}
+
+        self._save_state()
+
+    def initialize_validation(self, agent_names: list[str]):
+        """Initialize validation state with agent names."""
+        if 'validation' not in self.state:
+            self.state['validation'] = {}
+
+        for agent_name in agent_names:
+            if agent_name not in self.state['validation']:
+                self.state['validation'][agent_name] = {"status": "pending"}
+
+        self._save_state()
+
+    def initialize_brand_alignment(self, agent_names: list[str]):
         """Initialize brand alignment state with agent names."""
         for agent_name in agent_names:
             if agent_name not in self.state['brand_alignment']:
@@ -385,16 +540,18 @@ class StateTracker:
 
         self._save_state()
 
-    def get_execution_summary(self) -> Dict[str, Any]:
+    def get_execution_summary(self) -> dict[str, Any]:
         """Get overall execution summary."""
         return {
             'execution_id': self.execution_id,
             'started_at': self.state.get('started_at'),
             'last_updated': self.state.get('last_updated'),
+            'layer_0_status': self.get_layer_status('layer_0'),
             'layer_1_status': self.get_layer_status('layer_1'),
             'layer_2_status': self.get_layer_status('layer_2'),
             'layer_3_status': self.get_layer_status('layer_3'),
             'integration_status': self.get_layer_status('integrations'),
+            'validation_status': self.get_layer_status('validation'),
             'brand_alignment_status': self.get_layer_status('brand_alignment'),
             'checkpoint_file': str(self.checkpoint_file)
         }
