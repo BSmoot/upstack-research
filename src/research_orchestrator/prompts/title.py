@@ -50,6 +50,12 @@ _HARDCODED_TITLE_CLUSTERS: Dict[str, TitleClusterConfig] = {
         'titles': ['VP Sales', 'VP Customer Success', 'VP Operations', 'Regional GM'],
         'decision_authority': 'Department-level technology decisions',
         'key_focus': 'Business outcomes, speed, minimal IT dependency'
+    },
+    'security_leadership': {
+        'name': 'Security Leadership (CISO, VP Security)',
+        'titles': ['CISO', 'VP Security', 'Director Information Security', 'Security Architect', 'Head of Cybersecurity'],
+        'decision_authority': 'Security tool selection, risk decisions, compliance sign-off',
+        'key_focus': 'Threat landscape, compliance requirements, incident response, vendor security assessment'
     }
 }
 

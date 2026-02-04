@@ -7,40 +7,10 @@ company:
   name: "UPSTACK"
   description: "Infrastructure technology advisory services"
 
-  # Service categories with subcategories
+  # Service categories with subcategories and key suppliers
+  # Key suppliers are factual seed data for research - research discovers buyer triggers, evaluation criteria, etc.
+  # Last updated: 2026-02-04
   services:
-    data_center:
-      name: "Data Center & Colocation"
-      subcategories:
-        - "Colocation (cabinet space, power, cooling)"
-        - "Interconnection services"
-        - "Edge computing infrastructure"
-
-    network:
-      name: "Network & Connectivity"
-      subcategories:
-        - "Dedicated Internet Access (DIA)"
-        - "MPLS and Ethernet services"
-        - "SD-WAN (software-defined WAN)"
-        - "Cloud direct connects"
-        - "Fixed wireless"
-
-    communications:
-      name: "Communications & Voice"
-      subcategories:
-        - "UCaaS (unified communications)"
-        - "SIP trunking"
-        - "Cloud PBX and hosted voice"
-        - "Video conferencing"
-
-    customer_experience:
-      name: "Customer Experience (CX)"
-      subcategories:
-        - "CCaaS (cloud contact center)"
-        - "Omnichannel engagement (voice, chat, email, SMS)"
-        - "AI virtual agents and chatbots"
-        - "Workforce optimization"
-
     security:
       name: "Network Security"
       subcategories:
@@ -50,6 +20,95 @@ company:
         - "SASE (secure access service edge)"
         - "ZTNA (zero trust network access)"
         - "CSPM (cloud security posture management)"
+      key_suppliers:
+        - "CrowdStrike"         # EPP/EDR Leader 6 consecutive years; MDR leader; expanding into SIEM/XDR
+        - "Palo Alto Networks"  # EPP Leader; SASE Leader (Prisma); CSPM (Prisma Cloud); broadest portfolio
+        - "Microsoft"           # EPP Leader (Defender); IAM (Entra ID); CSPM (Defender for Cloud)
+        - "Zscaler"             # SSE Leader; SASE Visionary (2025 MQ); dominant in ZTNA/SWG
+        - "Fortinet"            # SASE Leader; SD-WAN Leader; strong in converged network security
+        - "SentinelOne"         # EPP Leader 5 years; growing XDR/CNAPP play
+        - "Okta"                # IAM pure-play leader; workforce and customer identity
+        - "Netskope"            # SASE Leader; SSE Leader; strong CASB/DLP
+        - "Wiz"                 # Fastest-growing CSPM/CNAPP; acquired by Google Cloud (2025)
+      market_notes:
+        - "Wiz acquired by Google Cloud 2025 - factor acquisition risk into long-term CSPM evaluations"
+        - "Zscaler is SSE Leader but SASE Visionary - SD-WAN story still maturing vs Palo Alto/Fortinet/Cato"
+
+    customer_experience:
+      name: "Customer Experience (CX)"
+      subcategories:
+        - "CCaaS (cloud contact center)"
+        - "Omnichannel engagement (voice, chat, email, SMS)"
+        - "AI virtual agents and chatbots"
+        - "Workforce optimization"
+      key_suppliers:
+        - "NICE"                # CCaaS Leader, highest execution + furthest vision (2025 MQ); CXone Mpower
+        - "Genesys"             # CCaaS Leader 11 consecutive years; strong enterprise/mid-market
+        - "Five9"               # CCaaS Leader 8x; strong AI agent attach rate; note recent exec turnover
+        - "Amazon Connect"      # CCaaS Leader 3 consecutive years; pay-as-you-go; AI-native; AWS lock-in
+        - "Talkdesk"            # CCaaS Leader (returned 2025); industry-specific solutions
+        - "Cisco"               # Webex Contact Center; Niche Player in 2025 MQ but disputed
+        - "Content Guru"        # CCaaS Challenger (2025 MQ); storm platform; strong EMEA/regulated
+        - "Vonage"              # Niche Player; Fusion platform UCaaS/CCaaS/CPaaS; Ericsson-owned
+      market_notes:
+        - "Cisco CCaaS dropped to Niche Player in Gartner 2025 - disputed by analysts, evaluate if Webex shop"
+        - "Five9 recent executive turnover - monitor stability"
+
+    network:
+      name: "Network & Connectivity"
+      subcategories:
+        - "Dedicated Internet Access (DIA)"
+        - "MPLS and Ethernet services"
+        - "SD-WAN (software-defined WAN)"
+        - "Cloud direct connects"
+        - "Fixed wireless"
+      key_suppliers:
+        - "AT&T"                # Tier-1 carrier; DIA/MPLS/Ethernet; SD-WAN (resells Fortinet/Cisco)
+        - "Verizon"             # Tier-1 carrier; DIA/MPLS; SD-WAN (Cisco/Fortinet); strong SLAs
+        - "Lumen Technologies"  # Fiber/DIA/MPLS; SD-WAN (Fortinet partnership); strong mid-market
+        - "Comcast Business"    # DIA/Ethernet; ActiveCore SD-WAN; competitive in cable footprint
+        - "Spectrum Enterprise" # DIA/Ethernet/fiber; growing enterprise in Charter footprint
+        - "Fortinet"            # SD-WAN Gartner Leader; converged SD-WAN + security (FortiGate)
+        - "Cato Networks"       # SASE Leader; cloud-native SD-WAN + security; global backbone
+        - "Cradlepoint"         # Fixed wireless / 5G WAN; Ericsson-owned; branch/pop-up/mobile
+      market_notes:
+        - "Broadcom/VMware VeloCloud deliberately excluded - post-acquisition pricing/support issues"
+
+    data_center:
+      name: "Data Center & Colocation"
+      subcategories:
+        - "Colocation (cabinet space, power, cooling)"
+        - "Interconnection services"
+        - "Edge computing infrastructure"
+      key_suppliers:
+        - "Equinix"             # Global #1; 260+ DCs, 33 countries; best interconnection; premium pricing
+        - "Digital Realty"      # Global #2; 300+ DCs; PlatformDIGITAL; strong wholesale/hyperscale
+        - "QTS (Blackstone)"    # US hyperscale leader; AI-optimized campuses; private equity-owned
+        - "CoreSite"            # US retail colo; strong network density; American Tower-owned
+        - "CyrusOne (KKR)"      # US/Europe; expanding APAC; private equity-owned; wholesale focused
+        - "CentersquareDC"      # Formed from Cyxtera + Evoque merger (Brookfield); 72 DCs
+        - "Flexential"          # US mid-market; hybrid IT/colo; strong in secondary markets
+        - "Iron Mountain"       # Growing DC division; 30+ markets; sustainability-focused
+      market_notes:
+        - "CentersquareDC is Cyxtera+Evoque rebrand under Brookfield - legacy Cyxtera contracts"
+        - "QTS, CyrusOne now private equity-owned - different dynamics than public REITs"
+
+    communications:
+      name: "Communications & Voice"
+      subcategories:
+        - "UCaaS (unified communications)"
+        - "SIP trunking"
+        - "Cloud PBX and hosted voice"
+        - "Video conferencing"
+      key_suppliers:
+        - "Microsoft"           # Teams UCaaS Leader; dominant installed base; bundled M365; Operator Connect
+        - "Zoom"                # UCaaS Leader; meetings-first expanding telephony/CC; strong regulated
+        - "RingCentral"         # UCaaS Leader; RingEX + RingCX; deepest telephony feature set
+        - "Cisco"               # UCaaS Leader (Webex); strong on-prem migration path; device ecosystem
+        - "8x8"                 # UCaaS Visionary; combined UCaaS/CCaaS/CPaaS; mid-market
+        - "Dialpad"             # UCaaS Visionary; AI-native; strong SMB/mid-market
+        - "Vonage"              # Niche Player; CPaaS-first (Ericsson); programmable voice/messaging
+        - "Bandwidth"           # SIP/PSTN infrastructure; powers many UCaaS/CCaaS platforms
 
     cloud:
       name: "Cloud Infrastructure"
@@ -57,6 +116,13 @@ company:
         - "Cloud strategy and migration"
         - "Multi-cloud architecture"
         - "AI/ML infrastructure"
+      key_suppliers:
+        - "AWS"                 # Market leader (~31% IaaS share); broadest catalog; deepest AI/ML
+        - "Microsoft Azure"     # #2 (~25% share); strongest hybrid (Arc); OpenAI partnership
+        - "Google Cloud"        # #3 (~11% share); AI/ML leadership (Vertex AI, TPUs); analytics
+        - "Oracle Cloud"        # Growing fast; strong database/ERP; aggressive pricing; OCI Dedicated
+        - "IBM Cloud"           # Hybrid cloud (Red Hat OpenShift); regulated industries; shrinking but sticky
+        - "Rackspace"           # Multi-cloud managed services; Fanatical Support; financial headwinds
 
   # Geographic focus
   geography:
@@ -211,6 +277,6 @@ strategic_priorities:
     - "Financial Services"
 
 # Metadata
-updated: "2026-01-23"
-version: "2.2"
-notes: "Added 2026 strategic priorities (service expansion focus). See glossary.yaml for terminology."
+updated: "2026-02-04"
+version: "2.3"
+notes: "Added key_suppliers and market_notes to all service categories. Suppliers sourced from Gartner MQ 2025, Forrester Wave, G2 Grid. See glossary.yaml for terminology."
