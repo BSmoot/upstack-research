@@ -5,8 +5,13 @@ Command-line interface for Research Orchestrator.
 
 Usage:
     python run_research.py --config path/to/config.yaml
-    python run_research.py --resume execution_id
+    python run_research.py --resume execution_id --config path/to/config.yaml
     python run_research.py --layer 1 --config path/to/config.yaml
+    python run_research.py --layer 0 --config path/to/config.yaml
+    python run_research.py --layer 2 --verticals healthcare --config path/to/config.yaml
+    python run_research.py --layer 3 --titles cfo_cluster --config path/to/config.yaml
+    python run_research.py --layer 0 --service-categories security --config path/to/config.yaml
+    python run_research.py --layer 2 --verticals healthcare --force --config path/to/config.yaml
     python run_research.py --agents buyer_journey --config path/to/config.yaml
 """
 
@@ -31,15 +36,30 @@ def parse_args():
 Examples:
   # Start new research program
   python run_research.py --config ../build/design/251002_initial_design/research_config.yaml
-  
+
   # Resume interrupted research
   python run_research.py --resume research_20251002_170000
-  
+
   # Run specific layer only
   python run_research.py --layer 1 --config path/to/config.yaml
-  
+
   # Run specific agents only
   python run_research.py --agents buyer_journey,channels_competitive --config path/to/config.yaml
+
+  # Run Layer 0 (service category research) only
+  python run_research.py --layer 0 --config path/to/config.yaml
+
+  # Run specific verticals in Layer 2
+  python run_research.py --layer 2 --verticals healthcare,financial_services --config path/to/config.yaml
+
+  # Run specific titles in Layer 3
+  python run_research.py --layer 3 --titles cfo_cluster,cio_cto_cluster --config path/to/config.yaml
+
+  # Run specific service categories in Layer 0
+  python run_research.py --layer 0 --service-categories security,cloud --config path/to/config.yaml
+
+  # Force re-run of completed agents
+  python run_research.py --layer 2 --verticals healthcare --force --config path/to/config.yaml
         """
     )
     
@@ -58,8 +78,8 @@ Examples:
     parser.add_argument(
         '--layer',
         type=int,
-        choices=[1, 2, 3],
-        help='Execute specific layer only (1, 2, or 3)'
+        choices=[0, 1, 2, 3],
+        help='Execute specific layer only (0=service categories, 1=horizontal, 2=vertical, 3=title)'
     )
     
     parser.add_argument(
@@ -73,7 +93,31 @@ Examples:
         action='store_true',
         help='Validate configuration without executing'
     )
-    
+
+    parser.add_argument(
+        '--verticals',
+        type=str,
+        help='Comma-separated verticals to run in Layer 2 (e.g., healthcare,financial_services)'
+    )
+
+    parser.add_argument(
+        '--titles',
+        type=str,
+        help='Comma-separated title clusters to run in Layer 3 (e.g., cfo_cluster,cio_cto_cluster)'
+    )
+
+    parser.add_argument(
+        '--service-categories',
+        type=str,
+        help='Comma-separated service categories to run in Layer 0 (e.g., security,cloud)'
+    )
+
+    parser.add_argument(
+        '--force',
+        action='store_true',
+        help='Force re-run of completed agents (even if already in checkpoint)'
+    )
+
     return parser.parse_args()
 
 
@@ -84,7 +128,9 @@ async def run_full_research(orchestrator: ResearchOrchestrator):
 
 async def run_layer(orchestrator: ResearchOrchestrator, layer: int):
     """Run specific layer only."""
-    if layer == 1:
+    if layer == 0:
+        await orchestrator.execute_layer_0_parallel()
+    elif layer == 1:
         await orchestrator.execute_layer_1_parallel()
     elif layer == 2:
         await orchestrator.execute_layer_2_parallel()
@@ -128,6 +174,19 @@ def main():
 
     # --resume with --layer IS allowed (e.g., Phase 2 using Phase 1 checkpoint)
 
+    # Selective flag validation
+    if args.verticals and args.layer != 2:
+        print("Error: --verticals requires --layer 2")
+        sys.exit(1)
+
+    if args.titles and args.layer != 3:
+        print("Error: --titles requires --layer 3")
+        sys.exit(1)
+
+    if args.service_categories and args.layer != 0:
+        print("Error: --service-categories requires --layer 0")
+        sys.exit(1)
+
     try:
         # Initialize orchestrator
         if args.resume:
@@ -155,13 +214,50 @@ def main():
 
             print(f"Loading configuration: {config_path}")
             orchestrator = ResearchOrchestrator(config_path=config_path)
-        
+
+        # Process --force flag
+        if args.force:
+            force_agents = []
+            if args.service_categories:
+                for cat in [c.strip() for c in args.service_categories.split(',')]:
+                    force_agents.append(f"service_category_{cat}")
+            elif args.verticals:
+                for v in [v.strip() for v in args.verticals.split(',')]:
+                    force_agents.append(f"vertical_{v}")
+            elif args.titles:
+                for t in [t.strip() for t in args.titles.split(',')]:
+                    force_agents.append(f"title_{t}")
+            elif args.layer is not None:
+                # Force all agents in specified layer
+                if args.layer == 0:
+                    for cat in orchestrator.config.get('service_categories', []):
+                        force_agents.append(f"service_category_{cat}")
+                elif args.layer == 1:
+                    # Layer 1 agents are fixed
+                    force_agents.extend([
+                        'buyer_journey', 'channels_competitive',
+                        'customer_expansion', 'messaging_positioning',
+                        'gtm_synthesis'
+                    ])
+                elif args.layer == 2:
+                    for v in orchestrator.config['verticals']:
+                        force_agents.append(f"vertical_{v}")
+                elif args.layer == 3:
+                    for t in orchestrator.config['title_clusters']:
+                        force_agents.append(f"title_{t}")
+
+            if force_agents:
+                orchestrator.force_agents = force_agents
+                orchestrator._process_force_agents()
+
         # Dry run - just validate config
         if args.dry_run:
             print("\nConfiguration valid!")
             print(f"Execution ID: {orchestrator.state.execution_id}")
             print(f"Verticals: {', '.join(orchestrator.config['verticals'])}")
             print(f"Title Clusters: {', '.join(orchestrator.config['title_clusters'])}")
+            if orchestrator.config.get('service_categories'):
+                print(f"Service Categories: {', '.join(orchestrator.config['service_categories'])}")
             print(f"Output Directory: {orchestrator.output_dir}")
             print(f"Checkpoint Directory: {orchestrator.state.checkpoint_dir}")
             return
@@ -171,11 +267,26 @@ def main():
             # Run specific agents
             agent_names = [name.strip() for name in args.agents.split(',')]
             asyncio.run(run_specific_agents(orchestrator, agent_names))
-        
-        elif args.layer:
+
+        elif args.verticals or args.titles or args.service_categories:
+            # Selective execution within a layer
+            if args.verticals:
+                selected = [v.strip() for v in args.verticals.split(',')]
+                orchestrator.config['verticals'] = selected
+                asyncio.run(run_layer(orchestrator, 2))
+            elif args.titles:
+                selected = [t.strip() for t in args.titles.split(',')]
+                orchestrator.config['title_clusters'] = selected
+                asyncio.run(run_layer(orchestrator, 3))
+            elif args.service_categories:
+                selected = [c.strip() for c in args.service_categories.split(',')]
+                orchestrator.config['service_categories'] = selected
+                asyncio.run(run_layer(orchestrator, 0))
+
+        elif args.layer is not None:
             # Run specific layer
             asyncio.run(run_layer(orchestrator, args.layer))
-        
+
         else:
             # Run full research program
             asyncio.run(run_full_research(orchestrator))

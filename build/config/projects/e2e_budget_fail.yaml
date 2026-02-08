@@ -1,0 +1,62 @@
+# Budget Failure Test Configuration
+# Purpose: Trigger BudgetExceededError for testing error handling
+# Date: 2026-02-08
+#
+# Uses extremely low budget limits to trigger failure on first agent
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "e2e_budget_fail_test"
+  description: "Budget failure test: triggers BudgetExceededError immediately"
+
+verticals:
+  - "healthcare"
+
+title_clusters:
+  - "cio_cto_cluster"
+
+service_categories:
+  - "security"
+
+priority_combinations:
+  - vertical: "healthcare"
+    titles:
+      - "cio_cto_cluster"
+    service_categories:
+      - "security"
+    priority: 1
+
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+
+  business_model: "vendor_reimbursed"
+  primary_competition: "direct_vendor_sales"
+
+# Extremely low budget to trigger BudgetExceededError
+budget:
+  max_cost_usd: 0.001
+  max_searches: 1
+
+# Disable optional passes
+validation:
+  enabled: false
+
+brand_alignment:
+  enabled: false
+
+# Disable all review gates
+execution_settings:
+  review_gates:
+    after_layer_0: false
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+    after_validation: false

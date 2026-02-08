@@ -1,0 +1,203 @@
+"""Unit tests for validation prompt building functions."""
+
+import pytest
+
+from research_orchestrator.prompts.validation import (
+    build_validation_prompt,
+    build_batch_validation_prompt,
+)
+
+
+class TestBuildValidationPrompt:
+    """Test build_validation_prompt function."""
+
+    def test_includes_playbook_content(self):
+        result = build_validation_prompt(
+            playbook_content="Test playbook about healthcare security",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "Test playbook about healthcare security" in result
+
+    def test_includes_vertical_name(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "Healthcare" in result
+
+    def test_includes_title_name(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "CIO" in result
+
+    def test_includes_service_category_when_provided(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            service_category_name="Security",
+        )
+        assert "Security" in result
+
+    def test_service_category_defaults_to_na(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "N/A" in result
+
+    def test_includes_completeness_dimension(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "COMPLETENESS" in result
+        assert "25 points" in result
+
+    def test_includes_specificity_dimension(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "SPECIFICITY" in result
+        assert "25 points" in result
+
+    def test_includes_actionability_dimension(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "ACTIONABILITY" in result
+        assert "25 points" in result
+
+    def test_includes_research_grounding_dimension(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "RESEARCH GROUNDING" in result
+        assert "25 points" in result
+
+    def test_includes_approved_threshold(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "APPROVED" in result
+        assert "80+" in result
+
+    def test_includes_needs_revision_threshold(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "NEEDS_REVISION" in result
+        assert "60-79" in result
+
+    def test_includes_rejected_threshold(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "REJECTED" in result
+        assert "<60" in result
+
+    def test_includes_deliverable_sections(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "VALIDATION SUMMARY" in result
+        assert "DIMENSION SCORES" in result
+        assert "CRITICAL ISSUES" in result
+        assert "IMPROVEMENT RECOMMENDATIONS" in result
+        assert "STRENGTHS" in result
+        assert "VERDICT" in result
+
+    def test_handles_empty_playbook_content(self):
+        result = build_validation_prompt(
+            playbook_content="",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert isinstance(result, str)
+        assert "COMPLETENESS" in result
+
+    def test_handles_special_characters_in_content(self):
+        """Content with curly braces and backticks should not break formatting."""
+        content = "Playbook with {curly braces} and `backticks` and ```code blocks```"
+        # This should not raise - curly braces that aren't template vars
+        # would cause KeyError with str.format(), but the content is inserted
+        # as a pre-formatted value, not as a template
+        result = build_validation_prompt(
+            playbook_content=content,
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert content in result
+
+
+class TestBuildBatchValidationPrompt:
+    """Test build_batch_validation_prompt function."""
+
+    def test_includes_total_count(self):
+        result = build_batch_validation_prompt(
+            playbook_summaries=[],
+            total_playbooks=3,
+        )
+        assert "Total Playbooks Validated: 3" in result
+
+    def test_includes_playbook_names(self):
+        summaries = [
+            {"name": "healthcare_cio_security", "status": "APPROVED", "score": 85},
+            {"name": "legal_cfo_network", "status": "NEEDS_REVISION", "score": 72},
+        ]
+        result = build_batch_validation_prompt(summaries, total_playbooks=2)
+        assert "healthcare_cio_security" in result
+        assert "legal_cfo_network" in result
+
+    def test_includes_playbook_scores(self):
+        summaries = [
+            {"name": "test_playbook", "status": "APPROVED", "score": 85},
+        ]
+        result = build_batch_validation_prompt(summaries, total_playbooks=1)
+        assert "85/100" in result
+
+    def test_includes_playbook_status(self):
+        summaries = [
+            {"name": "test_playbook", "status": "APPROVED", "score": 85},
+            {"name": "test_playbook_2", "status": "REJECTED", "score": 45},
+        ]
+        result = build_batch_validation_prompt(summaries, total_playbooks=2)
+        assert "APPROVED" in result
+        assert "REJECTED" in result
+
+    def test_handles_empty_list(self):
+        result = build_batch_validation_prompt(
+            playbook_summaries=[],
+            total_playbooks=0,
+        )
+        assert isinstance(result, str)
+        assert "Total Playbooks Validated: 0" in result
+
+    def test_includes_aggregate_sections(self):
+        summaries = [
+            {"name": "test", "status": "APPROVED", "score": 90},
+        ]
+        result = build_batch_validation_prompt(summaries, total_playbooks=1)
+        assert "Aggregate Statistics" in result
+        assert "Common Issues" in result
