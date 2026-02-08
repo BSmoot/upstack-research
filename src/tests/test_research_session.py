@@ -173,6 +173,91 @@ class TestResearchSessionContentExtraction:
         assert result == "Text before tool.\n\nText after tool."
 
 
+class TestJoinAccumulatedText:
+    """Test intelligent joining of multi-turn text fragments."""
+
+    def _make_session(self, mock_anthropic_client, mock_logger):
+        return ResearchSession(
+            agent_name="join_test",
+            anthropic_client=mock_anthropic_client,
+            logger=mock_logger,
+        )
+
+    def test_single_fragment(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        assert session._join_accumulated_text(["Hello world."]) == "Hello world."
+
+    def test_empty_list(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        assert session._join_accumulated_text([]) == ""
+
+    def test_separate_sections(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "First section.",
+            "Second section."
+        ])
+        assert result == "First section.\n\nSecond section."
+
+    def test_continuation_lowercase(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "The buyer journey includes",
+            "several important phases."
+        ])
+        assert result == "The buyer journey includes several important phases."
+
+    def test_punctuation_on_separate_fragment_period(self, mock_anthropic_client, mock_logger):
+        """Regression: period starting a fragment must join without space."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "AI chatbots are now the #1 source influencing vendor shortlists",
+            ", fundamentally disrupting traditional procurement",
+            "."
+        ])
+        assert "\n\n," not in result
+        assert "\n\n." not in result
+        assert "shortlists, fundamentally" in result
+        assert "procurement." in result
+
+    def test_punctuation_on_separate_fragment_comma(self, mock_anthropic_client, mock_logger):
+        """Regression: comma starting a fragment must join without space."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "80% of tech buyers using AI tools",
+            ", with just five brands appearing"
+        ])
+        assert "tools, with" in result
+        assert "\n\n," not in result
+
+    def test_trailing_newline_on_prev_fragment(self, mock_anthropic_client, mock_logger):
+        """Regression: trailing newline should not mask incomplete sentence."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "the baseline\n",
+            "for all measurements."
+        ])
+        # Should join as continuation since 'baseline' doesn't end with punctuation
+        # and 'for' starts lowercase
+        assert "baseline" in result
+        assert "for all" in result
+        # Should NOT have double-newline separation
+        assert "baseline\n\nfor" not in result
+
+    def test_multiple_punctuation_fragments(self, mock_anthropic_client, mock_logger):
+        """Multiple fragments starting with punctuation in sequence."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        result = session._join_accumulated_text([
+            "Buyers reported satisfaction rates of 85%",
+            ", exceeding the industry average",
+            ". This demonstrates clear value",
+            "."
+        ])
+        assert "85%, exceeding" in result
+        assert "average. This" in result
+        assert "value." in result
+
+
 @pytest.mark.asyncio
 @pytest.mark.integration
 class TestResearchSessionIntegration:

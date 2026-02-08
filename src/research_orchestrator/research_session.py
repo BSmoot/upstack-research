@@ -512,12 +512,27 @@ class ResearchSession:
                 continue
 
             prev_fragment = result[-1]
+            prev_stripped = prev_fragment.rstrip()
 
-            # Check if previous fragment ends incomplete
+            # Check if current fragment starts with punctuation (always a continuation)
+            current_starts_with_punctuation = (
+                fragment
+                and fragment[0] in '.,;:!?'
+            )
+
+            if current_starts_with_punctuation:
+                # Punctuation belongs directly on the previous fragment (no space)
+                result.append(fragment)
+                self.logger.debug(
+                    f"[{self.agent_name}] Joined fragment {i} as punctuation continuation"
+                )
+                continue
+
+            # Check if previous fragment ends incomplete (strip trailing whitespace first)
             prev_ends_incomplete = (
-                prev_fragment
-                and prev_fragment[-1] not in '.!?\n'
-                and not prev_fragment.endswith('**')  # Bold markers
+                prev_stripped
+                and prev_stripped[-1] not in '.!?'
+                and not prev_stripped.endswith('**')  # Bold markers
             )
 
             # Check if current fragment starts as continuation
@@ -525,7 +540,6 @@ class ResearchSession:
                 fragment
                 and (
                     fragment[0].islower()  # Lowercase start
-                    or fragment[0] == ','  # Starts with comma
                     or fragment[:2] == '**'  # Starts with bold
                 )
             )
