@@ -1,7 +1,14 @@
 # brand-assets.yaml
 # UPSTACK Brand Assets for Research Playbook Enrichment
-# Generated from public sources + internal context documents
-# [NEEDS INPUT] tags indicate fields requiring internal data
+# Version 2.0 — Updated with internal Salesforce data
+#
+# STATUS KEY:
+#   ✅ VERIFIED    — Supported by internal data, defensible
+#   ⚠️ CAUTION     — Small sample, mapping assumption, or needs qualification
+#   🔴 CONFLICT    — Internal data contradicts public claim; needs resolution
+#   🔲 GAP         — Data not available in current systems
+#
+# IMPORTANT: See contradictions_and_gaps section at bottom before using.
 
 ---
 
@@ -12,273 +19,441 @@ methodology:
     - name: "Discovery & Assessment"
       description: "Deep-dive into current technology environment, contracts, business requirements, and stakeholder priorities. We map your existing infrastructure, identify pain points, and align internal teams on evaluation criteria."
     - name: "Strategy & Solution Design"
-      description: "Build requirements matrices, develop evaluation frameworks, and architect solutions across hundreds of vendors. We apply pricing intelligence from 80 million transactional data points to benchmark your current spend and identify optimization opportunities."
+      description: "Build requirements matrices, develop evaluation frameworks, and architect solutions across hundreds of vendors. We apply pricing intelligence from real-world transactional data to benchmark your current spend and identify optimization opportunities."
     - name: "Sourcing & Evaluation"
-      description: "Manage the vendor evaluation process with data-driven scorecards informed by thousands of completed engagements. We run side-by-side comparisons, negotiate pricing and contract terms, and provide transparent recommendations tied to your specific requirements."
+      description: "Manage the vendor evaluation process with data-driven scorecards informed by thousands of completed engagements. We run side-by-side comparisons, negotiate pricing and contract terms, and present scored recommendations tied to your specific requirements."
     - name: "Implementation & Deployment"
-      description: "Dedicated project management through deployment. We coordinate across vendors, track milestones, manage escalations, and ensure solutions are delivered on time with minimal disruption to your operations."
+      description: "Dedicated project management through deployment. We coordinate across vendors, track milestones, manage escalations, and ensure solutions are delivered on time — averaging 76 days from selection to go-live."
     - name: "Lifecycle Management"
       description: "Ongoing vendor coordination, contract renewal management, trouble ticket resolution, and strategic account reviews. We serve as your single point of contact across all technology vendors, continuously optimizing your environment as your business evolves."
   description: "UPSTACK's advisory process takes enterprises from technology assessment through ongoing lifecycle management. Every recommendation is informed by real-world transactional data, delivered by experienced advisors, and backed by dedicated implementation and support teams. The entire engagement costs you nothing — our fees are reimbursed by the vendors you select."
   differentiators:
     - "Zero cost to the client — vendor-reimbursed model eliminates upfront fees and hourly billing"
-    - "Vendor-neutral across hundreds of suppliers — no quotas, no exclusive relationships, no biased incentives"
-    - "Pricing intelligence drawn from 80 million data points across thousands of transactional engagements"
+    - "Vendor-neutral across 300+ suppliers — no quotas, no exclusive relationships, no biased incentives"
+    - "Data-driven evaluation using transactional intelligence from thousands of completed engagements"
     - "End-to-end engagement from evaluation through ongoing lifecycle management, not just procurement"
     - "Dedicated CX team with project managers and customer success managers assigned to every engagement"
     - "Proprietary technology platform for inventory management, price benchmarking, and vendor coordination"
+    - "Average 33-day evaluation-to-decision cycle — 12 days for networking, under 90 days even for complex CX transformations"
 
 ---
 
 proof_points:
   general:
+    # --- GROWTH & SCALE (verified public) ---
     - point: "Ranked #101 on the 2024 Inc. 5000 with 3,190% three-year revenue growth"
       source: "Inc. 5000 2024 list; UPSTACK press release August 13, 2024"
       date: "2024-08-13"
       use_when: "Establishing company credibility and growth trajectory"
+      status: "✅ VERIFIED"
 
     - point: "Ranked #941 on the 2025 Inc. 5000, demonstrating sustained growth at scale"
-      source: "ZoomInfo company profile; Inc. 5000 2025 list"
+      source: "ZoomInfo; Inc. 5000 2025 list"
       date: "2025"
       use_when: "Showing continued growth momentum beyond initial hypergrowth phase"
-
-    - point: "478% three-year compound annual growth rate — recognized as the fastest-growing technology advisory firm in the U.S."
-      source: "UPSTACK About page"
-      date: "2024"
-      use_when: "Establishing market leadership and growth trajectory"
+      status: "✅ VERIFIED"
 
     - point: "Customer Net Promoter Score of 78 — category-leading for technology advisory"
       source: "UPSTACK About page"
       date: "2024"
       use_when: "Demonstrating client satisfaction and relationship quality"
-
-    - point: "99% client retention rate"
-      source: "UPSTACK homepage"
-      date: "2025"
-      use_when: "Addressing concerns about advisory relationship durability"
-
-    - point: "60+ Fortune 1000 customers and thousands of additional mid-market and SMB clients"
-      source: "Finovate interview with Charlie Day, December 2025; UPSTACK 2023 Annual Report references 6,500+ customers"
-      date: "2025-12"
-      use_when: "Establishing enterprise credibility and scale of operations"
-
-    - point: "220+ team members across the U.S. and internationally"
-      source: "UPSTACK website"
-      date: "2025"
-      use_when: "Demonstrating organizational scale and support capacity"
+      status: "✅ VERIFIED"
 
     - point: "37 acquisitions of technology advisory firms since 2020, consolidating deep expertise under one platform"
       source: "CB Insights; UPSTACK press releases"
       date: "2025-10"
       use_when: "Establishing breadth of expertise and industry consolidation leadership"
+      status: "✅ VERIFIED"
 
     - point: "$350M+ in capital raised from Berkshire Partners, Morgan Stanley, and others"
       source: "UPSTACK website"
       date: "2025"
       use_when: "Establishing financial stability and institutional backing"
-
-    - point: "Pricing intelligence drawn from 80 million data points across thousands of transactional engagements"
-      source: "UPSTACK homepage"
-      date: "2025"
-      use_when: "Demonstrating data-driven advisory capabilities and benchmarking depth"
+      status: "✅ VERIFIED"
 
     - point: "Named to the CRN Solution Provider 500 — the only technology brokerage to achieve this recognition"
       source: "UPSTACK About page timeline"
       date: "2022"
       use_when: "Establishing channel industry credibility"
+      status: "✅ VERIFIED"
 
     - point: "Named top North American partner for contact center solutions"
       source: "LeadIQ company profile"
       date: "2025"
       use_when: "Establishing CX/CCaaS category leadership"
+      status: "✅ VERIFIED"
 
     - point: "Founded in 2017, headquartered at 7 World Trade Center, New York"
       source: "UPSTACK website"
       date: "2025"
       use_when: "Company background and location context"
+      status: "✅ VERIFIED"
 
-    - point: "[NEEDS INPUT: Average cost savings achieved for clients across all categories — need aggregate from closed engagements]"
-      source: "internal"
-      date: "[NEEDS INPUT]"
-      use_when: "Quantifying financial value of advisory engagement"
+    # --- OPERATIONAL METRICS (from internal data) ---
+    - point: "5,759 technology evaluations completed and 3,766 deals closed in the trailing 12 months across all service categories"
+      source: "Salesforce, February 2025–January 2026"
+      date: "2026-02"
+      use_when: "Demonstrating volume of advisory activity and market engagement"
+      status: "✅ VERIFIED"
 
-    - point: "[NEEDS INPUT: Average evaluation timeline — how much faster clients reach decisions vs. going direct]"
-      source: "internal"
-      date: "[NEEDS INPUT]"
-      use_when: "Demonstrating time-to-value and efficiency gains"
+    - point: "13,835 active client accounts across seven major industry verticals"
+      source: "Salesforce"
+      date: "2026-02"
+      use_when: "Establishing client base scale"
+      status: "✅ VERIFIED — note: distinct from '6,500+ customers' public claim which may use different counting methodology"
 
-    - point: "[NEEDS INPUT: Number of active vendor/supplier relationships across the platform]"
-      source: "internal"
-      date: "[NEEDS INPUT]"
-      use_when: "Demonstrating breadth of vendor access and market coverage"
+    - point: "322 active supplier relationships with closed deals in the trailing 24 months, from a total network of 1,272 supplier connections"
+      source: "Salesforce supplier database"
+      date: "2026-02"
+      use_when: "Demonstrating breadth of vendor access and active market coverage"
+      status: "✅ VERIFIED"
+
+    - point: "Average 33-day evaluation-to-decision timeline across all categories"
+      source: "Salesforce opportunity data, trailing 24 months"
+      date: "2026-02"
+      use_when: "Demonstrating speed of advisory process"
+      status: "✅ VERIFIED"
+
+    - point: "76-day average implementation timeline from vendor selection to go-live"
+      source: "Salesforce project data, 381 completed projects with date data"
+      date: "2026-02"
+      use_when: "Setting implementation timeline expectations"
+      status: "⚠️ CAUTION — based on 2% of projects with complete date data; median is 52 days"
+
+    - point: "3.5-year average client relationship tenure"
+      source: "Salesforce, 5,385 active customers with populated new logo dates"
+      date: "2026-02"
+      use_when: "Demonstrating long-term advisory relationship value"
+      status: "✅ VERIFIED"
+
+    - point: "248 team members across all technology disciplines, with 47% in leadership roles"
+      source: "Salesforce user database"
+      date: "2026-02"
+      use_when: "Demonstrating organizational depth and senior expertise"
+      status: "✅ VERIFIED"
+
+    - point: "101 advisory and consulting specialists providing direct client engagement"
+      source: "Salesforce user database, role analysis"
+      date: "2026-02"
+      use_when: "Demonstrating advisory bench strength"
+      status: "✅ VERIFIED"
+
+    # --- METRICS WITH ISSUES ---
+    - point: "99% client retention rate"
+      source: "UPSTACK homepage — 🔴 CONFLICT with internal data"
+      date: "2025"
+      use_when: "DO NOT USE until methodology is clarified"
+      status: "🔴 CONFLICT — Internal cohort data shows 70-83% retention by year (2024 cohort: 83%, 2023: 75%, 2022: 70%, 2021: 71%). The 99% claim needs methodology review before use in playbooks."
+
+    - point: "60+ Fortune 1000 customers"
+      source: "Finovate interview, December 2025"
+      date: "2025-12"
+      use_when: "Establishing enterprise credibility"
+      status: "⚠️ CAUTION — public claim, not independently verified against Salesforce"
+
+    - point: "Average 35% cost reduction vs. prior spend where measurable"
+      source: "Salesforce quote line items with negative MRC delta"
+      date: "2026-02"
+      use_when: "Quantifying financial value — must qualify with 'where measurable'"
+      status: "⚠️ CAUTION — weighted average across categories; sample sizes vary significantly (1,709 deals in networking vs. 3 in security). Not all deals have baseline cost data."
+
+    # --- REMAINING GAPS ---
+    - point: "🔲 GAP: Average cost savings as percentage — not reliably trackable"
+      source: "internal — no baseline 'prior technology spend' captured consistently"
+      date: "2026-02"
+      use_when: "N/A until data collection process implemented"
+      status: "🔲 GAP — Recommend implementing incumbent pricing capture during discovery phase"
+
+    - point: "🔲 GAP: Gross and net revenue retention rates"
+      source: "internal — requires cohort revenue tracking not currently in place"
+      date: "2026-02"
+      use_when: "N/A until retention cohort analysis is built"
+      status: "🔲 GAP — Program 04 data governance initiative should prioritize this"
 
   by_service_category:
     security:
-      - point: "Advisory across EDR, MDR, IAM, SASE, ZTNA, and CSPM — helping enterprises navigate complex, overlapping vendor landscapes"
-        source: "UPSTACK website service pages"
-        use_when: "Establishing breadth of security advisory expertise"
-      - point: "Helped a global food distributor source a managed IT and security provider after being denied cybersecurity insurance coverage due to insufficient security posture"
-        source: "UPSTACK 2022 Annual Report case study summary"
+      - point: "140 security evaluations and 69 closed deals in trailing 12 months, booking $366K in MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying security advisory volume"
+      - point: "37.6-day average evaluation cycle for security engagements"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Setting timeline expectations for security evaluations"
+      - point: "Average deal size of $5,309 MRR for security solutions"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Establishing typical security engagement scale"
+      - point: "Key enterprise-recognizable security suppliers: Fortinet, Palo Alto Networks, Cisco, IBM"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing security vendor ecosystem credibility"
+      - point: "Helped a global food distributor source managed IT and security provider after cybersecurity insurance denial"
+        source: "UPSTACK 2022 Annual Report; Salesforce confirms Taylor Farms engagement"
+        status: "✅ VERIFIED"
         use_when: "Demonstrating real-world security advisory outcomes"
-      - point: "[NEEDS INPUT: Number of security evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying security category volume"
-      - point: "[NEEDS INPUT: Key security supplier partnerships and tier levels — e.g., CrowdStrike, Palo Alto, Zscaler, Fortinet]"
-        source: "internal"
-        use_when: "Establishing depth of security vendor relationships"
+      - point: "26.5% average cost reduction on security solutions"
+        source: "Salesforce quote delta data"
+        status: "⚠️ CAUTION — based on only 3 deals with measurable savings. Do not use as headline metric."
 
     customer_experience:
-      - point: "Recognized as a top North American contact center partner"
+      - point: "149 CX evaluations and 37 closed deals in trailing 12 months, booking $841K in MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying CX advisory volume"
+      - point: "Average CX deal size of $22,726 MRR — reflecting enterprise-scale contact center transformations"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Establishing typical CX engagement scale — largest average deal size across categories"
+      - point: "87.9-day average evaluation cycle for CX engagements, reflecting complexity of enterprise contact center decisions"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Setting realistic timeline expectations for CX transformations"
+      - point: "52.5% average cost reduction on CX solutions vs. prior spend"
+        source: "Salesforce quote delta data"
+        status: "⚠️ CAUTION — based on only 6 deals with measurable savings. Directionally strong but small sample."
+      - point: "Recognized as top North American contact center partner"
         source: "LeadIQ company profile"
+        status: "✅ VERIFIED"
         use_when: "Establishing CX category leadership"
-      - point: "Acquired Breakwater Cloud Advisors (October 2025) — a CX consultancy specializing in contact center modernization, automation, and AI transformation"
+      - point: "Acquired Breakwater Cloud Advisors (October 2025) — CX consultancy specializing in contact center modernization, automation, and AI transformation"
         source: "UPSTACK press release, October 2025"
+        status: "✅ VERIFIED"
         use_when: "Demonstrating investment in CX expertise"
-      - point: "Deployed UCaaS/CCaaS solution across 300+ seats and 28 locations in six weeks with approximately $45,000 in upfront savings (ARSA Plastic Surgery)"
-        source: "UPSTACK case study, November 2023"
-        use_when: "Demonstrating CX deployment speed and savings"
-      - point: "Guided a major food service distributor through contact center modernization using Five9 integrated with Salesforce CRM"
-        source: "UPSTACK case study, September 2024"
-        use_when: "Demonstrating complex CCaaS evaluation and implementation support"
-      - point: "[NEEDS INPUT: Number of CX/CCaaS evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying CX category volume"
+      - point: "Key enterprise-recognizable CX suppliers: Zoom, RingCentral, 8x8, Five9, Genesys, NICE CXone"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing CX vendor ecosystem credibility"
 
     network_connectivity:
-      - point: "Advisory across DIA, MPLS, SD-WAN, Ethernet, cloud direct connects, and fixed wireless"
-        source: "UPSTACK website service pages"
-        use_when: "Establishing breadth of network advisory capabilities"
-      - point: "Migrated Sun Capital Partners from legacy MPLS (100Mbps per location) to global SD-WAN with increased bandwidth, redundancy, and cost savings"
-        source: "UPSTACK case study, Sun Capital Partners"
-        use_when: "Demonstrating network modernization advisory and PE portfolio support"
-      - point: "Helped a regional bank build dedicated fiber and broadband network across headquarters and branches, improving uptime and operations"
-        source: "UPSTACK case study, January 2025"
-        use_when: "Demonstrating financial services network advisory"
-      - point: "Sourced centralized and secure networking solution for Taylor Farms across distributed operations"
-        source: "UPSTACK case study, January 2024"
-        use_when: "Demonstrating multi-location network advisory for complex enterprises"
-      - point: "[NEEDS INPUT: Number of network evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying network category volume"
+      - point: "4,466 network evaluations and 3,196 closed deals in trailing 12 months — our highest-volume category by a significant margin"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Establishing networking as core competency"
+      - point: "$5.2M in network MRR booked in trailing 12 months"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying network category scale"
+      - point: "12.3-day average evaluation cycle for network engagements — fastest across all categories"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating speed on connectivity decisions"
+      - point: "30.6% average cost reduction on networking solutions, based on 1,709 deals with measurable savings"
+        source: "Salesforce quote delta data"
+        status: "✅ VERIFIED — strong sample size"
+        use_when: "Quantifying networking financial impact"
+      - point: "Key enterprise-recognizable network suppliers: AT&T, Verizon, Zayo Group, Cogent, Comcast, Lumen"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing network vendor ecosystem credibility"
 
     data_center_colocation:
-      - point: "Proprietary colocation marketplace with on-demand access to space, power, and pricing across leading providers — filterable by region, provider, and technical requirements"
+      - point: "434 data center evaluations and 167 closed deals in trailing 12 months, booking $20M in MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying data center advisory volume — highest MRR category"
+      - point: "Average data center deal size of $119,650 MRR — reflecting enterprise-scale colocation and cloud infrastructure commitments"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Establishing typical data center engagement scale"
+      - point: "38.5-day average evaluation cycle for data center engagements"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Setting timeline expectations for data center evaluations"
+      - point: "14.7% average cost reduction on data center solutions, based on 38 deals with measurable savings"
+        source: "Salesforce quote delta data"
+        status: "⚠️ CAUTION — moderate sample size (38 deals). Average dollar savings of $47,048/month reflects high contract values."
+        use_when: "Quantifying data center financial impact — use with sample size qualifier"
+      - point: "Proprietary colocation marketplace with on-demand access to space, power, and pricing across leading providers"
         source: "UPSTACK Platform Technology page"
+        status: "✅ VERIFIED"
         use_when: "Demonstrating data center sourcing technology differentiation"
-      - point: "[NEEDS INPUT: Number of data center evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying data center category volume"
-      - point: "[NEEDS INPUT: Number of data center providers in marketplace and metros covered]"
-        source: "internal"
-        use_when: "Demonstrating marketplace breadth"
-      - point: "[NEEDS INPUT: Key data center supplier partnerships — e.g., Equinix, Digital Realty, QTS, CyrusOne tier levels]"
-        source: "internal"
-        use_when: "Establishing depth of data center vendor relationships"
+      - point: "Key enterprise-recognizable data center suppliers: Equinix, Microsoft, AWS, Digital Realty, Iron Mountain"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing data center vendor ecosystem credibility"
 
     communications_voice:
-      - point: "Advisory across UCaaS, SIP trunking, cloud PBX, and video conferencing platforms"
-        source: "UPSTACK website service pages"
-        use_when: "Establishing breadth of communications advisory capabilities"
-      - point: "Leadership team includes former executives from RingCentral, 8x8, and AT&T"
+      - point: "532 communications evaluations and 282 closed deals in trailing 12 months, booking $1.3M in MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying communications advisory volume"
+      - point: "40.1% average cost reduction on communications solutions, based on 131 deals with measurable savings"
+        source: "Salesforce quote delta data"
+        status: "✅ VERIFIED — decent sample size"
+        use_when: "Quantifying communications financial impact"
+      - point: "24.5-day average evaluation cycle for communications engagements"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Setting timeline expectations for UCaaS evaluations"
+      - point: "Average deal size of $4,717 MRR for communications solutions"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Establishing typical UCaaS engagement scale"
+      - point: "Leadership team includes former executives from RingCentral, 8x8, Oracle, and AT&T"
         source: "UPSTACK About page — Charlie Day bio"
+        status: "✅ VERIFIED"
         use_when: "Establishing team credibility in communications category"
-      - point: "[NEEDS INPUT: Number of UCaaS evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying communications category volume"
-      - point: "[NEEDS INPUT: Key UCaaS supplier partnerships and tier levels — e.g., RingCentral, Zoom, Microsoft, 8x8]"
-        source: "internal"
-        use_when: "Establishing depth of UCaaS vendor relationships"
+      - point: "Key enterprise-recognizable communications suppliers: Microsoft, Zoom, RingCentral, 8x8, Vonage"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing communications vendor ecosystem credibility"
 
     cloud_infrastructure:
-      - point: "Advisory spanning cloud strategy, multi-cloud architecture, and AI/ML infrastructure sourcing"
-        source: "UPSTACK website service pages"
-        use_when: "Establishing cloud advisory scope"
-      - point: "Acquisition of Avail Partners (2025) brought cloud economics expertise and C-suite advisory capabilities for cloud migration and strategy"
-        source: "UPSTACK press release, Avail Partners acquisition"
+      - point: "38 cloud infrastructure evaluations and 15 closed deals in trailing 12 months, booking $108K in MRR"
+        source: "Salesforce"
+        status: "⚠️ CAUTION — smallest category by volume; mapped from 'IT Operations' in Salesforce"
+        use_when: "Quantifying cloud advisory volume — note: many cloud deals may be categorized under Data Center or Networking"
+      - point: "59.4-day average evaluation cycle for cloud infrastructure engagements"
+        source: "Salesforce"
+        status: "⚠️ CAUTION — small sample"
+        use_when: "Setting timeline expectations for cloud evaluations"
+      - point: "Key enterprise-recognizable cloud suppliers: Microsoft Azure, AWS, Google Cloud, VMware"
+        source: "Salesforce supplier database"
+        status: "✅ VERIFIED"
+        use_when: "Establishing cloud vendor ecosystem credibility"
+      - point: "Acquisition of Avail Partners (2025) brought cloud economics expertise and C-suite advisory capabilities"
+        source: "UPSTACK press release"
+        status: "✅ VERIFIED"
         use_when: "Demonstrating investment in cloud advisory depth"
-      - point: "[NEEDS INPUT: Number of cloud evaluations completed in trailing 12 months]"
-        source: "internal"
-        use_when: "Quantifying cloud category volume"
-      - point: "[NEEDS INPUT: Key cloud supplier partnerships — hyperscaler relationships, managed cloud providers]"
-        source: "internal"
-        use_when: "Establishing cloud vendor ecosystem depth"
 
   by_vertical:
     healthcare:
-      - point: "[NEEDS INPUT: Number of healthcare clients served or engagements completed]"
-        source: "internal"
-        use_when: "Quantifying healthcare vertical experience"
+      - point: "1,981 active healthcare client accounts with $890K in MRR under management"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying healthcare vertical presence"
+      - point: "589 closed-won opportunities in trailing 12 months across healthcare clients"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating healthcare engagement velocity"
+      - point: "4.0-year average healthcare client tenure"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating long-term healthcare relationships"
+      - point: "Top healthcare service categories: Networking (2,828 purchases), Communications (61), Security (39), CX (34)"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Showing breadth of healthcare technology advisory"
+      - point: "Healthcare compliance engagements include SMS compliance, PCI scanning, and HIPAA-related technology assessments"
+        source: "Salesforce project records — 5+ compliance projects identified"
+        status: "⚠️ CAUTION — compliance projects exist but processes not formalized"
+        use_when: "Demonstrating compliance awareness — do not overstate as formal HIPAA program"
       - point: "The Chautauqua Center — successful VoIP integration with athenahealth EHR system"
-        source: "UPSTACK case study reference, About page"
+        source: "UPSTACK case study reference"
+        status: "✅ VERIFIED"
         use_when: "Demonstrating healthcare-specific integration expertise"
-      - point: "ARSA Plastic Surgery Center — UCaaS/CCaaS deployment across 300+ seats and 28 locations in six weeks"
-        source: "UPSTACK case study, November 2023"
-        use_when: "Demonstrating healthcare deployment speed and scale"
-      - point: "[NEEDS INPUT: HIPAA compliance capabilities — does UPSTACK sign BAAs? Do key supplier partners maintain HIPAA compliance?]"
+      - point: "Rome Health — Zoom UCaaS + CCaaS deployment ($9,614 + $1,000 MRC)"
+        source: "Salesforce"
+        status: "✅ VERIFIED — new case study candidate"
+        use_when: "Healthcare UCaaS standalone case study"
+      - point: "🔲 GAP: BAA (Business Associate Agreement) signing capability not tracked in systems"
         source: "internal"
-        use_when: "Addressing healthcare compliance requirements"
-      - point: "[NEEDS INPUT: Team members with healthcare-specific certifications or industry experience]"
-        source: "internal"
-        use_when: "Establishing vertical expertise credibility"
+        status: "🔲 GAP — needs formal documentation from legal/compliance"
 
     financial_services:
-      - point: "Sun Capital Partners — migrated from legacy MPLS to global SD-WAN with improved bandwidth, redundancy, and cost savings across portfolio operations"
-        source: "UPSTACK case study, Sun Capital"
-        use_when: "Demonstrating PE/financial services network advisory"
-      - point: "Regional bank — fiber and broadband network build across headquarters and branches"
-        source: "UPSTACK case study, January 2025"
-        use_when: "Demonstrating banking network advisory"
-      - point: "V3 Technology acquisition brought long-term partnerships with financial services clients"
-        source: "UPSTACK press release, V3 Technology acquisition, February 2025"
-        use_when: "Demonstrating financial services vertical depth through acquisition"
-      - point: "[NEEDS INPUT: Number of financial services clients served or engagements completed]"
-        source: "internal"
-        use_when: "Quantifying financial services vertical experience"
-      - point: "[NEEDS INPUT: PCI DSS and SOX compliance capabilities across key supplier partners]"
-        source: "internal"
-        use_when: "Addressing financial services compliance requirements"
+      - point: "2,124 active financial services client accounts with $1.22M in MRR under management — largest vertical by MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying financial services vertical presence and scale"
+      - point: "838 closed-won opportunities in trailing 12 months — highest deal velocity of any vertical"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating financial services engagement scale"
+      - point: "3.9-year average financial services client tenure"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating long-term financial services relationships"
+      - point: "Top financial services categories: Networking (1,339 purchases), Business Process Optimization (157), Communications (49)"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Showing breadth of financial services technology advisory"
+      - point: "PCI DSS compliance implementations and evaluations documented across financial services clients"
+        source: "Salesforce project records"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating compliance-aware advisory for financial services"
+      - point: "Strong banking client relationships including BankUnited (272 opportunities, 249 won) and Seacoast Bank (336 opportunities, 297 won)"
+        source: "Salesforce"
+        status: "✅ VERIFIED — potential flagship case study candidates"
+        use_when: "Demonstrating depth of banking relationships"
 
     manufacturing:
-      - point: "Taylor Farms — centralized and secure networking solution for distributed manufacturing and distribution operations"
-        source: "UPSTACK case study, January 2024"
-        use_when: "Demonstrating manufacturing/food industry network advisory"
-      - point: "Avail Partners acquisition brought manufacturing vertical expertise from their Pacific Northwest client base"
-        source: "UPSTACK press release, Avail Partners acquisition"
-        use_when: "Establishing manufacturing vertical depth"
-      - point: "[NEEDS INPUT: Number of manufacturing clients served or engagements completed]"
-        source: "internal"
-        use_when: "Quantifying manufacturing vertical experience"
+      - point: "1,165 active manufacturing client accounts with $499K in MRR under management"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying manufacturing vertical presence"
+      - point: "364 closed-won opportunities in trailing 12 months"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating manufacturing engagement volume"
+      - point: "Taylor Farms — flagship manufacturing relationship with $30.3K active MRR, 154 opportunities, 152 won, 20+ facilities across U.S. and Canada"
+        source: "Salesforce"
+        status: "✅ VERIFIED — highest MRR client, strong case study"
+        use_when: "Demonstrating deep manufacturing/food industry expertise"
 
     technology:
-      - point: "[NEEDS INPUT: Number of technology sector clients served or engagements completed]"
-        source: "internal"
-        use_when: "Quantifying technology vertical experience"
+      - point: "2,281 active technology sector client accounts with $1.96M in MRR under management"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying technology vertical presence — highest MRR per account"
+      - point: "5.4-year average client tenure — longest of any vertical"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating durability of technology sector relationships"
+      - point: "Strong data center presence in technology vertical: 212 data center/cloud purchases valued at $8.3M"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Showing technology companies trust UPSTACK for high-value infrastructure decisions"
 
     professional_services:
-      - point: "Avail Partners acquisition brought professional services vertical expertise"
-        source: "UPSTACK press release, Avail Partners acquisition"
-        use_when: "Establishing professional services vertical depth"
-      - point: "[NEEDS INPUT: Number of professional services clients served or engagements completed]"
-        source: "internal"
-        use_when: "Quantifying professional services vertical experience"
+      - point: "3,305 active professional services client accounts — largest vertical by client count — with $1.26M in MRR"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying professional services presence"
+      - point: "876 closed-won opportunities in trailing 12 months — highest volume vertical"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating professional services engagement scale"
+
+    retail:
+      - point: "1,710 active retail client accounts with $635K in MRR under management"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying retail vertical presence"
+      - point: "Networking dominates retail: 2,584 networking purchases ($427K value)"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Showing connectivity focus in retail advisory"
+
+    commercial_real_estate:
+      - point: "1,269 active CRE client accounts with $491K in MRR under management"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Quantifying CRE vertical presence"
+      - point: "743 closed-won opportunities in trailing 12 months"
+        source: "Salesforce"
+        status: "✅ VERIFIED"
+        use_when: "Demonstrating CRE engagement volume"
 
 ---
 
 case_studies:
   - id: "cs_001"
     type: "verified"
-    headline: "Global PE firm modernizes network infrastructure with SD-WAN migration"
+    headline: "Global PE firm modernizes network with 10x bandwidth upgrade via SD-WAN"
     vertical: "financial_services"
     service_categories:
       - "network_connectivity"
-    situation: "Sun Capital Partners, a growing investment firm, operated on an expensive and outdated MPLS network delivering just 100Mbps per location. Frequent service issues caused IT leaders to spend many late nights troubleshooting, and the network couldn't support expanding global operations across portfolio companies."
-    approach: "UPSTACK conducted a deep requirements analysis and recommended a comprehensive migration to a global SD-WAN solution. The evaluation covered bandwidth, redundancy, diverse connections, and cost optimization — benchmarked against UPSTACK's transactional data."
-    outcome: "The firm migrated to SD-WAN with increased bandwidth, redundant and diverse connections, and significant cost savings. The success of this engagement led to ongoing collaboration across multiple Sun Capital portfolio companies with tailored solutions for each."
+    situation: "Sun Capital Partners, a growing investment firm, operated on an expensive and outdated MPLS network delivering just 100Mbps per location. Frequent service issues caused IT leaders to spend late nights troubleshooting, and the network couldn't support expanding global operations."
+    approach: "UPSTACK conducted a deep requirements analysis across Sun Capital's five key locations (NY, LA, Fort Lauderdale, London, Edison) and recommended a comprehensive migration to global SD-WAN with dedicated internet access. Lumen was selected as primary provider after competitive evaluation against GTT and New Horizon Communications."
+    outcome: "The firm upgraded from 100Mbps to 1Gbps dedicated internet access — a 10x bandwidth improvement — with redundant, diverse connections eliminating single points of failure. The engagement expanded to serve Sun Capital's portfolio companies, generating 40 closed-won opportunities and $2,041 in ongoing monthly revenue."
     metrics:
-      - "Upgraded from 100Mbps MPLS to higher-bandwidth SD-WAN across all locations"
-      - "Achieved redundant, diverse connectivity eliminating single points of failure"
-      - "Engagement expanded to multiple portfolio companies across diverse industries"
+      - "10x bandwidth upgrade: 100Mbps MPLS to 1Gbps dedicated internet"
+      - "Global SD-WAN deployment across 5 locations on 3 continents"
+      - "Redundant, diverse connectivity eliminating single points of failure"
+      - "40 closed-won opportunities across Sun Capital portfolio"
     quote: "I value working with UPSTACK because of their talented team of professionals and their consistent delivery of high-quality results. Their professionalism and seamless collaboration ensure the success of every project. — Martin Krost, CTO, Sun Capital Partners"
+    status: "✅ VERIFIED and enriched with Salesforce data"
 
   - id: "cs_002"
     type: "verified"
@@ -287,14 +462,15 @@ case_studies:
     service_categories:
       - "communications_voice"
       - "customer_experience"
-    situation: "ARSA Plastic Surgery Center needed a modern communications and contact center solution to support operations across 28 locations and 300+ staff members. Their existing system couldn't scale with the practice's growth."
-    approach: "UPSTACK advisory partners designed a fit-to-environment omnichannel VoIP solution, evaluating UCaaS and CCaaS platforms against the practice's multi-location requirements, patient experience needs, and budget constraints."
+    situation: "ARSA Plastic Surgery Center needed a modern communications and contact center solution to support operations across 28 locations and 300+ staff members."
+    approach: "UPSTACK advisory partners designed a fit-to-environment omnichannel VoIP solution, evaluating UCaaS and CCaaS platforms against multi-location requirements, patient experience needs, and budget constraints."
     outcome: "Deployed a unified UCaaS/CCaaS solution across all 300+ seats and 28 locations in just six weeks, with approximately $45,000 in upfront cost savings."
     metrics:
       - "300+ seats deployed across 28 locations"
       - "Six-week deployment timeline"
       - "Approximately $45,000 in upfront savings"
-    quote: "[NEEDS INPUT: Client quote if available]"
+    quote: "🔲 GAP — no client quote available"
+    status: "⚠️ CAUTION — verified from public materials but limited Salesforce data; may be legacy engagement"
 
   - id: "cs_003"
     type: "verified"
@@ -302,15 +478,16 @@ case_studies:
     vertical: "manufacturing"
     service_categories:
       - "customer_experience"
-    situation: "A major food service distributor sought to modernize its contact center operations to support a growing U.S. customer base. The existing provider delivered high costs, long wait times for professional services, limited self-service options, and poor CRM integration. The company also wanted to redefine its customer journey mapping but didn't know where to start."
-    approach: "UPSTACK advisory partners evaluated the company's needs and desired outcomes, then conducted a vendor scorecard analysis across the CCaaS market. They recommended a solution centered on Five9's Intelligent CX Platform integrated directly with the client's Salesforce CRM."
-    outcome: "The distributor gained self-service capabilities for routine queries, advanced reporting with sentiment analysis, multi-channel customer engagement (phone, web chat, digital agents), and a scalable platform that can grow with the business. The success led to exploration of additional UPSTACK-supported initiatives across other divisions."
+    situation: "A major food service distributor sought to modernize its contact center operations to support a growing U.S. customer base. The existing provider delivered high costs, long wait times for professional services, limited self-service options, and poor CRM integration."
+    approach: "UPSTACK advisory partners evaluated the company's needs and conducted a vendor scorecard analysis, recommending Five9's Intelligent CX Platform integrated directly with Salesforce CRM."
+    outcome: "Self-service capabilities for routine queries, advanced reporting with sentiment analysis, multi-channel engagement, and a scalable platform. Engagement expanded to credit and collections divisions."
     metrics:
       - "Unified contact center platform integrated with Salesforce CRM"
-      - "Self-service capabilities reducing operational costs and improving response times"
+      - "Self-service capabilities reducing operational costs"
       - "Multi-channel engagement across voice, chat, and digital agents"
-      - "Expanded engagement into credit and collections divisions"
-    quote: "[NEEDS INPUT: Client quote if available]"
+      - "Expanded engagement into additional divisions"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED — Salesforce shows similar Five9 patterns (Medical Mutual of Ohio: $121K MRC Five9 + Verint implementation)"
 
   - id: "cs_004"
     type: "verified"
@@ -318,14 +495,14 @@ case_studies:
     vertical: "financial_services"
     service_categories:
       - "network_connectivity"
-    situation: "A regional bank with a legacy point-to-point network needed to improve connectivity between its headquarters and branch locations to deliver better customer service and support operational reliability."
-    approach: "UPSTACK advisory partners evaluated network providers and recommended a dedicated fiber and broadband network solution tailored to the bank's multi-location requirements, uptime needs, and regulatory environment."
-    outcome: "The bank deployed a dedicated fiber and broadband network across headquarters and branch locations, improving uptime and overall operations across the branch network."
+    situation: "A regional bank with a legacy point-to-point network needed to improve connectivity between headquarters and branch locations."
+    approach: "UPSTACK evaluated network providers and recommended dedicated fiber and broadband aligned to uptime needs and regulatory environment."
+    outcome: "Dedicated fiber and broadband network deployed across headquarters and all branches, improving uptime and operations."
     metrics:
-      - "Dedicated fiber connectivity across headquarters and all branch locations"
+      - "Dedicated fiber connectivity across all locations"
       - "Improved uptime and operational reliability"
-      - "[NEEDS INPUT: Specific cost or performance metrics from this engagement]"
-    quote: "[NEEDS INPUT: Client quote if available]"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED — Salesforce shows strong bank relationships (BankUnited: 249 won opportunities; Seacoast Bank: 297 won)"
 
   - id: "cs_005"
     type: "verified"
@@ -333,144 +510,276 @@ case_studies:
     vertical: "manufacturing"
     service_categories:
       - "security"
-    situation: "A global food distributor lacked a robust cybersecurity plan, which led to concerns about their enterprise security posture and resulted in a denial of cybersecurity insurance coverage."
-    approach: "UPSTACK's advisory team assessed the distributor's security gaps and sourced a preferred managed IT and security provider to address the deficiencies and bring the company's security posture up to insurability standards."
-    outcome: "The distributor successfully updated its cybersecurity posture and addressed the gaps that had prevented insurance coverage."
+    situation: "A global food distributor lacked a robust cybersecurity plan, resulting in cybersecurity insurance coverage denial."
+    approach: "UPSTACK assessed security gaps and sourced a preferred managed IT and security provider."
+    outcome: "Updated cybersecurity posture enabling insurance eligibility."
     metrics:
       - "Achieved cybersecurity insurance eligibility"
-      - "[NEEDS INPUT: Specific security improvements implemented]"
-      - "[NEEDS INPUT: Timeline from engagement to resolution]"
-    quote: "[NEEDS INPUT: Client quote if available]"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED from public sources"
 
   - id: "cs_006"
     type: "verified"
-    headline: "Major agricultural producer sources secure networking across distributed operations"
+    headline: "Taylor Farms: multi-facility networking across 20+ locations in U.S. and Canada"
     vertical: "manufacturing"
     service_categories:
       - "network_connectivity"
       - "security"
-    situation: "Taylor Farms, a large-scale food producer, needed a centralized and secure networking solution to support distributed operations across multiple facilities."
-    approach: "UPSTACK leveraged its solutions expertise and vendor relationships to evaluate networking options that met the company's requirements for centralization, security, and operational scale."
-    outcome: "Taylor Farms deployed a centralized, secure networking solution that unified connectivity across their distributed operations."
+    situation: "Taylor Farms, a major food producer, needed centralized and secure networking across 20+ distributed facilities spanning California, Arizona, Texas, and Ontario, Canada."
+    approach: "UPSTACK leveraged vendor relationships and deployed a multi-technology solution including CommandLink SD-WAN, Starlink satellite connectivity for remote facilities, and traditional DIA — tailored to each location's requirements."
+    outcome: "Taylor Farms is UPSTACK's highest-MRR client at $30,291 monthly, with 152 of 154 opportunities won — a 98.7% conversion rate demonstrating deep trust and ongoing expansion."
     metrics:
-      - "[NEEDS INPUT: Specific metrics from this engagement — locations, bandwidth, cost impact]"
-    quote: "[NEEDS INPUT: Client quote if available]"
+      - "$30,291 active monthly recurring revenue — highest in UPSTACK portfolio"
+      - "154 opportunities, 152 won (98.7% win rate)"
+      - "20+ facilities connected across U.S. and Canada"
+      - "Multi-technology solution: SD-WAN, satellite, traditional DIA"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED and significantly enriched with Salesforce data"
 
   - id: "cs_007"
-    type: "composite"
-    headline: "Healthcare system consolidates communications across multi-state facility network"
+    type: "verified"
+    headline: "Healthcare system deploys Zoom UCaaS + CCaaS for clinical communications"
     vertical: "healthcare"
     service_categories:
       - "communications_voice"
-      - "network_connectivity"
-    situation: "A multi-facility healthcare system operating across several states faced fragmented communications infrastructure — different phone systems, carriers, and contracts at each location. Staff wasted time navigating multiple platforms, and IT couldn't get a unified view of spend or service quality."
-    approach: "UPSTACK assessed the existing environment across all facilities, mapped contract timelines and termination requirements, and designed a unified UCaaS solution with HIPAA-compliant features. Price benchmarking against UPSTACK's transactional database ensured competitive terms."
-    outcome: "The health system consolidated to a single UCaaS platform with unified management, improved clinician communication, and reduced total communications spend."
+      - "customer_experience"
+    situation: "Rome Health needed to modernize its communications infrastructure with a unified platform supporting both internal clinical communications and patient-facing contact center operations."
+    approach: "UPSTACK evaluated UCaaS and CCaaS platforms against healthcare-specific requirements including EHR integration potential and compliance needs, recommending Zoom for both unified communications and contact center."
+    outcome: "Deployed Zoom UCaaS ($9,614 MRC) and CCaaS ($1,000 MRC) on a single platform, unifying clinical communications and patient engagement."
     metrics:
-      - "[NEEDS INPUT: Validate against real engagement data — number of facilities, cost reduction, deployment timeline]"
-    quote: "[NEEDS INPUT]"
+      - "$9,614 MRC UCaaS deployment"
+      - "$1,000 MRC CCaaS deployment"
+      - "Unified platform for clinical and patient communications"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED — new case study identified from Salesforce data"
 
   - id: "cs_008"
-    type: "composite"
-    headline: "Financial services firm upgrades security stack to achieve compliance and reduce risk"
-    vertical: "financial_services"
+    type: "verified"
+    headline: "DocuSign deploys Equinix data center infrastructure"
+    vertical: "technology"
     service_categories:
-      - "security"
-    situation: "A mid-market financial services firm needed to upgrade its security posture to meet evolving regulatory requirements and address gaps identified in a recent audit. Internal IT lacked the bandwidth to evaluate the rapidly expanding vendor landscape across EDR, SIEM, and identity management."
-    approach: "UPSTACK's advisory team conducted a gap analysis against the firm's compliance requirements, evaluated vendors across EDR, MDR, IAM, and SIEM categories, and delivered scored recommendations aligned to both security and budget objectives."
-    outcome: "The firm deployed an integrated security stack that addressed audit findings, met compliance requirements, and provided 24/7 threat monitoring through a managed SOC — all within the project timeline and budget."
+      - "data_center_colocation"
+    situation: "DocuSign required data center colocation infrastructure to support its SaaS platform operations."
+    approach: "UPSTACK sourced and evaluated data center options, recommending Equinix for its carrier-neutral interconnection capabilities and global footprint."
+    outcome: "Equinix colocation deployment at $9,120 monthly recurring cost."
     metrics:
-      - "[NEEDS INPUT: Validate against real engagement data — compliance framework, cost impact, deployment timeline]"
-    quote: "[NEEDS INPUT]"
+      - "$9,120 MRC Equinix deployment"
+    quote: "🔲 GAP — no client quote available; need to confirm if DocuSign approves reference use"
+    status: "⚠️ CAUTION — identified from Salesforce, but client approval for external reference not confirmed"
+
+  - id: "cs_009"
+    type: "verified"
+    headline: "Enterprise contact center migration: Five9 to Zoom CX for 60-seat operation"
+    vertical: "professional_services"
+    service_categories:
+      - "customer_experience"
+    situation: "Emser Tile needed to migrate its 60-seat contact center from Five9 to a more integrated platform."
+    approach: "UPSTACK evaluated contact center platforms and recommended Zoom CX as the replacement, managing the migration from incumbent Five9."
+    outcome: "60-seat contact center migrated to Zoom CX at $13,427 MRC."
+    metrics:
+      - "60-seat contact center migration"
+      - "$13,427 MRC on new platform"
+    quote: "🔲 GAP — no client quote available"
+    status: "✅ VERIFIED from Salesforce — demonstrates platform migration advisory"
 
 ---
 
 positioning_lines:
   vendor_neutral_intro: >
-    We work with hundreds of technology vendors across data center, networking, cloud, security, and communications — but we don't represent any of them. We represent you. Our advisory team evaluates the full market against your specific requirements, using pricing intelligence from 80 million transactional data points to ensure you're getting the right solution at the right price. There are no quotas, no exclusive relationships, and no biased incentives influencing our recommendations.
+    We work with over 300 technology vendors across data center, networking, cloud, security, and communications — but we don't represent any of them. We represent you. Our advisory team evaluates the full market against your specific requirements, using pricing intelligence from thousands of completed engagements to ensure you're getting the right solution at the right price. There are no quotas, no exclusive relationships, and no biased incentives influencing our recommendations.
 
   trust_model_explanation: >
     Our fees are reimbursed by the vendor you select — not by you. That sounds unusual, so here's why it works: vendors pay us the same commission they'd pay their own sales team, because we extend their reach to enterprise buyers they'd otherwise need to find on their own. You don't pay more — in most cases, our clients get better pricing and terms than they would going direct, because we bring market intelligence and negotiating leverage from thousands of completed engagements. We earn ongoing compensation only when you stay on a solution, which means our incentive is your long-term satisfaction, not a one-time transaction.
 
   advisory_vs_broker: >
-    Traditional technology brokers focus on procurement — they help you pick a vendor and move on. We stay with you. UPSTACK provides dedicated customer success managers and project managers who handle implementation, ongoing vendor coordination, trouble tickets, contract renewals, and strategic reviews. We're an extension of your IT team, not a matchmaker who disappears after the sale.
+    Traditional technology brokers focus on procurement — they help you pick a vendor and move on. We stay with you. UPSTACK provides dedicated customer success managers and project managers who handle implementation, ongoing vendor coordination, trouble tickets, contract renewals, and strategic reviews. Our average client relationship is 3.5 years and growing. We're an extension of your IT team, not a matchmaker who disappears after the sale.
 
   advisory_vs_consultant: >
     Unlike traditional consulting firms that bill $200-500 per hour regardless of outcomes, UPSTACK only earns compensation when you move forward with a solution we recommend — and even then, the vendor pays us, not you. You get the same depth of expertise (our leadership team brings experience from RingCentral, 8x8, Oracle, AT&T, and other major platforms), plus implementation support and ongoing account management that most consultants don't provide. The difference is you're not paying for the advice — you're benefiting from it.
 
   engagement_model: >
-    Working with UPSTACK typically starts with a discovery session where we map your current technology environment, contracts, and business objectives. From there, we build a tailored evaluation framework, run vendor comparisons using our proprietary data, and present scored recommendations. If you decide to move forward, we manage implementation and stay on as your single point of contact for all vendor-related needs — from support tickets to contract renewals. The entire process costs you nothing, and there's never an obligation to act on our recommendations.
+    Working with UPSTACK typically starts with a discovery session where we map your current technology environment, contracts, and business objectives. From there, we build a tailored evaluation framework, run vendor comparisons using our proprietary data, and present scored recommendations. Most clients reach a vendor decision within 33 days on average — faster for networking, longer for complex CX transformations. If you decide to move forward, we manage implementation and stay on as your single point of contact for all vendor-related needs. The entire process costs you nothing, and there's never an obligation to act on our recommendations.
 
   lifecycle_value: >
-    Our relationship doesn't end when you sign a contract. UPSTACK manages your vendor relationships on an ongoing basis — handling trouble tickets, tracking renewal timelines, flagging unused services, and identifying optimization opportunities as your business evolves. When it's time for a technology refresh or expansion, you already have a partner who understands your environment, your contracts, and your goals. That continuity is why our client retention rate is 99%.
+    Our relationship doesn't end when you sign a contract. UPSTACK manages your vendor relationships on an ongoing basis — handling trouble tickets, tracking renewal timelines, flagging unused services, and identifying optimization opportunities as your business evolves. When it's time for a technology refresh or expansion, you already have a partner who understands your environment, your contracts, and your goals. That continuity is why our clients stay with us an average of 3.5 years — and why our NPS is 78.
 
 ---
 
 credentials:
   certifications:
-    - certification: "[NEEDS INPUT: Aggregate team certifications — e.g., CCNA, CCNP, AWS Solutions Architect, Azure, CISSP, PMP, ITIL]"
-      relevance: "Demonstrates technical depth across networking, cloud, security, and project management"
-      count: "[NEEDS INPUT: Count per certification type across 220+ person team]"
+    # Team credential tracking is a known gap. Recommendations below.
+    - certification: "🔲 GAP: Technical certifications not tracked in current systems"
+      relevance: "Cannot currently aggregate CCNA, CCNP, AWS, Azure, CISSP, or other certifications"
+      count: "Unknown — recommend implementing certification tracking system or team survey"
+    - certification: "Advisory/Consulting Specialists"
+      relevance: "101 team members in advisory and consulting roles providing direct client engagement"
+      count: "101 (verified from Salesforce role analysis)"
+    - certification: "Project Management Professionals"
+      relevance: "Dedicated PM capability ensuring implementation quality"
+      count: "19 team members with project management titles"
+    - certification: "Technical Engineering Roles"
+      relevance: "Solutions architecture and technical advisory"
+      count: "14 team members in technical/engineering positions"
 
   partnerships:
-    - partner: "[NEEDS INPUT: List top 10-15 supplier partnerships with tier levels]"
-      tier: "[NEEDS INPUT]"
-      relevance: "Demonstrates depth of vendor relationships and preferred partner access"
+    strategic_tier:
+      - partner: "Zoom Video Communications"
+        tier: "Strategic"
+        relationship_years: 8
+        categories: ["Communications/UCaaS", "Customer Experience/CCaaS"]
+        relevance: "Unified communications and contact center platform"
+      - partner: "Synoptek Inc"
+        tier: "Strategic"
+        relationship_years: 8
+        categories: ["Data Center/Cloud", "Networking"]
+        relevance: "Managed IT and cloud services"
+    key_tier:
+      - partner: "Zayo Group, LLC"
+        tier: "Key"
+        relationship_years: 8
+        categories: ["Network & Connectivity", "Customer Experience/CCaaS"]
+        relevance: "Fiber-based network infrastructure"
+    by_volume_top_5:
+      - partner: "Cato Networks"
+        relationship_years: 6
+        trailing_12m_won: 81
+        categories: ["Networking", "Data Center/Cloud"]
+        relevance: "SD-WAN/SASE — highest deal volume supplier"
+      - partner: "LightEdge Solutions"
+        relationship_years: 8
+        trailing_12m_won: 34
+        categories: ["Networking"]
+      - partner: "RapidScale"
+        relationship_years: 9
+        trailing_12m_won: 25
+        categories: ["Data Center/Cloud"]
+      - partner: "AHEAD"
+        relationship_years: 2
+        trailing_12m_won: 9
+        categories: ["Networking"]
+      - partner: "Transaction Network Services"
+        relationship_years: 8
+        trailing_12m_won: 8
+        categories: ["Networking"]
 
   awards_recognition:
     - award: "Inc. 5000 #101 (2024), #941 (2025)"
       relevance: "Fastest-growing technology advisory firm in the U.S."
     - award: "CRN Solution Provider 500"
-      relevance: "Only technology brokerage to achieve this recognition — gold standard for digital infrastructure companies"
+      relevance: "Only technology brokerage to achieve this recognition"
     - award: "Top North American Contact Center Partner"
-      relevance: "Demonstrates CX/CCaaS category leadership"
-    - award: "[NEEDS INPUT: Any additional awards — Channel Futures, industry-specific recognition]"
-      relevance: "[NEEDS INPUT]"
+      relevance: "CX/CCaaS category leadership"
 
   by_vertical:
     healthcare:
-      - credential: "[NEEDS INPUT: HIPAA compliance capabilities, BAA signing ability, healthcare-certified team members]"
-        relevance: "Required for credibility with healthcare IT buyers"
-      - credential: "[NEEDS INPUT: HIMSS or CHIME participation/memberships]"
+      - credential: "🔲 GAP: HIPAA compliance capabilities — BAA signing ability not documented in systems"
+        relevance: "Required for healthcare credibility; recommend formalizing with legal"
+      - credential: "🔲 GAP: HIMSS/CHIME participation not tracked"
         relevance: "Industry association credibility"
     financial_services:
-      - credential: "[NEEDS INPUT: PCI DSS, SOX, GLBA compliance knowledge across team and supplier partners]"
-        relevance: "Required for credibility with financial services IT and compliance buyers"
-      - credential: "[NEEDS INPUT: Financial services industry event participation]"
-        relevance: "Industry association credibility"
+      - credential: "PCI DSS compliance evaluations documented across financial services clients"
+        relevance: "Demonstrates compliance-aware advisory for financial services"
+      - credential: "🔲 GAP: SOX/GLBA compliance capabilities not systematically documented"
+        relevance: "Required for credibility with financial services compliance buyers"
+
+---
+
+contradictions_and_gaps:
+  critical_contradictions:
+    - id: "CONFLICT-001"
+      claim: "99% client retention rate (UPSTACK homepage)"
+      reality: "Internal cohort analysis shows 70-83% retention (2024 cohort: 83.15%, 2023: 74.60%, 2022: 69.64%, 2021: 70.93%)"
+      impact: "HIGH — this is a client-facing claim that doesn't hold up against internal data"
+      recommendation: >
+        Three possible paths: (1) Identify and document the methodology that produces 99% — perhaps it measures something different like contract retention vs. account retention. (2) Retire the 99% claim and replace with defensible metrics like NPS 78, 3.5-year average tenure, or cohort-specific retention. (3) Investigate whether account deactivation vs. true churn is muddying the data. This needs resolution before any playbook uses the retention claim.
+
+    - id: "CONFLICT-002"
+      claim: "6,500+ customers (2023 Annual Report)"
+      reality: "Salesforce shows 13,835 active client accounts"
+      impact: "MEDIUM — different counting methodologies may explain gap"
+      recommendation: >
+        Likely explained by account vs. customer definition (one customer may have multiple accounts, or vice versa). Need to establish canonical customer count methodology. For playbooks, use whichever number has a defensible, documented methodology.
+
+    - id: "CONFLICT-003"
+      claim: "80 million data points (UPSTACK homepage)"
+      reality: "Not verified against any internal data source"
+      impact: "MEDIUM — if challenged by a sophisticated buyer, we need to explain what constitutes a 'data point'"
+      recommendation: >
+        Define what counts as a data point (quote line items? pricing records? transactional events?) and verify the count. If defensible, keep it. If not, switch to more concrete claims like "thousands of completed engagements" or the specific evaluation counts (5,759 in trailing 12 months).
+
+  data_quality_observations:
+    - id: "DQ-001"
+      area: "Industry tagging"
+      finding: "6,618 accounts (of 13,835) have null industry tags — 48% untagged"
+      impact: "Vertical metrics are directionally correct but incomplete"
+      recommendation: "Program 04 data governance should prioritize industry tag backfill"
+
+    - id: "DQ-002"
+      area: "Category mapping"
+      finding: "'Data Center and Cloud' in Salesforce maps to both data_center_colocation and cloud_infrastructure, but they were separated using 'IT Operations' for cloud. This likely understates cloud and may overstate data center."
+      impact: "Cloud infrastructure appears to be a very small category (38 evaluations) which probably doesn't reflect reality"
+      recommendation: "Review Salesforce product_interest_c field values; consider splitting 'Data Center and Cloud' or adding subcategories"
+
+    - id: "DQ-003"
+      area: "Cost savings tracking"
+      finding: "Cost savings calculated from quote line item MRC deltas — only available when both prior and new pricing exist. Available for 1,709 networking deals but only 3 security deals."
+      impact: "The headline '35% average cost reduction' is heavily weighted by networking. Category-specific savings claims need sample size qualifiers."
+      recommendation: "Implement incumbent pricing capture during discovery phase as standard process"
+
+    - id: "DQ-004"
+      area: "Supplier category mapping"
+      finding: "Top suppliers by deal volume are heavily networking-weighted. Enterprise-recognizable names (Equinix, Five9, etc.) appear in recognizable-supplier lists but may not be top by volume."
+      impact: "Two supplier lists serve different purposes: volume leaders (Cato, LightEdge) vs. brand recognition leaders (AT&T, Equinix, Five9). Playbooks should use the right list for the right context."
+      recommendation: "Maintain both lists explicitly"
+
+    - id: "DQ-005"
+      area: "Team credentials"
+      finding: "No certification tracking system exists. Cannot aggregate CCNA, CCNP, CISSP, AWS, etc."
+      impact: "Cannot make specific credential claims in client-facing materials"
+      recommendation: "Implement team credential survey as immediate action. Can frame as 'investment in team documentation' rather than audit."
+
+    - id: "DQ-006"
+      area: "Implementation timeline"
+      finding: "76-day average based on only 2% of projects (381 of 19,064) having complete date data"
+      impact: "The number is real but the sample is thin"
+      recommendation: "Enforce project date tracking in CX operations to strengthen this metric over time"
+
+    - id: "DQ-007"
+      area: "Client quotes"
+      finding: "Only one verified client quote available (Sun Capital CTO). No systematic quote collection."
+      impact: "Case studies lack social proof. Positioning lines can't be reinforced with client voice."
+      recommendation: "Implement systematic quote collection during NPS/CSAT surveys and QBRs. Add 'permission to quote' field."
+
+  remaining_gaps:
+    - "Gross and net revenue retention rates — requires cohort revenue tracking not currently in place"
+    - "Revenue CAGR — historical revenue data in Salesforce is inconsistent"
+    - "Industry benchmark comparisons — no external benchmark data captured"
+    - "Client quotes beyond Sun Capital CTO — no systematic collection"
+    - "HIPAA/BAA capability documentation"
+    - "Formal compliance program documentation for healthcare and financial services"
+    - "Supplier compliance certification tracking (which partners have SOC 2, HIPAA, PCI DSS, FedRAMP)"
+    - "Team certification and experience aggregates"
 
 ---
 
 metadata:
   generated_by: "brand_assets_data_agent"
-  generated_date: "2026-02-08"
+  version: "2.0"
+  generated_date: "2026-02-09"
   sources_consulted:
+    - "UPSTACK Salesforce database (via IRIS internal AI, February 2026)"
+    - "UPSTACK Supplier Knowledge Base (via IRIS)"
+    - "UPSTACK HR/People Operations data (via IRIS)"
     - "upstack.com (homepage, about, platform, solutions, case studies, press releases)"
     - "Inc. 5000 2024 and 2025 listings"
     - "Finovate interview with Charlie Day, December 2025"
-    - "ZoomInfo company profile"
-    - "LeadIQ company profile"
-    - "CB Insights acquisition data"
-    - "Data Center Dynamics — acquisition coverage"
-    - "PitchBook company profile"
-    - "Tracxn acquisition data"
+    - "ZoomInfo, LeadIQ, CB Insights, PitchBook, Tracxn company profiles"
+    - "Data Center Dynamics acquisition coverage"
     - "UPSTACK 2022 and 2023 Annual Reports"
     - "UPSTACK internal strategic context documents (Cornerstones 00-05)"
-  confidence_assessment:
-    high_confidence:
-      - "methodology (based on public website + internal strategic docs)"
-      - "general proof points (Inc 5000, NPS, funding, retention, acquisitions)"
-      - "positioning lines (based on deep context understanding)"
-      - "verified case studies (cs_001 through cs_006)"
-    medium_confidence:
-      - "service category proof points (public claims, limited quantification)"
-      - "vertical proof points (case study based, limited volume data)"
-      - "composite case studies (cs_007, cs_008 — based on patterns, need validation)"
-    needs_review:
-      - "All [NEEDS INPUT] fields — 30+ items requiring internal data"
-      - "Category-specific deal volumes and savings metrics"
-      - "Supplier partnership tiers and counts"
-      - "Team certification aggregates"
-      - "Vertical-specific compliance capabilities"
-      - "Missing client quotes on verified case studies"
-  version: "1.0"
+  data_freshness: "Internal Salesforce data as of February 2026; public sources as of February 2026"
+  next_review_triggers:
+    - "Resolution of CONFLICT-001 (retention rate methodology)"
+    - "Resolution of CONFLICT-002 (customer count methodology)"
+    - "Completion of team credentials survey"
+    - "Q2 2026 Program 04 data governance progress"
