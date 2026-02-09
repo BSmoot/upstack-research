@@ -1,0 +1,63 @@
+# Target Company Profile — Example Health System
+# This is a template/example file. Copy and populate for actual prospects.
+
+company:
+  name: "Example Health System"
+  slug: "example_health_system"
+  industry: "Healthcare"
+  sub_industry: "Hospital & Health Systems"
+  size: "5,000-10,000 employees"
+  revenue: "$2B annual revenue"
+  headquarters: "Chicago, IL"
+
+known_stack:
+  ehr: "Epic"
+  crm: "Salesforce Health Cloud"
+  cloud:
+    - "AWS"
+    - "Azure"
+  network: "Cisco Meraki"
+  security:
+    - "CrowdStrike"
+    - "Palo Alto Networks"
+  communications: "Microsoft Teams"
+
+pain_signals:
+  - signal: "Hiring for CISO and multiple security analyst roles"
+    source: "job posting"
+    date: "2026-01"
+    relevance: "Indicates security team expansion or restructuring — potential advisory need"
+  - signal: "Recent acquisition of regional clinic network"
+    source: "press release"
+    date: "2025-12"
+    relevance: "M&A creates infrastructure integration challenges across network, security, and communications"
+  - signal: "Board approved digital transformation initiative"
+    source: "earnings call"
+    date: "2025-11"
+    relevance: "Budget allocated for infrastructure modernization — multiple service categories in play"
+
+compliance:
+  - "HIPAA"
+  - "HITRUST CSF"
+  - "SOC 2 Type II"
+  - "State health data privacy regulations"
+
+recent_events:
+  - event: "Acquired Regional Care Partners (15-clinic network)"
+    date: "2025-12"
+    relevance: "Integration of 15 clinics requires network consolidation, security standardization, and communications unification"
+  - event: "New CTO appointed from Cleveland Clinic"
+    date: "2025-10"
+    relevance: "New leadership often triggers technology stack reassessment and vendor evaluation"
+
+engagement_history:
+  - "No prior UPSTACK engagement"
+
+notes: >
+  Example target profile for demonstration purposes.
+  In production, this would be populated with actual prospect data
+  from CRM, public sources, and advisor notes.
+
+metadata:
+  updated: "2026-02-08"
+  source: "manual"

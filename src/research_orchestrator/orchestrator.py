@@ -36,7 +36,10 @@ from .prompts.horizontal import (
 )
 from .prompts.context_helpers import get_layer_0_context
 from .utils.brand_context import BrandContextLoader
+from .utils.brand_assets import BrandAssetsLoader
+from .utils.target_context import TargetContextLoader
 from .prompts.brand_alignment import build_brand_alignment_prompt
+from .prompts.target_alignment import build_target_alignment_prompt
 from .prompts.validation import build_validation_prompt
 
 
@@ -135,7 +138,7 @@ class ResearchOrchestrator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create layer output directories
-        for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment']:
+        for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment', 'target_aligned']:
             (self.output_dir / layer).mkdir(parents=True, exist_ok=True)
 
         # Initialize brand context loader if brand alignment enabled
@@ -148,8 +151,37 @@ class ResearchOrchestrator:
                 context_files=context_files,
                 logger=self.logger
             )
+
+            # Initialize brand assets loader (optional — degrades gracefully)
+            assets_file = brand_config.get(
+                'assets_file',
+                '../../../research-manager/context/brand-assets.yaml'
+            )
+            self.brand_assets_loader = BrandAssetsLoader(
+                config_dir=config_dir,
+                file_path=assets_file,
+                logger=self.logger
+            )
         else:
             self.brand_context_loader = None
+            self.brand_assets_loader = None
+
+        # Initialize target context loader if target alignment enabled
+        target_config = self.config.get('target_alignment', {})
+        if target_config.get('enabled', False):
+            target_file = target_config.get('target_file', '')
+            config_dir = Path(config_path).parent
+            if target_file:
+                self.target_context_loader = TargetContextLoader(
+                    config_dir=config_dir,
+                    file_path=target_file,
+                    logger=self.logger
+                )
+            else:
+                self.logger.warning("Target alignment enabled but no target_file configured")
+                self.target_context_loader = None
+        else:
+            self.target_context_loader = None
 
         # Process force_agents: reset completed agents for re-run
         if self.force_agents:
@@ -370,6 +402,14 @@ class ResearchOrchestrator:
                 self.logger.info("BRAND ALIGNMENT: Aligning Outputs")
                 self.logger.info("=" * 80)
                 await self.execute_brand_alignment()
+
+            # Target Company Alignment (if configured)
+            target_config = self.config.get('target_alignment', {})
+            if target_config.get('enabled', False):
+                self.logger.info("\n" + "=" * 80)
+                self.logger.info("TARGET ALIGNMENT: Personalizing for Target Company")
+                self.logger.info("=" * 80)
+                await self.execute_target_alignment()
 
             # Final summary
             self.logger.info("\n" + "=" * 80)
@@ -936,12 +976,37 @@ class ResearchOrchestrator:
             brand_context_data = self.brand_context_loader.load_all()
             brand_context_formatted = self.brand_context_loader.format_for_prompt(brand_context_data)
 
+            # Load filtered brand assets (if available)
+            brand_assets_formatted = ""
+            if self.brand_assets_loader is not None:
+                # Parse playbook name to extract vertical, title, and optional service category
+                # Format: playbook_{vertical}_{title} or playbook_{vertical}_{title}_{service_category}
+                parts = original_agent_name.replace('playbook_', '').split('_')
+                vertical_key = parts[0] if parts else None
+                service_category_key = parts[2] if len(parts) > 2 else None
+
+                assets_data = self.brand_assets_loader.load()
+                if assets_data:
+                    brand_assets_formatted = self.brand_assets_loader.format_for_prompt(
+                        context=assets_data,
+                        vertical=vertical_key,
+                        service_category=service_category_key
+                    )
+                    self.logger.info(
+                        f"[{alignment_agent_name}] Loaded brand assets "
+                        f"(vertical={vertical_key}, service_category={service_category_key})"
+                    )
+
             # Build alignment prompt
-            prompt = build_brand_alignment_prompt(original_content, brand_context_formatted)
+            prompt = build_brand_alignment_prompt(
+                original_content=original_content,
+                brand_context=brand_context_formatted,
+                brand_assets=brand_assets_formatted
+            )
 
             # Get brand alignment model configuration
             brand_config = self.config.get('brand_alignment', {})
-            model = brand_config.get('model', 'claude-haiku-4-5-20251001')
+            model = brand_config.get('model', 'claude-sonnet-4-5-20250929')
             model_config = get_model_config(self.config, model)
             # Set max_searches=1 to allow API call (model won't use search for alignment)
             # Note: max_searches=0 causes immediate exit before any API call
@@ -1006,6 +1071,198 @@ class ResearchOrchestrator:
         except Exception as e:
             self.logger.error(f"Brand alignment {original_agent_name} failed: {e}", exc_info=True)
             self.state.mark_failed(alignment_agent_name, str(e), layer='brand_alignment')
+            raise
+
+    async def execute_target_alignment(self):
+        """Execute target company alignment for configured outputs."""
+        self.logger.info("Executing target company alignment")
+
+        target_config = self.config.get('target_alignment', {})
+        align_targets = target_config.get('align_targets', ['brand_alignment'])
+
+        if self.target_context_loader is None:
+            self.logger.error("Target context loader not initialized")
+            return
+
+        # Determine which outputs to personalize
+        agents_to_align = []
+
+        if 'brand_alignment' in align_targets:
+            # Align brand-aligned outputs
+            brand_alignment_data = self.state.state.get('brand_alignment', {})
+            for agent_name, agent_data in brand_alignment_data.items():
+                if agent_data.get('status') == 'complete' and agent_name.startswith('align_'):
+                    agents_to_align.append(agent_name)
+
+        if 'playbooks' in align_targets and not agents_to_align:
+            # Fall back to raw playbooks if no brand-aligned outputs
+            integrations = self.state.state.get('integrations', {})
+            for agent_name, agent_data in integrations.items():
+                if agent_data.get('status') == 'complete' and agent_name.startswith('playbook_'):
+                    agents_to_align.append(agent_name)
+
+        if not agents_to_align:
+            self.logger.warning("No outputs found for target alignment")
+            return
+
+        self.logger.info(f"Target-aligning {len(agents_to_align)} outputs")
+
+        # Initialize target alignment tracking
+        target_agent_names = [f"target_{name}" for name in agents_to_align]
+        self.state.initialize_target_alignment(target_agent_names)
+
+        # Execute target alignment agents in parallel
+        tasks = []
+        for agent_name in agents_to_align:
+            target_agent_name = f"target_{agent_name}"
+            if not self.state.is_agent_complete(target_agent_name):
+                tasks.append(self._execute_target_alignment_agent(agent_name))
+            else:
+                self.logger.info(f"Skipping {agent_name} target alignment (already complete)")
+
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            self._check_gather_results(results)
+
+        self.logger.info("Target alignment complete!")
+        self._print_layer_status('target_alignment')
+
+    async def _execute_target_alignment_agent(self, source_agent_name: str):
+        """
+        Execute target alignment for a single output.
+
+        Args:
+            source_agent_name: Name of the source agent whose output will be personalized
+                (either an align_* agent or a playbook_* agent)
+        """
+        target_agent_name = f"target_{source_agent_name}"
+
+        try:
+            self.logger.info(f"Starting target alignment: {source_agent_name}")
+            self.state.mark_in_progress(target_agent_name, 'target_alignment')
+
+            # Load source output
+            source_output = self.state.get_agent_output(source_agent_name)
+            if not source_output or 'output_path' not in source_output:
+                self.logger.error(f"Cannot target-align {source_agent_name}: no output found")
+                self.state.mark_failed(
+                    target_agent_name, "No source output found", layer='target_alignment'
+                )
+                return
+
+            source_path = Path(source_output['output_path'])
+            if not source_path.exists():
+                self.logger.error(
+                    f"Cannot target-align {source_agent_name}: "
+                    f"output file not found at {source_path}"
+                )
+                self.state.mark_failed(
+                    target_agent_name,
+                    f"File not found: {source_path}",
+                    layer='target_alignment'
+                )
+                return
+
+            with open(source_path, 'r', encoding='utf-8') as f:
+                enriched_content = f.read()
+
+            # Load target context
+            if self.target_context_loader is None:
+                self.logger.error("Target context loader not initialized")
+                self.state.mark_failed(
+                    target_agent_name, "Target context loader not initialized",
+                    layer='target_alignment'
+                )
+                return
+
+            target_data = self.target_context_loader.load()
+            if not target_data:
+                self.logger.error("Target context is empty — skipping target alignment")
+                self.state.mark_failed(
+                    target_agent_name, "Empty target context", layer='target_alignment'
+                )
+                return
+
+            target_context_formatted = self.target_context_loader.format_for_prompt(target_data)
+
+            # Build target alignment prompt
+            prompt = build_target_alignment_prompt(
+                enriched_content=enriched_content,
+                target_context=target_context_formatted
+            )
+
+            # Get target alignment model configuration
+            target_config = self.config.get('target_alignment', {})
+            model = target_config.get('model', 'claude-sonnet-4-5-20250929')
+            model_config = get_model_config(self.config, model)
+            max_searches = 1
+
+            self.logger.info(
+                f"[{target_agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}"
+            )
+
+            # Execute target alignment session
+            session = ResearchSession(
+                agent_name=target_agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={'enriched_content': enriched_content},
+                max_turns=5
+            )
+
+            # Check if session ended in error
+            if result.get('completion_status') == 'error':
+                error_msg = (
+                    f"Target alignment session ended in error "
+                    f"after {result['total_turns']} turns"
+                )
+                self.logger.error(f"Target alignment {source_agent_name} failed: {error_msg}")
+                self.state.mark_failed(target_agent_name, error_msg, layer='target_alignment')
+                return
+
+            # Save target-aligned output
+            output_path = self._save_agent_output(
+                target_agent_name, 'target_alignment', result
+            )
+
+            # Mark complete in state
+            self.state.mark_complete(
+                agent_name=target_agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'source_agent': source_agent_name,
+                    'source_path': str(source_path),
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status']
+                },
+                layer='target_alignment'
+            )
+
+            # Update budget tracking
+            self._update_budget(0, result.get('estimated_cost_usd', 0.0))
+
+            self.logger.info(f"Completed target alignment: {source_agent_name}")
+            self.logger.info(f"  Turns: {result['total_turns']}")
+            self.logger.info(f"  Time: {result['execution_time_seconds']:.1f}s")
+            self.logger.info(f"  Cost: ${result.get('estimated_cost_usd', 0.0):.2f}")
+            self.logger.info(f"  Output: {output_path}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(
+                f"Target alignment {source_agent_name} failed: {e}", exc_info=True
+            )
+            self.state.mark_failed(target_agent_name, str(e), layer='target_alignment')
             raise
 
     async def _execute_agent(self, agent_name: str, layer: str = 'layer_1'):
@@ -1638,6 +1895,8 @@ class ResearchOrchestrator:
             output_dir = self.output_dir / 'validation'
         elif layer == 'brand_alignment':
             output_dir = self.output_dir / 'brand_alignment'
+        elif layer == 'target_alignment':
+            output_dir = self.output_dir / 'target_aligned'
         else:
             output_dir = self.output_dir / layer
         
@@ -1705,7 +1964,7 @@ class ResearchOrchestrator:
         self.logger.info("")
         self.logger.info("Layer Status:")
 
-        for layer_name in ['layer_0_status', 'layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'validation_status', 'brand_alignment_status']:
+        for layer_name in ['layer_0_status', 'layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'validation_status', 'brand_alignment_status', 'target_alignment_status']:
             status = summary[layer_name]
             layer_label = layer_name.replace('_status', '').replace('_', ' ').title()
             self.logger.info(f"  {layer_label}: {status['complete']}/{status['total']} complete")

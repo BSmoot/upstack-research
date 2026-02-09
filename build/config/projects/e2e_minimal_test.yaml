@@ -95,6 +95,8 @@ validation:
 brand_alignment:
   enabled: true
 
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+
   context_files:
     baseline: "../../../research-manager/context/baseline.yaml"
     writing_standards: "../../../research-manager/context/writing-standards.yaml"
@@ -104,7 +106,7 @@ brand_alignment:
   align_targets:
     - "playbooks"
 
-  model: "claude-haiku-4-5-20251001"
+  model: "claude-sonnet-4-5-20250929"
 
   output:
     suffix: ".aligned"
@@ -112,6 +114,14 @@ brand_alignment:
 
   review_gates:
     after_playbooks: false  # Disable for automated testing
+
+# Target alignment (disabled by default — enable with target_file)
+target_alignment:
+  enabled: false
+  target_file: "../../../research-manager/context/targets/example_health_system.yaml"
+  model: "claude-sonnet-4-5-20250929"
+  align_targets:
+    - "brand_alignment"  # Runs on brand-aligned output, or "playbooks" if no brand step
 
 # Execution settings - disable review gates for automated testing
 execution_settings:

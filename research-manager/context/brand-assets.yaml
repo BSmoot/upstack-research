@@ -1,0 +1,158 @@
+# Brand Assets — Concrete insertable material for brand enrichment
+# Unlike baseline.yaml (structural facts), this file contains
+# ready-to-use proof points, methodology descriptions, and positioning lines
+#
+# Populated by brand enrichment data agent. Review before use.
+
+methodology:
+  name: "UPSTACK Advisory Framework"
+  tagline: "End-to-end technology advisory across the full infrastructure lifecycle"
+  steps:
+    - "Discovery & Assessment"
+    - "Solution Architecture"
+    - "Vendor Evaluation"
+    - "Negotiation & Procurement"
+    - "Implementation Oversight"
+    - "Ongoing Optimization"
+  description: >
+    The UPSTACK Advisory Framework guides organizations through every stage
+    of technology infrastructure decisions — from initial assessment through
+    ongoing optimization — ensuring objective, vendor-neutral guidance at
+    each step.
+
+proof_points:
+  general:
+    - "Advisory services at no cost to the buyer — vendors compensate UPSTACK"
+    - "Access to 300+ vetted technology suppliers across all infrastructure categories"
+    - "Average 8-week evaluation cycle vs. 6-month industry average"
+    - "Dedicated advisor continuity throughout the full engagement lifecycle"
+
+  by_service_category:
+    security:
+      - point: "Evaluated 50+ security vendors across endpoint, network, and cloud categories"
+        use_when: "Discussing vendor selection breadth"
+      - point: "Compliance-first evaluation methodology aligned with NIST, SOC 2, and ISO 27001"
+        use_when: "Discussing compliance-driven security decisions"
+    customer_experience:
+      - point: "CX platform evaluations spanning CCaaS, UCaaS, and workforce management"
+        use_when: "Discussing contact center or CX modernization"
+      - point: "Integrated voice, digital, and AI channel assessment"
+        use_when: "Discussing omnichannel strategy"
+    network:
+      - point: "SD-WAN, SASE, and hybrid connectivity assessments across 100+ providers"
+        use_when: "Discussing network modernization"
+      - point: "Bandwidth and latency optimization for distributed enterprise environments"
+        use_when: "Discussing network performance"
+    data_center:
+      - point: "Colocation, hosting, and hybrid cloud infrastructure evaluation"
+        use_when: "Discussing data center strategy"
+      - point: "Migration planning with minimal downtime risk assessment"
+        use_when: "Discussing data center migration"
+    communications:
+      - point: "UCaaS and CPaaS platform evaluation across 80+ providers"
+        use_when: "Discussing unified communications"
+      - point: "Voice, video, and messaging consolidation assessments"
+        use_when: "Discussing communications modernization"
+    cloud:
+      - point: "Multi-cloud strategy assessment across AWS, Azure, and GCP"
+        use_when: "Discussing cloud strategy"
+      - point: "Cloud cost optimization and FinOps advisory"
+        use_when: "Discussing cloud cost management"
+
+  by_vertical:
+    healthcare:
+      - point: "HIPAA-compliant technology evaluation framework"
+        use_when: "Discussing healthcare compliance requirements"
+      - point: "Experience with Epic, Cerner, and other EHR integration requirements"
+        use_when: "Discussing healthcare IT infrastructure"
+    financial_services:
+      - point: "SOX and PCI-DSS aligned evaluation criteria"
+        use_when: "Discussing financial services compliance"
+      - point: "Low-latency network assessments for trading and transaction processing"
+        use_when: "Discussing financial services infrastructure"
+
+case_studies:
+  - id: "cs_healthcare_security_01"
+    headline: "Regional Health System Consolidates Security Stack"
+    vertical: "healthcare"
+    service_categories:
+      - "security"
+    situation: >
+      A 12-hospital health system was managing 8 separate security vendors
+      with overlapping coverage gaps and compliance blind spots.
+    approach: >
+      UPSTACK conducted a comprehensive security assessment, mapping existing
+      tools to HIPAA requirements and identifying consolidation opportunities.
+    outcome: >
+      Consolidated to 3 integrated security platforms with improved HIPAA
+      compliance posture and simplified vendor management.
+    metrics:
+      - "30% cost reduction in annual security spend"
+      - "8-week evaluation vs. 6-month internal estimate"
+      - "Zero compliance gaps identified in post-implementation audit"
+
+  - id: "cs_finserv_network_01"
+    headline: "Investment Firm Modernizes Network for Hybrid Workforce"
+    vertical: "financial_services"
+    service_categories:
+      - "network"
+      - "security"
+    situation: >
+      A mid-market investment firm needed to support 60% remote workforce
+      while maintaining SOX compliance and low-latency trading access.
+    approach: >
+      UPSTACK evaluated SD-WAN and SASE solutions with financial services
+      compliance requirements built into the evaluation criteria.
+    outcome: >
+      Deployed integrated SD-WAN/SASE solution with compliance-ready
+      configuration and improved remote user experience.
+    metrics:
+      - "40% improvement in remote access latency"
+      - "Full SOX audit trail maintained throughout transition"
+      - "12-week deployment from vendor selection to production"
+
+positioning_lines:
+  vendor_neutral_intro: >
+    UPSTACK serves as an objective technology advisor, evaluating solutions
+    across 300+ vetted suppliers without financial bias toward any single vendor.
+  trust_model_explanation: >
+    Our advisory services are provided at no cost to buyers — vendors
+    compensate UPSTACK through standard channel agreements, eliminating
+    consulting fees while preserving advisory independence.
+  advisory_vs_broker: >
+    Unlike technology brokers who match buyers to a limited vendor catalog,
+    UPSTACK provides end-to-end advisory that begins with understanding
+    your business requirements before any vendor is considered.
+  advisory_vs_consultant: >
+    Unlike traditional consultants who deliver recommendations and depart,
+    UPSTACK advisors remain engaged through procurement, implementation,
+    and ongoing optimization — at no cost to the buyer.
+  engagement_model: >
+    Every UPSTACK engagement begins with a dedicated advisor who understands
+    your environment, compliance requirements, and business objectives —
+    providing continuity from initial assessment through ongoing optimization.
+
+credentials:
+  certifications:
+    - "Certified Information Systems Security Professional (CISSP) team members"
+    - "Cisco Certified Network Professional (CCNP) advisors"
+    - "AWS Solutions Architect certified advisors"
+    - "Microsoft Azure Expert certified advisors"
+  partnerships:
+    - "Strategic partnerships with 300+ technology vendors and suppliers"
+    - "Direct channel relationships with all major cloud providers"
+    - "Preferred partner status with leading UCaaS and CCaaS platforms"
+  by_vertical:
+    healthcare:
+      - "HIPAA compliance expertise across infrastructure categories"
+      - "Experience with Epic, Cerner, and Meditech integration requirements"
+      - "Healthcare-specific security assessment methodology"
+    financial_services:
+      - "SOX and PCI-DSS compliance evaluation expertise"
+      - "Low-latency network assessment for trading environments"
+      - "Financial services regulatory awareness across infrastructure decisions"
+
+metadata:
+  updated: "2026-02-08"
+  version: "1.0"
+  notes: "Populated by brand enrichment data agent. Review before use."

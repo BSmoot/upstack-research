@@ -1,63 +1,82 @@
-"""Brand alignment prompt for aligning research outputs with brand context."""
+"""Brand enrichment prompt for surgically enriching research outputs with UPSTACK context."""
 
-BRAND_ALIGNMENT_PROMPT = """You are a brand alignment specialist. Your task is to review and align the following research output with our brand context.
+BRAND_ALIGNMENT_PROMPT = """You are the UPSTACK Brand Enrichment Agent.
 
-# Brand Context
+Your task is to ENRICH the following research playbook with specific UPSTACK
+context. You are NOT rewriting — you are making targeted insertions and
+replacements.
 
+# UPSTACK Brand Assets
+{brand_assets}
+
+# Brand Voice & Standards
 {brand_context}
 
-# Original Content to Align
-
+# Original Playbook Content
 {original_content}
 
-# Your Task
+# Enrichment Instructions
 
-Review the original content and rewrite it to align with our brand context while preserving:
-- All factual information and research findings
-- The original structure and organization
-- Key insights and recommendations
+Make ONLY these specific changes to the original content:
 
-Apply brand alignment by:
-1. Adjusting tone and voice to match brand standards
-2. Using preferred terminology from the glossary
-3. Ensuring messaging aligns with brand positioning
-4. Formatting according to writing standards
-5. Tailoring language for target audience personas
+## 1. UPSTACK Advisory Perspective Insertions
+After each major pain point or challenge section, add a brief (2-3 sentence)
+"UPSTACK Advisory Perspective" callout that connects the pain point to
+UPSTACK's specific capability. Use proof points and case studies from the
+Brand Assets above.
 
-# Output Requirements
+## 2. Methodology References
+Where the playbook discusses evaluation frameworks or advisory processes,
+reference UPSTACK's specific methodology by name and describe the relevant
+steps.
 
-Return the aligned content in the same format as the original (markdown).
+## 3. Case Study Integration
+Where the playbook discusses outcomes, ROI, or proof points, insert relevant
+case studies from the Brand Assets. Match by vertical and service category.
+Format as: "**Client Example:** [headline] — [1-2 sentence outcome with metrics]"
 
-DO NOT:
-- Change factual claims or research findings
-- Remove important details or insights
-- Add new research that wasn't in the original
-- Alter the core structure
+## 4. Terminology Alignment
+Replace generic advisory language with UPSTACK-specific terms:
+- "advisory firm" -> "UPSTACK" (where contextually appropriate)
+- "vendor-neutral advisor" -> use UPSTACK's positioning language
+- Generic trust model descriptions -> UPSTACK's specific trust model
 
-DO:
-- Refine language and phrasing for brand consistency
-- Replace generic terms with brand-specific terminology
-- Adjust tone to match brand voice
-- Ensure formatting matches brand standards
+## 5. Credentials & Credibility
+In sections discussing qualifications or credibility, add relevant UPSTACK
+credentials and partnerships from the Brand Assets.
 
-Begin the aligned content below:
+# Rules
 
----
+- PRESERVE all research findings, data points, and citations unchanged
+- PRESERVE the original document structure and headers
+- DO NOT remove or paraphrase existing content
+- DO NOT add generic filler — every addition must reference specific Brand Assets
+- If no relevant Brand Asset exists for a section, leave that section unchanged
+- Additions should feel organic, not bolted on
+- Use the brand voice standards for any new text you write
+
+Return the complete enriched document in markdown.
 """
 
 
-def build_brand_alignment_prompt(original_content: str, brand_context: str) -> str:
+def build_brand_alignment_prompt(
+    original_content: str,
+    brand_context: str,
+    brand_assets: str = ""
+) -> str:
     """
-    Build brand alignment prompt with original content and brand context.
+    Build brand enrichment prompt with original content, brand context, and brand assets.
 
     Args:
-        original_content: Original research output to align
-        brand_context: Formatted brand context string
+        original_content: Original research output to enrich
+        brand_context: Formatted brand context string (voice, standards, personas)
+        brand_assets: Formatted brand assets string (proof points, case studies, methodology)
 
     Returns:
-        Complete brand alignment prompt
+        Complete brand enrichment prompt
     """
     return BRAND_ALIGNMENT_PROMPT.format(
         brand_context=brand_context,
+        brand_assets=brand_assets,
         original_content=original_content
     )

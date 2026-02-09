@@ -60,6 +60,8 @@ class StateTracker:
                         state['layer_0'] = {}
                     if 'validation' not in state:
                         state['validation'] = {}
+                    if 'target_alignment' not in state:
+                        state['target_alignment'] = {}
                     return state
             except Exception as e:
                 self.logger.error(f"Failed to load checkpoint: {e}")
@@ -82,7 +84,8 @@ class StateTracker:
             "layer_3": {},
             "integrations": {},
             "validation": {},
-            "brand_alignment": {}
+            "brand_alignment": {},
+            "target_alignment": {}
         }
         
         self._save_state(state)
@@ -129,7 +132,7 @@ class StateTracker:
             True if agent status is 'complete'
         """
         # Check in all layers
-        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
+        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment', 'target_alignment']:
             layer = self.state.get(layer_name, {})
             if agent_name in layer:
                 return layer[agent_name].get('status') == 'complete'
@@ -284,7 +287,7 @@ class StateTracker:
             if layer in self.state and agent_name in self.state[layer]:
                 target_layer = layer
         else:
-            for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
+            for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment', 'target_alignment']:
                 if layer_name in self.state and agent_name in self.state[layer_name]:
                     target_layer = layer_name
                     break
@@ -361,7 +364,7 @@ class StateTracker:
             return layer_data.get(agent_name)
 
         # Search in all layers
-        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment']:
+        for layer_name in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'integrations', 'validation', 'brand_alignment', 'target_alignment']:
             layer_data = self.state.get(layer_name, {})
             if agent_name in layer_data:
                 return layer_data[agent_name]
@@ -540,6 +543,17 @@ class StateTracker:
 
         self._save_state()
 
+    def initialize_target_alignment(self, agent_names: list[str]):
+        """Initialize target alignment state with agent names."""
+        if 'target_alignment' not in self.state:
+            self.state['target_alignment'] = {}
+
+        for agent_name in agent_names:
+            if agent_name not in self.state['target_alignment']:
+                self.state['target_alignment'][agent_name] = {"status": "pending"}
+
+        self._save_state()
+
     def get_execution_summary(self) -> dict[str, Any]:
         """Get overall execution summary."""
         return {
@@ -553,5 +567,6 @@ class StateTracker:
             'integration_status': self.get_layer_status('integrations'),
             'validation_status': self.get_layer_status('validation'),
             'brand_alignment_status': self.get_layer_status('brand_alignment'),
+            'target_alignment_status': self.get_layer_status('target_alignment'),
             'checkpoint_file': str(self.checkpoint_file)
         }

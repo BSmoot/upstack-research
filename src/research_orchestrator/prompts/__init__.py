@@ -43,6 +43,11 @@ from .brand_alignment import (
     build_brand_alignment_prompt
 )
 
+from .target_alignment import (
+    TARGET_ALIGNMENT_PROMPT,
+    build_target_alignment_prompt
+)
+
 from .validation import (
     VALIDATION_PROMPT,
     build_validation_prompt,
@@ -74,6 +79,8 @@ __all__ = [
     'PLAYBOOK_GENERATION_PROMPT_3D',
     'BRAND_ALIGNMENT_PROMPT',
     'build_brand_alignment_prompt',
+    'TARGET_ALIGNMENT_PROMPT',
+    'build_target_alignment_prompt',
     'VALIDATION_PROMPT',
     'build_validation_prompt',
     'build_batch_validation_prompt'
