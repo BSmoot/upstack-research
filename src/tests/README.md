@@ -181,10 +181,12 @@ If this fails:
 
 ```bash
 cd src
-pytest tests/test_research_session.py -v -m "not integration"
+
+# Run all unit tests (no API calls)
+pytest tests/test_research_session.py tests/test_validation.py tests/test_service_category.py -v -m "not integration"
 ```
 
-This verifies your code is structured correctly without making API calls.
+This verifies your code is structured correctly without making API calls. Expected: 119 tests pass, 4 skipped.
 
 ### Step 3: Run Integration Tests (Small Cost)
 
@@ -295,6 +297,63 @@ jobs:
 4. **Monitor API costs** - Integration tests cost ~$0.05-0.10 per run
 5. **Keep API key secure** - Never commit `.env` file to version control
 
+### 3. `test_validation.py` - Validation Prompt Unit Tests
+
+Unit tests for the validation prompt builders. No API calls required.
+
+**Purpose:**
+- Test `build_validation_prompt()` placeholder substitution
+- Test N/A defaults for optional parameters
+- Verify all 4 validation dimensions (Completeness, Specificity, Actionability, Research Grounding)
+- Verify verdict thresholds (APPROVED 80+, NEEDS_REVISION 60-79, REJECTED <60)
+- Test `build_batch_validation_prompt()` for multi-playbook summaries
+
+**How to Run:**
+```bash
+cd src
+pytest tests/test_validation.py -v
+```
+
+**Test Count:** 21 tests (all unit, no API calls)
+
+### 4. `test_service_category.py` - Service Category & Context Injector Tests
+
+Unit tests for `ResearchContextInjector` and `build_service_category_prompt()`. No API calls required.
+
+**Purpose:**
+- Test `ResearchContextInjector` initialization, caching, category loading
+- Test YAML comment stripping from supplier names
+- Test error handling (FileNotFoundError, KeyError for missing keys)
+- Test `build_service_category_prompt()` template rendering
+- Test validation of unknown category keys
+
+**How to Run:**
+```bash
+cd src
+pytest tests/test_service_category.py -v
+```
+
+**Test Count:** 28 tests (all unit, no API calls)
+
+### 5. End-to-End Test Infrastructure (`e2e/`)
+
+End-to-end test scenarios for the full research pipeline. See `tests/e2e/README.md` for details.
+
+**Scenarios:**
+- Full Pipeline, Layer 0 Only, Selective Vertical/Title/Service Category
+- Force Re-run, Resume After Interrupt, Dry Run
+- Invalid Config, Budget Exceeded
+
+**How to Run:**
+```bash
+cd src
+# Run non-API scenarios (free)
+powershell -File tests/e2e/run_e2e.ps1 -Scenario dry_run
+
+# Run all scenarios (costs API credits)
+powershell -File tests/e2e/run_e2e.ps1
+```
+
 ## Test Coverage
 
 Current test coverage:
@@ -311,6 +370,12 @@ Current test coverage:
 - ✅ Web search integration
 - ✅ Session management
 - ✅ Max turns enforcement
+- ✅ Validation prompt building (placeholder substitution, scoring dimensions, verdict thresholds)
+- ✅ Batch validation prompt building (multi-playbook summaries)
+- ✅ ResearchContextInjector (init, loading, caching, error handling)
+- ✅ Service category prompt building (template rendering, YAML comment stripping)
+- ✅ CLI flag validation (selective flags require correct layer)
+- ✅ Force re-run mechanism (agent name construction, checkpoint clearing)
 
 ## Next Steps
 

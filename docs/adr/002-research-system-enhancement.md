@@ -445,15 +445,15 @@ for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validati
 | Resume from checkpoint | ✅ Exists | `--resume execution_id` |
 | Skip completed agents | ✅ Exists | Automatic via `is_agent_complete()` |
 
-### Required Additions
+### Required Additions (Implemented via ADR-003, 2026-02-08)
 
 | Capability | Status | Command |
 |------------|--------|---------|
-| Run Layer 0 | ❌ Add | `--layer 0` |
-| Force re-run completed agent | ❌ Add | `--force` or `--refresh` flag |
-| Selective vertical refresh | ❌ Add | `--verticals healthcare,legal` |
-| Selective title refresh | ❌ Add | `--titles cfo_cluster,security_leadership` |
-| Selective service category | ❌ Add | `--service-categories security,cx` |
+| Run Layer 0 | ✅ Done | `--layer 0` |
+| Force re-run completed agent | ✅ Done | `--force` flag |
+| Selective vertical refresh | ✅ Done | `--verticals healthcare,legal` |
+| Selective title refresh | ✅ Done | `--titles cfo_cluster,security_leadership` |
+| Selective service category | ✅ Done | `--service-categories security,cx` |
 
 ### Update Workflow Example
 

@@ -58,6 +58,26 @@ ANTHROPIC_API_KEY=your_api_key_here
 
 ## Recent Updates (February 2026)
 
+### ✅ ADR-003: CLI Selective Updates, Unit Tests & E2E Infrastructure (2026-02-08)
+
+Exposed selective update CLI flags, added dedicated unit tests, and prepared E2E test infrastructure:
+
+**CLI Flags for Selective Execution**
+- `--layer 0` — Run Layer 0 (service category research) independently
+- `--verticals healthcare,legal` — Run specific verticals in Layer 2
+- `--titles cfo_cluster,cio_cto_cluster` — Run specific title clusters in Layer 3
+- `--service-categories security,cx` — Run specific service categories in Layer 0
+- `--force` — Force re-run of completed agents (even if already in checkpoint)
+
+**Dedicated Unit Tests**
+- `test_validation.py` — 21 tests covering `build_validation_prompt()` and `build_batch_validation_prompt()`
+- `test_service_category.py` — 28 tests covering `ResearchContextInjector` and `build_service_category_prompt()`
+
+**E2E Test Infrastructure**
+- 10 end-to-end test scenarios documented in `tests/e2e/README.md`
+- PowerShell test runner (`tests/e2e/run_e2e.ps1`) with colored output
+- Budget failure test config (`build/config/projects/e2e_budget_fail.yaml`)
+
 ### ✅ ADR-002: Research System Enhancement
 
 Implemented comprehensive enhancements addressing six critical gaps:
@@ -217,6 +237,20 @@ python run_research.py --agents buyer_journey --config ../build/design/251002_in
 - Generates structured markdown report
 - Saves to `outputs/layer_1/buyer_journey.md`
 
+### Run Layer 0 (Service Category Research)
+
+Execute service category research agents:
+
+```bash
+python run_research.py --layer 0 --config ../build/config/projects/healthcare_2025.yaml
+```
+
+Run specific service categories only:
+
+```bash
+python run_research.py --layer 0 --service-categories security,customer_experience --config path/to/config.yaml
+```
+
 ### Run Full Layer 1
 
 Execute all 5 horizontal research agents:
@@ -226,6 +260,35 @@ python run_research.py --layer 1 --config ../build/design/251002_initial_design/
 ```
 
 **Timeline:** 2-3 days (mostly unattended)
+
+### Run Selective Verticals or Titles
+
+Run specific verticals in Layer 2:
+
+```bash
+python run_research.py --layer 2 --verticals healthcare,financial_services --config path/to/config.yaml
+```
+
+Run specific title clusters in Layer 3:
+
+```bash
+python run_research.py --layer 3 --titles cfo_cluster,cio_cto_cluster --config path/to/config.yaml
+```
+
+### Force Re-run Completed Agents
+
+Re-run agents even if already complete in the checkpoint:
+
+```bash
+# Re-run a specific service category
+python run_research.py --layer 0 --service-categories security --force --config path/to/config.yaml
+
+# Re-run a specific vertical
+python run_research.py --layer 2 --verticals healthcare --force --config path/to/config.yaml
+
+# Re-run all of Layer 1
+python run_research.py --layer 1 --force --config path/to/config.yaml
+```
 
 ### Run Full Research Program
 
@@ -249,10 +312,15 @@ python run_research.py --config ../build/design/251002_initial_design/research_c
 If execution is interrupted, resume from checkpoint:
 
 ```bash
-python run_research.py --resume research_20251002_143000
+python run_research.py --resume research_20251002_143000 --config path/to/config.yaml
 ```
 
-(Note: Resume functionality requires the original config file for now)
+You can combine `--resume` with `--layer` to run a specific layer using an existing checkpoint:
+
+```bash
+# Resume and run only Layer 2
+python run_research.py --resume research_20251002_143000 --layer 2 --config path/to/config.yaml
+```
 
 ## Output Structure
 
@@ -443,10 +511,27 @@ src/
 │   ├── state/
 │   │   └── tracker.py             # State & checkpoints
 │   ├── prompts/
-│   │   └── horizontal.py          # Layer 1 prompts
+│   │   ├── horizontal.py          # Layer 1 prompts
+│   │   ├── vertical.py            # Layer 2 prompts
+│   │   ├── title.py               # Layer 3 prompts
+│   │   ├── playbook.py            # Playbook generation (2D & 3D)
+│   │   ├── service_category.py    # Layer 0 service category prompts
+│   │   ├── validation.py          # Validation agent prompts
+│   │   ├── brand_alignment.py     # Brand alignment prompts
+│   │   └── context_injector.py    # Dynamic context injection from baseline.yaml
 │   └── utils/
 │       ├── logging_setup.py       # Logging config
-│       └── config.py              # Config loader
+│       ├── config.py              # Config loader
+│       └── config_schema.py       # Pydantic config models
+├── tests/
+│   ├── test_api_connection.py     # Standalone API connection tests
+│   ├── test_research_session.py   # ResearchSession unit & integration tests
+│   ├── test_validation.py         # Validation prompt unit tests (21 tests)
+│   ├── test_service_category.py   # Service category & context injector tests (28 tests)
+│   ├── e2e/
+│   │   ├── README.md              # 10 E2E test scenarios
+│   │   └── run_e2e.ps1            # PowerShell E2E test runner
+│   └── README.md                  # Testing guide
 ├── run_research.py                # CLI interface
 ├── requirements.txt               # Dependencies
 └── README.md                      # This file
@@ -841,4 +926,6 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Version 1.0.0 - Initial Release
+- **1.2.0** - CLI selective updates, dedicated unit tests, E2E test infrastructure (ADR-003)
+- **1.1.0** - Research system enhancement: Layer 0, 3D playbooks, validation, context injection (ADR-002)
+- **1.0.0** - Initial release
