@@ -1,158 +1,476 @@
-# Brand Assets — Concrete insertable material for brand enrichment
-# Unlike baseline.yaml (structural facts), this file contains
-# ready-to-use proof points, methodology descriptions, and positioning lines
-#
-# Populated by brand enrichment data agent. Review before use.
+# brand-assets.yaml
+# UPSTACK Brand Assets for Research Playbook Enrichment
+# Generated from public sources + internal context documents
+# [NEEDS INPUT] tags indicate fields requiring internal data
+
+---
 
 methodology:
-  name: "UPSTACK Advisory Framework"
-  tagline: "End-to-end technology advisory across the full infrastructure lifecycle"
+  name: "UPSTACK Advisory Process"
+  tagline: "Vendor-neutral technology advisory from evaluation through lifecycle management, at no cost to the client."
   steps:
-    - "Discovery & Assessment"
-    - "Solution Architecture"
-    - "Vendor Evaluation"
-    - "Negotiation & Procurement"
-    - "Implementation Oversight"
-    - "Ongoing Optimization"
-  description: >
-    The UPSTACK Advisory Framework guides organizations through every stage
-    of technology infrastructure decisions — from initial assessment through
-    ongoing optimization — ensuring objective, vendor-neutral guidance at
-    each step.
+    - name: "Discovery & Assessment"
+      description: "Deep-dive into current technology environment, contracts, business requirements, and stakeholder priorities. We map your existing infrastructure, identify pain points, and align internal teams on evaluation criteria."
+    - name: "Strategy & Solution Design"
+      description: "Build requirements matrices, develop evaluation frameworks, and architect solutions across hundreds of vendors. We apply pricing intelligence from 80 million transactional data points to benchmark your current spend and identify optimization opportunities."
+    - name: "Sourcing & Evaluation"
+      description: "Manage the vendor evaluation process with data-driven scorecards informed by thousands of completed engagements. We run side-by-side comparisons, negotiate pricing and contract terms, and provide transparent recommendations tied to your specific requirements."
+    - name: "Implementation & Deployment"
+      description: "Dedicated project management through deployment. We coordinate across vendors, track milestones, manage escalations, and ensure solutions are delivered on time with minimal disruption to your operations."
+    - name: "Lifecycle Management"
+      description: "Ongoing vendor coordination, contract renewal management, trouble ticket resolution, and strategic account reviews. We serve as your single point of contact across all technology vendors, continuously optimizing your environment as your business evolves."
+  description: "UPSTACK's advisory process takes enterprises from technology assessment through ongoing lifecycle management. Every recommendation is informed by real-world transactional data, delivered by experienced advisors, and backed by dedicated implementation and support teams. The entire engagement costs you nothing — our fees are reimbursed by the vendors you select."
+  differentiators:
+    - "Zero cost to the client — vendor-reimbursed model eliminates upfront fees and hourly billing"
+    - "Vendor-neutral across hundreds of suppliers — no quotas, no exclusive relationships, no biased incentives"
+    - "Pricing intelligence drawn from 80 million data points across thousands of transactional engagements"
+    - "End-to-end engagement from evaluation through ongoing lifecycle management, not just procurement"
+    - "Dedicated CX team with project managers and customer success managers assigned to every engagement"
+    - "Proprietary technology platform for inventory management, price benchmarking, and vendor coordination"
+
+---
 
 proof_points:
   general:
-    - "Advisory services at no cost to the buyer — vendors compensate UPSTACK"
-    - "Access to 300+ vetted technology suppliers across all infrastructure categories"
-    - "Average 8-week evaluation cycle vs. 6-month industry average"
-    - "Dedicated advisor continuity throughout the full engagement lifecycle"
+    - point: "Ranked #101 on the 2024 Inc. 5000 with 3,190% three-year revenue growth"
+      source: "Inc. 5000 2024 list; UPSTACK press release August 13, 2024"
+      date: "2024-08-13"
+      use_when: "Establishing company credibility and growth trajectory"
+
+    - point: "Ranked #941 on the 2025 Inc. 5000, demonstrating sustained growth at scale"
+      source: "ZoomInfo company profile; Inc. 5000 2025 list"
+      date: "2025"
+      use_when: "Showing continued growth momentum beyond initial hypergrowth phase"
+
+    - point: "478% three-year compound annual growth rate — recognized as the fastest-growing technology advisory firm in the U.S."
+      source: "UPSTACK About page"
+      date: "2024"
+      use_when: "Establishing market leadership and growth trajectory"
+
+    - point: "Customer Net Promoter Score of 78 — category-leading for technology advisory"
+      source: "UPSTACK About page"
+      date: "2024"
+      use_when: "Demonstrating client satisfaction and relationship quality"
+
+    - point: "99% client retention rate"
+      source: "UPSTACK homepage"
+      date: "2025"
+      use_when: "Addressing concerns about advisory relationship durability"
+
+    - point: "60+ Fortune 1000 customers and thousands of additional mid-market and SMB clients"
+      source: "Finovate interview with Charlie Day, December 2025; UPSTACK 2023 Annual Report references 6,500+ customers"
+      date: "2025-12"
+      use_when: "Establishing enterprise credibility and scale of operations"
+
+    - point: "220+ team members across the U.S. and internationally"
+      source: "UPSTACK website"
+      date: "2025"
+      use_when: "Demonstrating organizational scale and support capacity"
+
+    - point: "37 acquisitions of technology advisory firms since 2020, consolidating deep expertise under one platform"
+      source: "CB Insights; UPSTACK press releases"
+      date: "2025-10"
+      use_when: "Establishing breadth of expertise and industry consolidation leadership"
+
+    - point: "$350M+ in capital raised from Berkshire Partners, Morgan Stanley, and others"
+      source: "UPSTACK website"
+      date: "2025"
+      use_when: "Establishing financial stability and institutional backing"
+
+    - point: "Pricing intelligence drawn from 80 million data points across thousands of transactional engagements"
+      source: "UPSTACK homepage"
+      date: "2025"
+      use_when: "Demonstrating data-driven advisory capabilities and benchmarking depth"
+
+    - point: "Named to the CRN Solution Provider 500 — the only technology brokerage to achieve this recognition"
+      source: "UPSTACK About page timeline"
+      date: "2022"
+      use_when: "Establishing channel industry credibility"
+
+    - point: "Named top North American partner for contact center solutions"
+      source: "LeadIQ company profile"
+      date: "2025"
+      use_when: "Establishing CX/CCaaS category leadership"
+
+    - point: "Founded in 2017, headquartered at 7 World Trade Center, New York"
+      source: "UPSTACK website"
+      date: "2025"
+      use_when: "Company background and location context"
+
+    - point: "[NEEDS INPUT: Average cost savings achieved for clients across all categories — need aggregate from closed engagements]"
+      source: "internal"
+      date: "[NEEDS INPUT]"
+      use_when: "Quantifying financial value of advisory engagement"
+
+    - point: "[NEEDS INPUT: Average evaluation timeline — how much faster clients reach decisions vs. going direct]"
+      source: "internal"
+      date: "[NEEDS INPUT]"
+      use_when: "Demonstrating time-to-value and efficiency gains"
+
+    - point: "[NEEDS INPUT: Number of active vendor/supplier relationships across the platform]"
+      source: "internal"
+      date: "[NEEDS INPUT]"
+      use_when: "Demonstrating breadth of vendor access and market coverage"
 
   by_service_category:
     security:
-      - point: "Evaluated 50+ security vendors across endpoint, network, and cloud categories"
-        use_when: "Discussing vendor selection breadth"
-      - point: "Compliance-first evaluation methodology aligned with NIST, SOC 2, and ISO 27001"
-        use_when: "Discussing compliance-driven security decisions"
+      - point: "Advisory across EDR, MDR, IAM, SASE, ZTNA, and CSPM — helping enterprises navigate complex, overlapping vendor landscapes"
+        source: "UPSTACK website service pages"
+        use_when: "Establishing breadth of security advisory expertise"
+      - point: "Helped a global food distributor source a managed IT and security provider after being denied cybersecurity insurance coverage due to insufficient security posture"
+        source: "UPSTACK 2022 Annual Report case study summary"
+        use_when: "Demonstrating real-world security advisory outcomes"
+      - point: "[NEEDS INPUT: Number of security evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying security category volume"
+      - point: "[NEEDS INPUT: Key security supplier partnerships and tier levels — e.g., CrowdStrike, Palo Alto, Zscaler, Fortinet]"
+        source: "internal"
+        use_when: "Establishing depth of security vendor relationships"
+
     customer_experience:
-      - point: "CX platform evaluations spanning CCaaS, UCaaS, and workforce management"
-        use_when: "Discussing contact center or CX modernization"
-      - point: "Integrated voice, digital, and AI channel assessment"
-        use_when: "Discussing omnichannel strategy"
-    network:
-      - point: "SD-WAN, SASE, and hybrid connectivity assessments across 100+ providers"
-        use_when: "Discussing network modernization"
-      - point: "Bandwidth and latency optimization for distributed enterprise environments"
-        use_when: "Discussing network performance"
-    data_center:
-      - point: "Colocation, hosting, and hybrid cloud infrastructure evaluation"
-        use_when: "Discussing data center strategy"
-      - point: "Migration planning with minimal downtime risk assessment"
-        use_when: "Discussing data center migration"
-    communications:
-      - point: "UCaaS and CPaaS platform evaluation across 80+ providers"
-        use_when: "Discussing unified communications"
-      - point: "Voice, video, and messaging consolidation assessments"
-        use_when: "Discussing communications modernization"
-    cloud:
-      - point: "Multi-cloud strategy assessment across AWS, Azure, and GCP"
-        use_when: "Discussing cloud strategy"
-      - point: "Cloud cost optimization and FinOps advisory"
-        use_when: "Discussing cloud cost management"
+      - point: "Recognized as a top North American contact center partner"
+        source: "LeadIQ company profile"
+        use_when: "Establishing CX category leadership"
+      - point: "Acquired Breakwater Cloud Advisors (October 2025) — a CX consultancy specializing in contact center modernization, automation, and AI transformation"
+        source: "UPSTACK press release, October 2025"
+        use_when: "Demonstrating investment in CX expertise"
+      - point: "Deployed UCaaS/CCaaS solution across 300+ seats and 28 locations in six weeks with approximately $45,000 in upfront savings (ARSA Plastic Surgery)"
+        source: "UPSTACK case study, November 2023"
+        use_when: "Demonstrating CX deployment speed and savings"
+      - point: "Guided a major food service distributor through contact center modernization using Five9 integrated with Salesforce CRM"
+        source: "UPSTACK case study, September 2024"
+        use_when: "Demonstrating complex CCaaS evaluation and implementation support"
+      - point: "[NEEDS INPUT: Number of CX/CCaaS evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying CX category volume"
+
+    network_connectivity:
+      - point: "Advisory across DIA, MPLS, SD-WAN, Ethernet, cloud direct connects, and fixed wireless"
+        source: "UPSTACK website service pages"
+        use_when: "Establishing breadth of network advisory capabilities"
+      - point: "Migrated Sun Capital Partners from legacy MPLS (100Mbps per location) to global SD-WAN with increased bandwidth, redundancy, and cost savings"
+        source: "UPSTACK case study, Sun Capital Partners"
+        use_when: "Demonstrating network modernization advisory and PE portfolio support"
+      - point: "Helped a regional bank build dedicated fiber and broadband network across headquarters and branches, improving uptime and operations"
+        source: "UPSTACK case study, January 2025"
+        use_when: "Demonstrating financial services network advisory"
+      - point: "Sourced centralized and secure networking solution for Taylor Farms across distributed operations"
+        source: "UPSTACK case study, January 2024"
+        use_when: "Demonstrating multi-location network advisory for complex enterprises"
+      - point: "[NEEDS INPUT: Number of network evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying network category volume"
+
+    data_center_colocation:
+      - point: "Proprietary colocation marketplace with on-demand access to space, power, and pricing across leading providers — filterable by region, provider, and technical requirements"
+        source: "UPSTACK Platform Technology page"
+        use_when: "Demonstrating data center sourcing technology differentiation"
+      - point: "[NEEDS INPUT: Number of data center evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying data center category volume"
+      - point: "[NEEDS INPUT: Number of data center providers in marketplace and metros covered]"
+        source: "internal"
+        use_when: "Demonstrating marketplace breadth"
+      - point: "[NEEDS INPUT: Key data center supplier partnerships — e.g., Equinix, Digital Realty, QTS, CyrusOne tier levels]"
+        source: "internal"
+        use_when: "Establishing depth of data center vendor relationships"
+
+    communications_voice:
+      - point: "Advisory across UCaaS, SIP trunking, cloud PBX, and video conferencing platforms"
+        source: "UPSTACK website service pages"
+        use_when: "Establishing breadth of communications advisory capabilities"
+      - point: "Leadership team includes former executives from RingCentral, 8x8, and AT&T"
+        source: "UPSTACK About page — Charlie Day bio"
+        use_when: "Establishing team credibility in communications category"
+      - point: "[NEEDS INPUT: Number of UCaaS evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying communications category volume"
+      - point: "[NEEDS INPUT: Key UCaaS supplier partnerships and tier levels — e.g., RingCentral, Zoom, Microsoft, 8x8]"
+        source: "internal"
+        use_when: "Establishing depth of UCaaS vendor relationships"
+
+    cloud_infrastructure:
+      - point: "Advisory spanning cloud strategy, multi-cloud architecture, and AI/ML infrastructure sourcing"
+        source: "UPSTACK website service pages"
+        use_when: "Establishing cloud advisory scope"
+      - point: "Acquisition of Avail Partners (2025) brought cloud economics expertise and C-suite advisory capabilities for cloud migration and strategy"
+        source: "UPSTACK press release, Avail Partners acquisition"
+        use_when: "Demonstrating investment in cloud advisory depth"
+      - point: "[NEEDS INPUT: Number of cloud evaluations completed in trailing 12 months]"
+        source: "internal"
+        use_when: "Quantifying cloud category volume"
+      - point: "[NEEDS INPUT: Key cloud supplier partnerships — hyperscaler relationships, managed cloud providers]"
+        source: "internal"
+        use_when: "Establishing cloud vendor ecosystem depth"
 
   by_vertical:
     healthcare:
-      - point: "HIPAA-compliant technology evaluation framework"
-        use_when: "Discussing healthcare compliance requirements"
-      - point: "Experience with Epic, Cerner, and other EHR integration requirements"
-        use_when: "Discussing healthcare IT infrastructure"
+      - point: "[NEEDS INPUT: Number of healthcare clients served or engagements completed]"
+        source: "internal"
+        use_when: "Quantifying healthcare vertical experience"
+      - point: "The Chautauqua Center — successful VoIP integration with athenahealth EHR system"
+        source: "UPSTACK case study reference, About page"
+        use_when: "Demonstrating healthcare-specific integration expertise"
+      - point: "ARSA Plastic Surgery Center — UCaaS/CCaaS deployment across 300+ seats and 28 locations in six weeks"
+        source: "UPSTACK case study, November 2023"
+        use_when: "Demonstrating healthcare deployment speed and scale"
+      - point: "[NEEDS INPUT: HIPAA compliance capabilities — does UPSTACK sign BAAs? Do key supplier partners maintain HIPAA compliance?]"
+        source: "internal"
+        use_when: "Addressing healthcare compliance requirements"
+      - point: "[NEEDS INPUT: Team members with healthcare-specific certifications or industry experience]"
+        source: "internal"
+        use_when: "Establishing vertical expertise credibility"
+
     financial_services:
-      - point: "SOX and PCI-DSS aligned evaluation criteria"
-        use_when: "Discussing financial services compliance"
-      - point: "Low-latency network assessments for trading and transaction processing"
-        use_when: "Discussing financial services infrastructure"
+      - point: "Sun Capital Partners — migrated from legacy MPLS to global SD-WAN with improved bandwidth, redundancy, and cost savings across portfolio operations"
+        source: "UPSTACK case study, Sun Capital"
+        use_when: "Demonstrating PE/financial services network advisory"
+      - point: "Regional bank — fiber and broadband network build across headquarters and branches"
+        source: "UPSTACK case study, January 2025"
+        use_when: "Demonstrating banking network advisory"
+      - point: "V3 Technology acquisition brought long-term partnerships with financial services clients"
+        source: "UPSTACK press release, V3 Technology acquisition, February 2025"
+        use_when: "Demonstrating financial services vertical depth through acquisition"
+      - point: "[NEEDS INPUT: Number of financial services clients served or engagements completed]"
+        source: "internal"
+        use_when: "Quantifying financial services vertical experience"
+      - point: "[NEEDS INPUT: PCI DSS and SOX compliance capabilities across key supplier partners]"
+        source: "internal"
+        use_when: "Addressing financial services compliance requirements"
+
+    manufacturing:
+      - point: "Taylor Farms — centralized and secure networking solution for distributed manufacturing and distribution operations"
+        source: "UPSTACK case study, January 2024"
+        use_when: "Demonstrating manufacturing/food industry network advisory"
+      - point: "Avail Partners acquisition brought manufacturing vertical expertise from their Pacific Northwest client base"
+        source: "UPSTACK press release, Avail Partners acquisition"
+        use_when: "Establishing manufacturing vertical depth"
+      - point: "[NEEDS INPUT: Number of manufacturing clients served or engagements completed]"
+        source: "internal"
+        use_when: "Quantifying manufacturing vertical experience"
+
+    technology:
+      - point: "[NEEDS INPUT: Number of technology sector clients served or engagements completed]"
+        source: "internal"
+        use_when: "Quantifying technology vertical experience"
+
+    professional_services:
+      - point: "Avail Partners acquisition brought professional services vertical expertise"
+        source: "UPSTACK press release, Avail Partners acquisition"
+        use_when: "Establishing professional services vertical depth"
+      - point: "[NEEDS INPUT: Number of professional services clients served or engagements completed]"
+        source: "internal"
+        use_when: "Quantifying professional services vertical experience"
+
+---
 
 case_studies:
-  - id: "cs_healthcare_security_01"
-    headline: "Regional Health System Consolidates Security Stack"
-    vertical: "healthcare"
-    service_categories:
-      - "security"
-    situation: >
-      A 12-hospital health system was managing 8 separate security vendors
-      with overlapping coverage gaps and compliance blind spots.
-    approach: >
-      UPSTACK conducted a comprehensive security assessment, mapping existing
-      tools to HIPAA requirements and identifying consolidation opportunities.
-    outcome: >
-      Consolidated to 3 integrated security platforms with improved HIPAA
-      compliance posture and simplified vendor management.
-    metrics:
-      - "30% cost reduction in annual security spend"
-      - "8-week evaluation vs. 6-month internal estimate"
-      - "Zero compliance gaps identified in post-implementation audit"
-
-  - id: "cs_finserv_network_01"
-    headline: "Investment Firm Modernizes Network for Hybrid Workforce"
+  - id: "cs_001"
+    type: "verified"
+    headline: "Global PE firm modernizes network infrastructure with SD-WAN migration"
     vertical: "financial_services"
     service_categories:
-      - "network"
-      - "security"
-    situation: >
-      A mid-market investment firm needed to support 60% remote workforce
-      while maintaining SOX compliance and low-latency trading access.
-    approach: >
-      UPSTACK evaluated SD-WAN and SASE solutions with financial services
-      compliance requirements built into the evaluation criteria.
-    outcome: >
-      Deployed integrated SD-WAN/SASE solution with compliance-ready
-      configuration and improved remote user experience.
+      - "network_connectivity"
+    situation: "Sun Capital Partners, a growing investment firm, operated on an expensive and outdated MPLS network delivering just 100Mbps per location. Frequent service issues caused IT leaders to spend many late nights troubleshooting, and the network couldn't support expanding global operations across portfolio companies."
+    approach: "UPSTACK conducted a deep requirements analysis and recommended a comprehensive migration to a global SD-WAN solution. The evaluation covered bandwidth, redundancy, diverse connections, and cost optimization — benchmarked against UPSTACK's transactional data."
+    outcome: "The firm migrated to SD-WAN with increased bandwidth, redundant and diverse connections, and significant cost savings. The success of this engagement led to ongoing collaboration across multiple Sun Capital portfolio companies with tailored solutions for each."
     metrics:
-      - "40% improvement in remote access latency"
-      - "Full SOX audit trail maintained throughout transition"
-      - "12-week deployment from vendor selection to production"
+      - "Upgraded from 100Mbps MPLS to higher-bandwidth SD-WAN across all locations"
+      - "Achieved redundant, diverse connectivity eliminating single points of failure"
+      - "Engagement expanded to multiple portfolio companies across diverse industries"
+    quote: "I value working with UPSTACK because of their talented team of professionals and their consistent delivery of high-quality results. Their professionalism and seamless collaboration ensure the success of every project. — Martin Krost, CTO, Sun Capital Partners"
+
+  - id: "cs_002"
+    type: "verified"
+    headline: "Healthcare practice deploys UCaaS/CCaaS across 28 locations in six weeks"
+    vertical: "healthcare"
+    service_categories:
+      - "communications_voice"
+      - "customer_experience"
+    situation: "ARSA Plastic Surgery Center needed a modern communications and contact center solution to support operations across 28 locations and 300+ staff members. Their existing system couldn't scale with the practice's growth."
+    approach: "UPSTACK advisory partners designed a fit-to-environment omnichannel VoIP solution, evaluating UCaaS and CCaaS platforms against the practice's multi-location requirements, patient experience needs, and budget constraints."
+    outcome: "Deployed a unified UCaaS/CCaaS solution across all 300+ seats and 28 locations in just six weeks, with approximately $45,000 in upfront cost savings."
+    metrics:
+      - "300+ seats deployed across 28 locations"
+      - "Six-week deployment timeline"
+      - "Approximately $45,000 in upfront savings"
+    quote: "[NEEDS INPUT: Client quote if available]"
+
+  - id: "cs_003"
+    type: "verified"
+    headline: "Food service distributor transforms contact center with Five9 and Salesforce integration"
+    vertical: "manufacturing"
+    service_categories:
+      - "customer_experience"
+    situation: "A major food service distributor sought to modernize its contact center operations to support a growing U.S. customer base. The existing provider delivered high costs, long wait times for professional services, limited self-service options, and poor CRM integration. The company also wanted to redefine its customer journey mapping but didn't know where to start."
+    approach: "UPSTACK advisory partners evaluated the company's needs and desired outcomes, then conducted a vendor scorecard analysis across the CCaaS market. They recommended a solution centered on Five9's Intelligent CX Platform integrated directly with the client's Salesforce CRM."
+    outcome: "The distributor gained self-service capabilities for routine queries, advanced reporting with sentiment analysis, multi-channel customer engagement (phone, web chat, digital agents), and a scalable platform that can grow with the business. The success led to exploration of additional UPSTACK-supported initiatives across other divisions."
+    metrics:
+      - "Unified contact center platform integrated with Salesforce CRM"
+      - "Self-service capabilities reducing operational costs and improving response times"
+      - "Multi-channel engagement across voice, chat, and digital agents"
+      - "Expanded engagement into credit and collections divisions"
+    quote: "[NEEDS INPUT: Client quote if available]"
+
+  - id: "cs_004"
+    type: "verified"
+    headline: "Regional bank builds dedicated fiber network across branch locations"
+    vertical: "financial_services"
+    service_categories:
+      - "network_connectivity"
+    situation: "A regional bank with a legacy point-to-point network needed to improve connectivity between its headquarters and branch locations to deliver better customer service and support operational reliability."
+    approach: "UPSTACK advisory partners evaluated network providers and recommended a dedicated fiber and broadband network solution tailored to the bank's multi-location requirements, uptime needs, and regulatory environment."
+    outcome: "The bank deployed a dedicated fiber and broadband network across headquarters and branch locations, improving uptime and overall operations across the branch network."
+    metrics:
+      - "Dedicated fiber connectivity across headquarters and all branch locations"
+      - "Improved uptime and operational reliability"
+      - "[NEEDS INPUT: Specific cost or performance metrics from this engagement]"
+    quote: "[NEEDS INPUT: Client quote if available]"
+
+  - id: "cs_005"
+    type: "verified"
+    headline: "Food distributor strengthens cybersecurity posture after insurance denial"
+    vertical: "manufacturing"
+    service_categories:
+      - "security"
+    situation: "A global food distributor lacked a robust cybersecurity plan, which led to concerns about their enterprise security posture and resulted in a denial of cybersecurity insurance coverage."
+    approach: "UPSTACK's advisory team assessed the distributor's security gaps and sourced a preferred managed IT and security provider to address the deficiencies and bring the company's security posture up to insurability standards."
+    outcome: "The distributor successfully updated its cybersecurity posture and addressed the gaps that had prevented insurance coverage."
+    metrics:
+      - "Achieved cybersecurity insurance eligibility"
+      - "[NEEDS INPUT: Specific security improvements implemented]"
+      - "[NEEDS INPUT: Timeline from engagement to resolution]"
+    quote: "[NEEDS INPUT: Client quote if available]"
+
+  - id: "cs_006"
+    type: "verified"
+    headline: "Major agricultural producer sources secure networking across distributed operations"
+    vertical: "manufacturing"
+    service_categories:
+      - "network_connectivity"
+      - "security"
+    situation: "Taylor Farms, a large-scale food producer, needed a centralized and secure networking solution to support distributed operations across multiple facilities."
+    approach: "UPSTACK leveraged its solutions expertise and vendor relationships to evaluate networking options that met the company's requirements for centralization, security, and operational scale."
+    outcome: "Taylor Farms deployed a centralized, secure networking solution that unified connectivity across their distributed operations."
+    metrics:
+      - "[NEEDS INPUT: Specific metrics from this engagement — locations, bandwidth, cost impact]"
+    quote: "[NEEDS INPUT: Client quote if available]"
+
+  - id: "cs_007"
+    type: "composite"
+    headline: "Healthcare system consolidates communications across multi-state facility network"
+    vertical: "healthcare"
+    service_categories:
+      - "communications_voice"
+      - "network_connectivity"
+    situation: "A multi-facility healthcare system operating across several states faced fragmented communications infrastructure — different phone systems, carriers, and contracts at each location. Staff wasted time navigating multiple platforms, and IT couldn't get a unified view of spend or service quality."
+    approach: "UPSTACK assessed the existing environment across all facilities, mapped contract timelines and termination requirements, and designed a unified UCaaS solution with HIPAA-compliant features. Price benchmarking against UPSTACK's transactional database ensured competitive terms."
+    outcome: "The health system consolidated to a single UCaaS platform with unified management, improved clinician communication, and reduced total communications spend."
+    metrics:
+      - "[NEEDS INPUT: Validate against real engagement data — number of facilities, cost reduction, deployment timeline]"
+    quote: "[NEEDS INPUT]"
+
+  - id: "cs_008"
+    type: "composite"
+    headline: "Financial services firm upgrades security stack to achieve compliance and reduce risk"
+    vertical: "financial_services"
+    service_categories:
+      - "security"
+    situation: "A mid-market financial services firm needed to upgrade its security posture to meet evolving regulatory requirements and address gaps identified in a recent audit. Internal IT lacked the bandwidth to evaluate the rapidly expanding vendor landscape across EDR, SIEM, and identity management."
+    approach: "UPSTACK's advisory team conducted a gap analysis against the firm's compliance requirements, evaluated vendors across EDR, MDR, IAM, and SIEM categories, and delivered scored recommendations aligned to both security and budget objectives."
+    outcome: "The firm deployed an integrated security stack that addressed audit findings, met compliance requirements, and provided 24/7 threat monitoring through a managed SOC — all within the project timeline and budget."
+    metrics:
+      - "[NEEDS INPUT: Validate against real engagement data — compliance framework, cost impact, deployment timeline]"
+    quote: "[NEEDS INPUT]"
+
+---
 
 positioning_lines:
   vendor_neutral_intro: >
-    UPSTACK serves as an objective technology advisor, evaluating solutions
-    across 300+ vetted suppliers without financial bias toward any single vendor.
+    We work with hundreds of technology vendors across data center, networking, cloud, security, and communications — but we don't represent any of them. We represent you. Our advisory team evaluates the full market against your specific requirements, using pricing intelligence from 80 million transactional data points to ensure you're getting the right solution at the right price. There are no quotas, no exclusive relationships, and no biased incentives influencing our recommendations.
+
   trust_model_explanation: >
-    Our advisory services are provided at no cost to buyers — vendors
-    compensate UPSTACK through standard channel agreements, eliminating
-    consulting fees while preserving advisory independence.
+    Our fees are reimbursed by the vendor you select — not by you. That sounds unusual, so here's why it works: vendors pay us the same commission they'd pay their own sales team, because we extend their reach to enterprise buyers they'd otherwise need to find on their own. You don't pay more — in most cases, our clients get better pricing and terms than they would going direct, because we bring market intelligence and negotiating leverage from thousands of completed engagements. We earn ongoing compensation only when you stay on a solution, which means our incentive is your long-term satisfaction, not a one-time transaction.
+
   advisory_vs_broker: >
-    Unlike technology brokers who match buyers to a limited vendor catalog,
-    UPSTACK provides end-to-end advisory that begins with understanding
-    your business requirements before any vendor is considered.
+    Traditional technology brokers focus on procurement — they help you pick a vendor and move on. We stay with you. UPSTACK provides dedicated customer success managers and project managers who handle implementation, ongoing vendor coordination, trouble tickets, contract renewals, and strategic reviews. We're an extension of your IT team, not a matchmaker who disappears after the sale.
+
   advisory_vs_consultant: >
-    Unlike traditional consultants who deliver recommendations and depart,
-    UPSTACK advisors remain engaged through procurement, implementation,
-    and ongoing optimization — at no cost to the buyer.
+    Unlike traditional consulting firms that bill $200-500 per hour regardless of outcomes, UPSTACK only earns compensation when you move forward with a solution we recommend — and even then, the vendor pays us, not you. You get the same depth of expertise (our leadership team brings experience from RingCentral, 8x8, Oracle, AT&T, and other major platforms), plus implementation support and ongoing account management that most consultants don't provide. The difference is you're not paying for the advice — you're benefiting from it.
+
   engagement_model: >
-    Every UPSTACK engagement begins with a dedicated advisor who understands
-    your environment, compliance requirements, and business objectives —
-    providing continuity from initial assessment through ongoing optimization.
+    Working with UPSTACK typically starts with a discovery session where we map your current technology environment, contracts, and business objectives. From there, we build a tailored evaluation framework, run vendor comparisons using our proprietary data, and present scored recommendations. If you decide to move forward, we manage implementation and stay on as your single point of contact for all vendor-related needs — from support tickets to contract renewals. The entire process costs you nothing, and there's never an obligation to act on our recommendations.
+
+  lifecycle_value: >
+    Our relationship doesn't end when you sign a contract. UPSTACK manages your vendor relationships on an ongoing basis — handling trouble tickets, tracking renewal timelines, flagging unused services, and identifying optimization opportunities as your business evolves. When it's time for a technology refresh or expansion, you already have a partner who understands your environment, your contracts, and your goals. That continuity is why our client retention rate is 99%.
+
+---
 
 credentials:
   certifications:
-    - "Certified Information Systems Security Professional (CISSP) team members"
-    - "Cisco Certified Network Professional (CCNP) advisors"
-    - "AWS Solutions Architect certified advisors"
-    - "Microsoft Azure Expert certified advisors"
+    - certification: "[NEEDS INPUT: Aggregate team certifications — e.g., CCNA, CCNP, AWS Solutions Architect, Azure, CISSP, PMP, ITIL]"
+      relevance: "Demonstrates technical depth across networking, cloud, security, and project management"
+      count: "[NEEDS INPUT: Count per certification type across 220+ person team]"
+
   partnerships:
-    - "Strategic partnerships with 300+ technology vendors and suppliers"
-    - "Direct channel relationships with all major cloud providers"
-    - "Preferred partner status with leading UCaaS and CCaaS platforms"
+    - partner: "[NEEDS INPUT: List top 10-15 supplier partnerships with tier levels]"
+      tier: "[NEEDS INPUT]"
+      relevance: "Demonstrates depth of vendor relationships and preferred partner access"
+
+  awards_recognition:
+    - award: "Inc. 5000 #101 (2024), #941 (2025)"
+      relevance: "Fastest-growing technology advisory firm in the U.S."
+    - award: "CRN Solution Provider 500"
+      relevance: "Only technology brokerage to achieve this recognition — gold standard for digital infrastructure companies"
+    - award: "Top North American Contact Center Partner"
+      relevance: "Demonstrates CX/CCaaS category leadership"
+    - award: "[NEEDS INPUT: Any additional awards — Channel Futures, industry-specific recognition]"
+      relevance: "[NEEDS INPUT]"
+
   by_vertical:
     healthcare:
-      - "HIPAA compliance expertise across infrastructure categories"
-      - "Experience with Epic, Cerner, and Meditech integration requirements"
-      - "Healthcare-specific security assessment methodology"
+      - credential: "[NEEDS INPUT: HIPAA compliance capabilities, BAA signing ability, healthcare-certified team members]"
+        relevance: "Required for credibility with healthcare IT buyers"
+      - credential: "[NEEDS INPUT: HIMSS or CHIME participation/memberships]"
+        relevance: "Industry association credibility"
     financial_services:
-      - "SOX and PCI-DSS compliance evaluation expertise"
-      - "Low-latency network assessment for trading environments"
-      - "Financial services regulatory awareness across infrastructure decisions"
+      - credential: "[NEEDS INPUT: PCI DSS, SOX, GLBA compliance knowledge across team and supplier partners]"
+        relevance: "Required for credibility with financial services IT and compliance buyers"
+      - credential: "[NEEDS INPUT: Financial services industry event participation]"
+        relevance: "Industry association credibility"
+
+---
 
 metadata:
-  updated: "2026-02-08"
+  generated_by: "brand_assets_data_agent"
+  generated_date: "2026-02-08"
+  sources_consulted:
+    - "upstack.com (homepage, about, platform, solutions, case studies, press releases)"
+    - "Inc. 5000 2024 and 2025 listings"
+    - "Finovate interview with Charlie Day, December 2025"
+    - "ZoomInfo company profile"
+    - "LeadIQ company profile"
+    - "CB Insights acquisition data"
+    - "Data Center Dynamics — acquisition coverage"
+    - "PitchBook company profile"
+    - "Tracxn acquisition data"
+    - "UPSTACK 2022 and 2023 Annual Reports"
+    - "UPSTACK internal strategic context documents (Cornerstones 00-05)"
+  confidence_assessment:
+    high_confidence:
+      - "methodology (based on public website + internal strategic docs)"
+      - "general proof points (Inc 5000, NPS, funding, retention, acquisitions)"
+      - "positioning lines (based on deep context understanding)"
+      - "verified case studies (cs_001 through cs_006)"
+    medium_confidence:
+      - "service category proof points (public claims, limited quantification)"
+      - "vertical proof points (case study based, limited volume data)"
+      - "composite case studies (cs_007, cs_008 — based on patterns, need validation)"
+    needs_review:
+      - "All [NEEDS INPUT] fields — 30+ items requiring internal data"
+      - "Category-specific deal volumes and savings metrics"
+      - "Supplier partnership tiers and counts"
+      - "Team certification aggregates"
+      - "Vertical-specific compliance capabilities"
+      - "Missing client quotes on verified case studies"
   version: "1.0"
-  notes: "Populated by brand enrichment data agent. Review before use."
