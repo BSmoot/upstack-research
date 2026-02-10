@@ -419,6 +419,7 @@ class ResearchSession:
             cleaned_text = re.sub(r'^[-*]\s*$', '', full_text, flags=re.MULTILINE)
             cleaned_text = re.sub(r'^\d+\.\s*$', '', cleaned_text, flags=re.MULTILINE)
             cleaned_text = re.sub(r'\n{3,}', '\n\n', cleaned_text)
+            cleaned_text = self._fix_broken_punctuation(cleaned_text)
             cleaned_text = '\n'.join(line.rstrip() for line in cleaned_text.split('\n'))
             cleaned_text = cleaned_text.strip()
 
@@ -473,6 +474,9 @@ class ResearchSession:
         # Collapse excessive newlines (3+ -> 2)
         cleaned_text = re.sub(r'\n{3,}', '\n\n', cleaned_text)
 
+        # Fix punctuation separated by blank lines
+        cleaned_text = self._fix_broken_punctuation(cleaned_text)
+
         # Remove trailing whitespace from each line
         cleaned_text = '\n'.join(line.rstrip() for line in cleaned_text.split('\n'))
 
@@ -501,7 +505,7 @@ class ResearchSession:
             return ""
 
         if len(accumulated_text) == 1:
-            return accumulated_text[0]
+            return self._fix_broken_punctuation(accumulated_text[0])
 
         # Join fragments intelligently
         result = []
@@ -555,7 +559,36 @@ class ResearchSession:
                 # Separate section - join with double newline
                 result.append('\n\n' + fragment)
 
-        return ''.join(result)
+        joined = ''.join(result)
+
+        # Post-process: fix any punctuation separated by blank lines within fragments
+        joined = self._fix_broken_punctuation(joined)
+
+        return joined
+
+    def _fix_broken_punctuation(self, text: str) -> str:
+        """
+        Fix punctuation that was separated from preceding text by blank lines.
+
+        Common in multi-turn API responses where sentence boundaries align
+        with text block boundaries, creating patterns like:
+        - "text\\n\\n." (period isolated after blank line)
+        - "text\\n\\n, more" (comma continuation after blank line)
+
+        Args:
+            text: Text that may contain broken punctuation
+
+        Returns:
+            Text with punctuation reattached to preceding content
+        """
+        import re
+
+        # Fix: one or more blank lines before a punctuation character.
+        # Matches newline, then one-or-more (optional-horizontal-ws + newline),
+        # then optional horizontal whitespace, then punctuation.
+        text = re.sub(r'\n(?:[ \t]*\n)+[ \t]*([.,;:!?])', r'\1', text)
+
+        return text
 
     def _extract_final_content(self, messages: List[Dict[str, Any]]) -> str:
         """Extract final content from conversation messages."""

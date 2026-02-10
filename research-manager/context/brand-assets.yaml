@@ -36,8 +36,6 @@ methodology:
     - "Proprietary technology platform for inventory management, price benchmarking, and vendor coordination"
     - "Average 33-day evaluation-to-decision cycle — 12 days for networking, under 90 days even for complex CX transformations"
 
----
-
 proof_points:
   general:
     # --- GROWTH & SCALE (verified public) ---
@@ -435,8 +433,6 @@ proof_points:
         status: "✅ VERIFIED"
         use_when: "Demonstrating CRE engagement volume"
 
----
-
 case_studies:
   - id: "cs_001"
     type: "verified"
@@ -582,8 +578,6 @@ case_studies:
     quote: "🔲 GAP — no client quote available"
     status: "✅ VERIFIED from Salesforce — demonstrates platform migration advisory"
 
----
-
 positioning_lines:
   vendor_neutral_intro: >
     We work with over 300 technology vendors across data center, networking, cloud, security, and communications — but we don't represent any of them. We represent you. Our advisory team evaluates the full market against your specific requirements, using pricing intelligence from thousands of completed engagements to ensure you're getting the right solution at the right price. There are no quotas, no exclusive relationships, and no biased incentives influencing our recommendations.
@@ -602,8 +596,6 @@ positioning_lines:
 
   lifecycle_value: >
     Our relationship doesn't end when you sign a contract. UPSTACK manages your vendor relationships on an ongoing basis — handling trouble tickets, tracking renewal timelines, flagging unused services, and identifying optimization opportunities as your business evolves. When it's time for a technology refresh or expansion, you already have a partner who understands your environment, your contracts, and your goals. That continuity is why our clients stay with us an average of 3.5 years — and why our NPS is 78.
-
----
 
 credentials:
   certifications:
@@ -759,8 +751,6 @@ contradictions_and_gaps:
     - "Formal compliance program documentation for healthcare and financial services"
     - "Supplier compliance certification tracking (which partners have SOC 2, HIPAA, PCI DSS, FedRAMP)"
     - "Team certification and experience aggregates"
-
----
 
 metadata:
   generated_by: "brand_assets_data_agent"

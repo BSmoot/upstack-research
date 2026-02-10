@@ -258,6 +258,76 @@ class TestJoinAccumulatedText:
         assert "value." in result
 
 
+class TestFixBrokenPunctuation:
+    """Test post-processing fix for punctuation separated by blank lines."""
+
+    def _make_session(self, mock_anthropic_client, mock_logger):
+        return ResearchSession(
+            agent_name="punct_test",
+            anthropic_client=mock_anthropic_client,
+            logger=mock_logger,
+        )
+
+    def test_period_after_blank_line(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "changes to HIPAA compliance in the future\n\n."
+        assert session._fix_broken_punctuation(text) == "changes to HIPAA compliance in the future."
+
+    def test_comma_after_blank_line(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "as a top hurdle\n\n, while simultaneously managing"
+        assert session._fix_broken_punctuation(text) == "as a top hurdle, while simultaneously managing"
+
+    def test_semicolon_after_blank_line(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "first consideration\n\n; second consideration"
+        assert session._fix_broken_punctuation(text) == "first consideration; second consideration"
+
+    def test_multiple_broken_punctuation(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "fact one\n\n. Fact two\n\n, and more\n\n."
+        result = session._fix_broken_punctuation(text)
+        assert result == "fact one. Fact two, and more."
+
+    def test_triple_newline_before_punctuation(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "some text\n\n\n."
+        assert session._fix_broken_punctuation(text) == "some text."
+
+    def test_preserves_normal_paragraphs(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "First paragraph.\n\nSecond paragraph.\n\nThird paragraph."
+        assert session._fix_broken_punctuation(text) == text
+
+    def test_preserves_markdown_headers(self, mock_anthropic_client, mock_logger):
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "Some content.\n\n## Next Section\n\nMore content."
+        assert session._fix_broken_punctuation(text) == text
+
+    def test_period_followed_by_more_content(self, mock_anthropic_client, mock_logger):
+        """Period on its own line followed by next paragraph."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "end of sentence\n\n.\n\nNext paragraph."
+        result = session._fix_broken_punctuation(text)
+        assert result == "end of sentence.\n\nNext paragraph."
+
+    def test_whitespace_on_blank_line(self, mock_anthropic_client, mock_logger):
+        """Blank line has trailing whitespace."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        text = "some text\n \t\n."
+        assert session._fix_broken_punctuation(text) == "some text."
+
+    def test_join_accumulated_applies_fix(self, mock_anthropic_client, mock_logger):
+        """Verify _join_accumulated_text applies punctuation fix to embedded breaks."""
+        session = self._make_session(mock_anthropic_client, mock_logger)
+        # Fragment contains an internal blank-line-before-punctuation break
+        result = session._join_accumulated_text([
+            "end of sentence\n\n.\n\nNext paragraph starts here."
+        ])
+        assert "sentence.\n\nNext" in result
+        assert "sentence\n\n.\n\n" not in result
+
+
 @pytest.mark.asyncio
 @pytest.mark.integration
 class TestResearchSessionIntegration:
