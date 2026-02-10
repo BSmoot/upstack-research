@@ -1630,7 +1630,7 @@ class ResearchOrchestrator:
             )
             
             # Resolve model for playbook
-            model = get_model_for_agent(self.config, 'integrations', agent_name)
+            model = get_model_for_agent(self.config, 'playbooks', agent_name)
             model_config = get_model_config(self.config, model)
             max_searches = get_search_budget_for_model(self.config, model)
             
@@ -1784,7 +1784,7 @@ class ResearchOrchestrator:
             )
 
             # Resolve model for playbook
-            model = get_model_for_agent(self.config, 'integrations', agent_name)
+            model = get_model_for_agent(self.config, 'playbooks', agent_name)
             model_config = get_model_config(self.config, model)
             max_searches = get_search_budget_for_model(self.config, model)
 
