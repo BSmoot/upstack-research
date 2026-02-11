@@ -7,6 +7,7 @@ Handles server-side web_search tool automatically and produces structured markdo
 
 import anthropic
 from anthropic import AsyncAnthropic
+import httpx
 import logging
 import asyncio
 from typing import Dict, List, Optional, Any
@@ -331,7 +332,18 @@ class ResearchSession:
                     continue
                 else:
                     raise
-            
+
+            except (httpx.ReadError, httpx.RemoteProtocolError, httpx.ConnectError) as e:
+                if attempt < max_retries - 1:
+                    delay = 2 ** attempt * 5  # Exponential backoff: 5s, 10s, 20s
+                    self.logger.warning(
+                        f"[{self.agent_name}] HTTP transport error ({type(e).__name__}). Retrying in {delay}s"
+                    )
+                    await asyncio.sleep(delay)
+                    continue
+                else:
+                    raise
+
             except TypeError as e:
                 # SDK doesn't support thinking parameter - fall back without it
                 if "thinking" in str(e) and self.thinking_budget > 0:

@@ -60,9 +60,15 @@ class BrandAssetsLoader:
 
         try:
             with open(full_path, 'r', encoding='utf-8') as f:
-                content = yaml.safe_load(f)
+                documents = list(yaml.safe_load_all(f))
 
-            self._cache = content or {}
+            # Merge all YAML documents into a single dict
+            merged: dict[str, Any] = {}
+            for doc in documents:
+                if isinstance(doc, dict):
+                    merged.update(doc)
+
+            self._cache = merged
             self.logger.info(f"Loaded brand assets from {full_path}")
             return self._cache
 

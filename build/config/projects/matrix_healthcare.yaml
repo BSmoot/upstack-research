@@ -1,0 +1,101 @@
+# Phase 3: Full Matrix - Healthcare
+# All services x All roles for Healthcare vertical
+# Date: 2026-02-11
+#
+# Service categories (4): data_center, network, customer_experience, security
+# Title clusters (4): cfo_cluster, cio_cto_cluster, security_leadership, vp_it_operations
+# Playbooks: 4 x 4 = 16 3D playbooks
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "matrix_healthcare"
+  description: "Full matrix: Healthcare x [colo, network, CX/AI, security] x [VP, CIO, CISO, CFO]"
+
+verticals:
+  - "healthcare"
+
+title_clusters:
+  - "cfo_cluster"
+  - "cio_cto_cluster"
+  - "security_leadership"
+  - "vp_it_operations"
+
+service_categories:
+  - "data_center"
+  - "network"
+  - "customer_experience"
+  - "security"
+
+priority_combinations:
+  - vertical: "healthcare"
+    titles:
+      - "cfo_cluster"
+      - "cio_cto_cluster"
+      - "security_leadership"
+      - "vp_it_operations"
+    service_categories:
+      - "data_center"
+      - "network"
+      - "customer_experience"
+      - "security"
+    priority: 1
+
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+research_focus:
+  primary_questions:
+    - "How do healthcare decision-makers evaluate infrastructure technology partners across all service categories?"
+    - "What compliance requirements (HIPAA, HITECH) drive purchasing decisions across colocation, network, CX, and security?"
+    - "How do different roles (CFO, CIO, CISO, VP IT) prioritize infrastructure investments in healthcare?"
+    - "What triggers healthcare organizations to seek external technology advisory?"
+
+budget:
+  max_cost_usd: 250.0
+  max_searches: 800
+
+validation:
+  enabled: true
+  model: "claude-haiku-4-5-20251001"
+  min_score: 70
+
+brand_alignment:
+  enabled: true
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+  align_targets:
+    - "playbooks"
+  model: "claude-sonnet-4-5-20250929"
+  output:
+    suffix: ".aligned"
+    replace_original: false
+  review_gates:
+    after_playbooks: false
+
+target_alignment:
+  enabled: false
+
+execution_settings:
+  review_gates:
+    after_layer_0: false
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+    after_validation: false
