@@ -108,6 +108,24 @@ advanced:
     min_sources_per_section: 2
     flag_low_confidence: true
 
+# Company context injection (early-stage context for playbooks, GTM, validation)
+company_context:
+  # Disabled by default - enable in project configs when needed
+  enabled: false
+
+  # Context files for company context (relative to project config)
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+
+  # Brand assets file for proof points
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+
+  # Where to inject company context
+  inject_at:
+    - "playbooks"
+    - "gtm_synthesis"
+    - "validation"
+
 # Brand alignment settings (reusable)
 brand_alignment:
   # Disabled by default - enable in project configs when needed

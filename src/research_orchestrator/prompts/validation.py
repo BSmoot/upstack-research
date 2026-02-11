@@ -31,7 +31,7 @@ PLAYBOOK METADATA:
 
 Evaluate the playbook against these quality dimensions:
 
-### 1. COMPLETENESS (25 points)
+### 1. COMPLETENESS (20 points)
 
 Check that ALL required sections are present and substantive:
 
@@ -46,13 +46,13 @@ Check that ALL required sections are present and substantive:
 - [ ] Research Integration Notes (Layer 0/1/2/3 sources)
 
 **Scoring:**
-- 25 points: All sections present with substantive content
-- 20 points: All sections present, some thin
-- 15 points: 1-2 sections missing or very thin
-- 10 points: 3+ sections missing
-- 5 points: Major structural gaps
+- 20 points: All sections present with substantive content
+- 16 points: All sections present, some thin
+- 12 points: 1-2 sections missing or very thin
+- 8 points: 3+ sections missing
+- 4 points: Major structural gaps
 
-### 2. SPECIFICITY (25 points)
+### 2. SPECIFICITY (20 points)
 
 Check that content is specific to the V × T × SC combination, not generic:
 
@@ -70,13 +70,13 @@ Check that content is specific to the V × T × SC combination, not generic:
 - Messaging lacks role-specific framing
 
 **Scoring:**
-- 25 points: Highly specific throughout
-- 20 points: Mostly specific with minor generic sections
-- 15 points: Mixed specific/generic content
-- 10 points: Mostly generic with some specificity
-- 5 points: Almost entirely generic
+- 20 points: Highly specific throughout
+- 16 points: Mostly specific with minor generic sections
+- 12 points: Mixed specific/generic content
+- 8 points: Mostly generic with some specificity
+- 4 points: Almost entirely generic
 
-### 3. ACTIONABILITY (25 points)
+### 3. ACTIONABILITY (20 points)
 
 Check that the playbook can be immediately used by sales/marketing:
 
@@ -94,13 +94,13 @@ Check that the playbook can be immediately used by sales/marketing:
 - Missing outreach channel details
 
 **Scoring:**
-- 25 points: Ready for immediate use
-- 20 points: Minor customization needed
-- 15 points: Moderate work required to operationalize
-- 10 points: Significant gaps in actionable content
-- 5 points: Framework only, not actionable
+- 20 points: Ready for immediate use
+- 16 points: Minor customization needed
+- 12 points: Moderate work required to operationalize
+- 8 points: Significant gaps in actionable content
+- 4 points: Framework only, not actionable
 
-### 4. RESEARCH GROUNDING (25 points)
+### 4. RESEARCH GROUNDING (20 points)
 
 Check that recommendations are grounded in research from prior layers:
 
@@ -118,11 +118,39 @@ Check that recommendations are grounded in research from prior layers:
 - Generic "best practices" not from research
 
 **Scoring:**
-- 25 points: Thoroughly grounded in research
-- 20 points: Well-grounded with minor unsupported claims
-- 15 points: Some grounding but gaps
-- 10 points: Weakly grounded
-- 5 points: Little connection to research
+- 20 points: Thoroughly grounded in research
+- 16 points: Well-grounded with minor unsupported claims
+- 12 points: Some grounding but gaps
+- 8 points: Weakly grounded
+- 4 points: Little connection to research
+
+### 5. BRAND & MODEL ALIGNMENT (20 points)
+
+{brand_context_section}
+
+Check that the playbook accurately represents the company's business model, uses verified proof points, and maintains brand positioning:
+
+**Alignment Indicators:**
+- Business model description is accurate (compensation model, engagement type)
+- Proof points and statistics are verified, not invented
+- Value proposition language aligns with company positioning
+- No invented pricing tiers, fees, or team structures
+- Recommendations extend existing engagement model rather than inventing new ones
+
+**Red Flags (deduct points):**
+- Invented statistics or proof points not from company data
+- Incorrect business model description (e.g., suggesting fees when service is vendor-reimbursed)
+- Recommending organizational structures that contradict existing team composition
+- Language that conflicts with brand positioning guidelines
+
+**Scoring:**
+- 20 points: Fully aligned with company model and verified data
+- 16 points: Mostly aligned with minor inaccuracies
+- 12 points: Some alignment issues requiring correction
+- 8 points: Significant model or brand misalignment
+- 4 points: Fundamentally misrepresents the company
+
+**Default (no brand context provided):** Award 16/20 — cannot fully assess without company context.
 
 ---
 
@@ -142,10 +170,11 @@ STATUS: [APPROVED | NEEDS_REVISION | REJECTED]
 
 | Dimension | Score | Assessment |
 |-----------|-------|------------|
-| Completeness | /25 | [Brief assessment] |
-| Specificity | /25 | [Brief assessment] |
-| Actionability | /25 | [Brief assessment] |
-| Research Grounding | /25 | [Brief assessment] |
+| Completeness | /20 | [Brief assessment] |
+| Specificity | /20 | [Brief assessment] |
+| Actionability | /20 | [Brief assessment] |
+| Research Grounding | /20 | [Brief assessment] |
+| Brand & Model Alignment | /20 | [Brief assessment] |
 
 ### 3. CRITICAL ISSUES (if any)
 
@@ -186,7 +215,8 @@ def build_validation_prompt(
     playbook_content: str,
     vertical_name: str,
     title_name: str,
-    service_category_name: str | None = None
+    service_category_name: str | None = None,
+    brand_context: str = ""
 ) -> str:
     """
     Build validation prompt for a specific playbook.
@@ -196,17 +226,28 @@ def build_validation_prompt(
         vertical_name: Display name of the vertical (e.g., "Healthcare")
         title_name: Display name of the title cluster (e.g., "CFO")
         service_category_name: Optional service category name for 3D playbooks
+        brand_context: Optional pre-formatted brand/company context string
 
     Returns:
         Formatted validation prompt ready for execution
     """
     sc_name = service_category_name or "N/A"
 
+    if brand_context:
+        brand_section = (
+            f"**Company context for alignment checking:**\n\n{brand_context}"
+        )
+    else:
+        brand_section = (
+            "No company context provided. Use default scoring (16/20) for this dimension."
+        )
+
     return VALIDATION_PROMPT.format(
         playbook_content=playbook_content,
         vertical_name=vertical_name,
         title_name=title_name,
-        service_category_name=sc_name
+        service_category_name=sc_name,
+        brand_context_section=brand_section
     )
 
 

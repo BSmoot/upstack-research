@@ -275,6 +275,112 @@ class TestGetProofPoints:
         assert "Advisory at no cost to the buyer" in points
 
 
+class TestFormatCompactProofPoints:
+    """Test BrandAssetsLoader.format_compact_proof_points() method."""
+
+    @pytest.fixture
+    def verified_assets_data(self):
+        """Return brand assets with status-tagged proof points."""
+        return {
+            "methodology": {
+                "name": "Advisory Framework",
+                "steps": ["Step 1", "Step 2"],
+            },
+            "proof_points": {
+                "general": [
+                    {"point": "Verified general point", "status": "✅ VERIFIED"},
+                    {"point": "Caution general point", "status": "⚠️ CAUTION"},
+                    {"point": "Gap point", "status": "🔲 GAP"},
+                    {"point": "Another verified point", "status": "✅ VERIFIED — details"},
+                ],
+                "by_service_category": {
+                    "security": [
+                        {"point": "Verified security point", "status": "✅ VERIFIED"},
+                        {"point": "Unverified security point", "status": "⚠️ CAUTION"},
+                    ]
+                },
+                "by_vertical": {
+                    "healthcare": [
+                        {"point": "Verified healthcare point", "status": "✅ VERIFIED"},
+                    ]
+                },
+            },
+            "positioning_lines": {
+                "engagement_model": "Dedicated advisor from start to finish.",
+                "trust_model_explanation": "No cost to buyers.",
+                "vendor_neutral_intro": "Objective advisory.",
+            },
+        }
+
+    @pytest.fixture
+    def verified_loader(self, verified_assets_data, tmp_path):
+        """Create a loader with verified assets data."""
+        file_path = tmp_path / "verified-assets.yaml"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(verified_assets_data, f, default_flow_style=False)
+        return BrandAssetsLoader(config_dir=tmp_path, file_path="verified-assets.yaml")
+
+    def test_filters_to_verified_only(self, verified_loader):
+        """Only VERIFIED proof points should be included."""
+        result = verified_loader.format_compact_proof_points()
+        assert "Verified general point" in result
+        assert "Another verified point" in result
+        assert "Caution general point" not in result
+        assert "Gap point" not in result
+
+    def test_respects_max_points(self, verified_loader):
+        """Should limit to max_points."""
+        result = verified_loader.format_compact_proof_points(max_points=1)
+        assert "Verified general point" in result
+        # Only 1 point allowed, so "Another verified" should not appear
+        assert "Another verified point" not in result
+
+    def test_filters_by_service_category(self, verified_loader):
+        """Should include service-category-specific verified points."""
+        result = verified_loader.format_compact_proof_points(service_category="security")
+        assert "Verified security point" in result
+        assert "Unverified security point" not in result
+
+    def test_filters_by_vertical(self, verified_loader):
+        """Should include vertical-specific verified points."""
+        result = verified_loader.format_compact_proof_points(vertical="healthcare")
+        assert "Verified healthcare point" in result
+
+    def test_includes_positioning_lines(self, verified_loader):
+        """Should include engagement model and trust model positioning."""
+        result = verified_loader.format_compact_proof_points()
+        assert "Engagement Model" in result
+        assert "Trust Model" in result
+        assert "Dedicated advisor" in result
+
+    def test_excludes_vendor_neutral_intro(self, verified_loader):
+        """Should NOT include vendor_neutral_intro (only engagement + trust)."""
+        result = verified_loader.format_compact_proof_points()
+        assert "Objective advisory" not in result
+
+    def test_returns_empty_when_no_verified_points(self, tmp_path):
+        """Should return empty string when no VERIFIED points exist."""
+        data = {
+            "proof_points": {
+                "general": [
+                    {"point": "Unverified only", "status": "⚠️ CAUTION"},
+                ]
+            }
+        }
+        file_path = tmp_path / "no-verified.yaml"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(data, f, default_flow_style=False)
+        loader = BrandAssetsLoader(config_dir=tmp_path, file_path="no-verified.yaml")
+        result = loader.format_compact_proof_points()
+        assert result == ""
+
+    def test_returns_empty_for_missing_file(self, tmp_path):
+        """Should return empty string when file doesn't exist."""
+        loader = BrandAssetsLoader(config_dir=tmp_path, file_path="nonexistent.yaml")
+        result = loader.format_compact_proof_points()
+        assert result == ""
+
+
 class TestMissingFileHandling:
     """Test graceful degradation when files are missing."""
 

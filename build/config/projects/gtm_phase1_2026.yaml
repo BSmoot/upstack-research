@@ -19,7 +19,9 @@ verticals: []
 title_clusters: []
 
 # Company context - reference shared context files
+# Enabled for early injection into GTM synthesis
 company_context:
+  enabled: true
   name: "UPSTACK"
   description: "Infrastructure technology advisory services"
 
@@ -29,6 +31,11 @@ company_context:
     glossary: "../../research-manager/context/glossary.yaml"
     audience_personas: "../../research-manager/context/audience-personas.yaml"
     writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+  assets_file: "../../research-manager/context/brand-assets.yaml"
+
+  inject_at:
+    - "gtm_synthesis"
 
   # Key facts for prompt injection
   business_model: "vendor_reimbursed"

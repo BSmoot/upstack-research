@@ -66,6 +66,48 @@ class TestBuildPlaybookPrompt:
             )
 
 
+class TestBuildPlaybookPromptCompanyContext:
+    """Test build_playbook_prompt with company context injection."""
+
+    def test_includes_company_context_when_provided(self):
+        """Test that company context is included in the prompt."""
+        company_ctx = "## Company Context\n\n**Company**: TestCorp\n**Business Model**: Vendor-reimbursed"
+
+        result = build_playbook_prompt(
+            'healthcare', 'cfo_cluster',
+            {}, {}, {},
+            company_context=company_ctx
+        )
+
+        assert 'COMPANY CONTEXT' in result
+        assert 'TestCorp' in result
+        assert 'Vendor-reimbursed' in result
+
+    def test_backward_compatible_without_company_context(self):
+        """Test that prompt works without company_context (default empty string)."""
+        result = build_playbook_prompt(
+            'healthcare', 'cfo_cluster',
+            {}, {}, {}
+        )
+
+        # Should NOT contain the company context section header
+        assert 'COMPANY CONTEXT' not in result
+        # Should still contain the standard prompt elements
+        assert 'Playbook Integration Agent' in result
+        assert 'LAYER 1: HORIZONTAL RESEARCH' in result
+
+    def test_includes_methodology_bullets_with_company_context(self):
+        """Test that methodology constraints appear when company context provided."""
+        result = build_playbook_prompt(
+            'healthcare', 'cfo_cluster',
+            {}, {}, {},
+            company_context="Some company context"
+        )
+
+        assert 'do not invent statistics' in result
+        assert 'vendor-reimbursed' in result.lower()
+
+
 class TestFormatIntegrationContext:
     """Test _format_integration_context function."""
     
@@ -265,7 +307,8 @@ class TestPlaybookOrchestratorIntegration:
             
             mock_build.assert_called_once_with(
                 'healthcare', 'cfo_cluster',
-                l1_ctx, l2_ctx, l3_ctx
+                l1_ctx, l2_ctx, l3_ctx,
+                company_context=""
             )
     
     @pytest.mark.asyncio

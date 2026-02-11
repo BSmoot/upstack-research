@@ -6,6 +6,8 @@ Tests the 3-phase parallel execution pattern:
 - Phase 1: buyer_journey, channels_competitive, customer_expansion (parallel)
 - Phase 2: messaging_positioning (depends on Phase 1)
 - Phase 3: gtm_synthesis (depends on all prior)
+
+Also tests company context injection via format_layer_1_prompt.
 """
 
 import pytest
@@ -14,6 +16,11 @@ from unittest.mock import Mock, AsyncMock, patch, MagicMock
 from pathlib import Path
 
 from research_orchestrator.orchestrator import ResearchOrchestrator, BudgetExceededError
+from research_orchestrator.prompts.horizontal import (
+    GTM_SYNTHESIS_PROMPT,
+    BUYER_JOURNEY_PROMPT,
+    format_layer_1_prompt,
+)
 
 
 class TestLayer1Execution:
@@ -251,3 +258,49 @@ class TestLayer1Execution:
                 if call.kwargs.get('agent_name') == 'buyer_journey' or (call.args and call.args[0] == 'buyer_journey')
             ]
             assert len(buyer_calls) == 0
+
+
+class TestLayer1CompanyContextInjection:
+    """Test that company context is injected correctly into Layer 1 prompts."""
+
+    def test_gtm_synthesis_includes_company_context(self):
+        """GTM synthesis prompt should include company context when provided."""
+        company_ctx = "**Company**: TestCorp\n**Model**: Vendor-reimbursed"
+
+        result = format_layer_1_prompt(
+            prompt_template=GTM_SYNTHESIS_PROMPT,
+            company_context=company_ctx,
+        )
+
+        assert "COMPANY MODEL CONTEXT" in result
+        assert "TestCorp" in result
+        assert "Vendor-reimbursed" in result
+
+    def test_other_agents_get_empty_company_context(self):
+        """Non-GTM agents should not get company context (empty by default)."""
+        result = format_layer_1_prompt(
+            prompt_template=BUYER_JOURNEY_PROMPT,
+        )
+
+        assert "COMPANY MODEL CONTEXT" not in result
+
+    def test_gtm_includes_model_constraints(self):
+        """GTM prompt should include constraints about pricing and team building."""
+        result = format_layer_1_prompt(
+            prompt_template=GTM_SYNTHESIS_PROMPT,
+            company_context="Some context",
+        )
+
+        assert "Do NOT recommend pricing tiers" in result
+        assert "Do NOT recommend building a sales team" in result
+
+    def test_backward_compatible_without_company_context(self):
+        """All prompts should work without company_context (default empty)."""
+        result = format_layer_1_prompt(
+            prompt_template=GTM_SYNTHESIS_PROMPT,
+        )
+
+        assert isinstance(result, str)
+        assert "GTM Planning & Synthesis Agent" in result
+        # Should NOT have company context section when empty
+        assert "COMPANY MODEL CONTEXT" not in result

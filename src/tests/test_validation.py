@@ -59,7 +59,7 @@ class TestBuildValidationPrompt:
             title_name="CIO",
         )
         assert "COMPLETENESS" in result
-        assert "25 points" in result
+        assert "20 points" in result
 
     def test_includes_specificity_dimension(self):
         result = build_validation_prompt(
@@ -68,7 +68,7 @@ class TestBuildValidationPrompt:
             title_name="CIO",
         )
         assert "SPECIFICITY" in result
-        assert "25 points" in result
+        assert "20 points" in result
 
     def test_includes_actionability_dimension(self):
         result = build_validation_prompt(
@@ -77,7 +77,7 @@ class TestBuildValidationPrompt:
             title_name="CIO",
         )
         assert "ACTIONABILITY" in result
-        assert "25 points" in result
+        assert "20 points" in result
 
     def test_includes_research_grounding_dimension(self):
         result = build_validation_prompt(
@@ -86,7 +86,16 @@ class TestBuildValidationPrompt:
             title_name="CIO",
         )
         assert "RESEARCH GROUNDING" in result
-        assert "25 points" in result
+        assert "20 points" in result
+
+    def test_includes_brand_alignment_dimension(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "BRAND & MODEL ALIGNMENT" in result
+        assert "20 points" in result
 
     def test_includes_approved_threshold(self):
         result = build_validation_prompt(
@@ -149,6 +158,55 @@ class TestBuildValidationPrompt:
             title_name="CIO",
         )
         assert content in result
+
+
+class TestBuildValidationPromptBrandContext:
+    """Test build_validation_prompt with brand context parameter."""
+
+    def test_brand_context_included_when_provided(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            brand_context="**Company**: TestCorp\n**Model**: Vendor-reimbursed"
+        )
+        assert "TestCorp" in result
+        assert "Vendor-reimbursed" in result
+        assert "Company context for alignment checking" in result
+
+    def test_default_scoring_when_no_brand_context(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "16/20" in result
+        assert "No company context provided" in result
+
+    def test_dimension_scores_table_has_five_rows(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert "/20" in result
+        assert "Brand & Model Alignment" in result
+        # Check all 5 dimension headers
+        assert "Completeness" in result
+        assert "Specificity" in result
+        assert "Actionability" in result
+        assert "Research Grounding" in result
+        assert "Brand & Model Alignment" in result
+
+    def test_backward_compatible_without_brand_context(self):
+        """Test that prompt works without brand_context (default empty string)."""
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert isinstance(result, str)
+        assert "BRAND & MODEL ALIGNMENT" in result
 
 
 class TestBuildBatchValidationPrompt:

@@ -161,6 +161,88 @@ class BrandAssetsLoader:
 
         return [p for p in points if p]
 
+    def format_compact_proof_points(
+        self,
+        vertical: Optional[str] = None,
+        service_category: Optional[str] = None,
+        max_points: int = 8
+    ) -> str:
+        """
+        Format a compact set of VERIFIED proof points and positioning lines.
+
+        Filters proof points to only those with status containing 'VERIFIED',
+        limits output to max_points, and appends key positioning lines.
+        Does NOT include full case studies, credentials, or methodology steps.
+
+        Args:
+            vertical: Optional vertical for filtering
+            service_category: Optional service category for filtering
+            max_points: Maximum number of proof points to include (default 8)
+
+        Returns:
+            Compact formatted string for prompt injection
+        """
+        assets = self.load()
+        if not assets:
+            return ""
+
+        lines = ["## Verified Proof Points", ""]
+
+        # Collect all candidate proof points (dicts with point + status)
+        candidates: list[dict[str, Any]] = []
+        proof_points_data = assets.get('proof_points', {})
+
+        # General proof points
+        for item in proof_points_data.get('general', []):
+            if isinstance(item, dict):
+                candidates.append(item)
+
+        # Service-category-specific proof points
+        if service_category:
+            by_cat = proof_points_data.get('by_service_category', {})
+            for item in by_cat.get(service_category, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        # Vertical-specific proof points
+        if vertical:
+            by_vert = proof_points_data.get('by_vertical', {})
+            for item in by_vert.get(vertical, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        # Filter to VERIFIED only
+        verified = [
+            c for c in candidates
+            if 'VERIFIED' in str(c.get('status', ''))
+        ]
+
+        # Limit to max_points
+        for item in verified[:max_points]:
+            point_text = item.get('point', '')
+            if point_text:
+                lines.append(f"- {point_text}")
+
+        if len(lines) <= 2:
+            # No verified points found
+            return ""
+
+        # Add positioning lines (compact)
+        positioning = assets.get('positioning_lines', {})
+        if positioning:
+            lines.append("")
+            lines.append("## Key Positioning")
+            label_map = {
+                'engagement_model': 'Engagement Model',
+                'trust_model_explanation': 'Trust Model',
+            }
+            for key, label in label_map.items():
+                value = positioning.get(key, '')
+                if value:
+                    lines.append(f"**{label}:** {value.strip()}")
+
+        return "\n".join(lines)
+
     def format_for_prompt(
         self,
         context: dict[str, Any],

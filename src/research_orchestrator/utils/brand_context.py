@@ -95,6 +95,87 @@ class BrandContextLoader:
             self.logger.error(f"Failed to load brand context from {full_path}: {e}")
             raise
 
+    def format_company_context(self, context: Dict[str, Any]) -> str:
+        """
+        Format a compact company fact sheet from baseline context.
+
+        Extracts only business-critical fields: company identity, business model,
+        value proposition, trust model, differentiation, and competitive landscape.
+        Excludes writing standards, glossary, and personas (those stay in brand alignment).
+
+        Args:
+            context: Brand context dictionary (from load_all())
+
+        Returns:
+            Compact formatted string (~400-600 tokens) for prompt injection
+        """
+        baseline = context.get('baseline')
+        if not baseline:
+            return ""
+
+        lines = ["## Company Context", ""]
+
+        # Company identity
+        company = baseline.get('company', {})
+        if isinstance(company, dict):
+            if 'name' in company:
+                lines.append(f"**Company**: {company['name']}")
+            if 'description' in company:
+                lines.append(f"**Description**: {company['description']}")
+        elif 'company_name' in baseline:
+            lines.append(f"**Company**: {baseline['company_name']}")
+
+        if 'tagline' in baseline:
+            lines.append(f"**Tagline**: {baseline['tagline']}")
+
+        # Business model (core)
+        biz_model = baseline.get('business_model', {})
+        if isinstance(biz_model, dict):
+            compensation = biz_model.get('compensation', '')
+            if compensation:
+                lines.append(f"\n**Compensation Model**: {compensation.replace('_', ' ').title()}")
+
+            engagement = biz_model.get('engagement_type', '')
+            if engagement:
+                lines.append(f"**Engagement Type**: {engagement.replace('_', ' ').title()}")
+
+            if 'description' in biz_model:
+                lines.append(f"**Business Model**: {biz_model['description']}")
+
+            # Value proposition (compact)
+            vp = biz_model.get('value_proposition', {})
+            if isinstance(vp, dict) and 'primary' in vp:
+                lines.append(f"\n**Value Proposition**: {vp['primary']}")
+                if 'dimensions' in vp:
+                    lines.append("**Value Dimensions**:")
+                    for dim in vp['dimensions']:
+                        lines.append(f"- {dim}")
+
+            # Trust model
+            trust = biz_model.get('trust_model', {})
+            if trust:
+                lines.append("\n**Trust Model**:")
+                for key, val in trust.items():
+                    lines.append(f"- **{key.replace('_', ' ').title()}**: {val}")
+
+            # Differentiation
+            diff = biz_model.get('differentiation', {})
+            if isinstance(diff, dict) and 'primary' in diff:
+                lines.append(f"\n**Key Differentiator**: {diff['primary']}")
+
+        # Competitive landscape (compact)
+        landscape = baseline.get('competitive_landscape', {})
+        if landscape:
+            lines.append("\n**Competitive Landscape**:")
+            primary = landscape.get('primary_competition', '')
+            if primary:
+                lines.append(f"- Primary competition: {primary.replace('_', ' ')}")
+            secondary = landscape.get('secondary_competition', '')
+            if secondary:
+                lines.append(f"- Secondary competition: {secondary.replace('_', ' ')}")
+
+        return "\n".join(lines)
+
     def format_for_prompt(self, context: Dict[str, Any]) -> str:
         """
         Format loaded brand context for inclusion in alignment prompt.

@@ -24,7 +24,15 @@ MISSION: Synthesize research from all three layers into an actionable ABM playbo
 
 {context_section}
 
+{company_context_section}
+
 YOUR INTEGRATION TASK:
+
+CRITICAL METHODOLOGY:
+- Ground all value propositions in the company's actual business model
+- Use only verified proof points — do not invent statistics
+- If the advisory is vendor-reimbursed at zero cost to the buyer, do not invent pricing tiers or fees
+- Recommendations should extend the existing engagement model, not replace it
 
 Create a complete go-to-market playbook that combines:
 - Horizontal insights (buyer journey, competitive landscape, messaging patterns)
@@ -161,21 +169,23 @@ def build_playbook_prompt(
     title_key: str,
     layer_1_context: dict[str, Any],
     layer_2_context: dict[str, Any],
-    layer_3_context: dict[str, Any]
+    layer_3_context: dict[str, Any],
+    company_context: str = ""
 ) -> str:
     """
     Build integration prompt with full context from all layers.
-    
+
     Args:
         vertical_key: Vertical identifier (e.g., 'healthcare')
         title_key: Title cluster identifier (e.g., 'cfo_cluster')
         layer_1_context: Dictionary of Layer 1 agent outputs
         layer_2_context: Dictionary of Layer 2 vertical agent outputs
         layer_3_context: Dictionary of Layer 3 title agent outputs
-        
+        company_context: Optional pre-formatted company context string
+
     Returns:
         Formatted prompt string ready for ResearchSession
-        
+
     Raises:
         ValueError: If vertical_key or title_key not found
     """
@@ -199,11 +209,18 @@ def build_playbook_prompt(
         vertical_key, title_key, vertical, title,
         layer_1_context, layer_2_context, layer_3_context
     )
-    
+
+    # Format company context section
+    if company_context:
+        company_section = f"=== COMPANY CONTEXT ===\n\n{company_context}\n\n---"
+    else:
+        company_section = ""
+
     return PLAYBOOK_GENERATION_PROMPT.format(
         vertical_name=vertical['name'],
         title_name=title['name'],
-        context_section=context_summary
+        context_section=context_summary,
+        company_context_section=company_section
     )
 
 
@@ -281,7 +298,15 @@ MISSION: Create an actionable playbook for:
 
 {context_section}
 
+{company_context_section}
+
 YOUR INTEGRATION TASK:
+
+CRITICAL METHODOLOGY:
+- Ground all value propositions in the company's actual business model
+- Use only verified proof points — do not invent statistics
+- If the advisory is vendor-reimbursed at zero cost to the buyer, do not invent pricing tiers or fees
+- Recommendations should extend the existing engagement model, not replace it
 
 Create a service-category-specific go-to-market playbook that combines:
 - Service Category Intelligence ({service_category_name} buyer journey, vendor landscape, search terms)
@@ -445,7 +470,8 @@ def build_playbook_prompt_3d(
     layer_0_context: dict[str, Any],
     layer_1_context: dict[str, Any],
     layer_2_context: dict[str, Any],
-    layer_3_context: dict[str, Any]
+    layer_3_context: dict[str, Any],
+    company_context: str = ""
 ) -> str:
     """
     Build 3D integration prompt with full context from all four layers.
@@ -459,6 +485,7 @@ def build_playbook_prompt_3d(
         layer_1_context: Dictionary of Layer 1 agent outputs
         layer_2_context: Dictionary of Layer 2 vertical agent outputs
         layer_3_context: Dictionary of Layer 3 title agent outputs
+        company_context: Optional pre-formatted company context string
 
     Returns:
         Formatted prompt string ready for ResearchSession
@@ -499,12 +526,19 @@ def build_playbook_prompt_3d(
         layer_3_context=layer_3_context
     )
 
+    # Format company context section
+    if company_context:
+        company_section = f"=== COMPANY CONTEXT ===\n\n{company_context}\n\n---"
+    else:
+        company_section = ""
+
     return PLAYBOOK_GENERATION_PROMPT_3D.format(
         vertical_name=vertical['name'],
         title_name=title['name'],
         service_category_name=service_category['name'],
         key_suppliers=key_suppliers_str,
-        context_section=context_summary
+        context_section=context_summary,
+        company_context_section=company_section
     )
 
 

@@ -141,10 +141,29 @@ class ResearchOrchestrator:
         for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment', 'target_aligned']:
             (self.output_dir / layer).mkdir(parents=True, exist_ok=True)
 
-        # Initialize brand context loader if brand alignment enabled
+        # Initialize brand context and assets loaders
+        # Loaders are needed for EITHER company_context (early injection) OR brand_alignment (late pass)
+        company_ctx_config = self.config.get('company_context', {})
         brand_config = self.config.get('brand_alignment', {})
-        if brand_config.get('enabled', False):
-            context_files = brand_config.get('context_files', {})
+
+        # Determine context_files: company_context takes priority, fallback to brand_alignment
+        context_files = (
+            company_ctx_config.get('context_files')
+            or brand_config.get('context_files', {})
+        )
+
+        # Determine assets_file: company_context takes priority, fallback to brand_alignment
+        assets_file = (
+            company_ctx_config.get('assets_file')
+            or brand_config.get('assets_file', '')
+        )
+
+        needs_loaders = (
+            company_ctx_config.get('enabled', False)
+            or brand_config.get('enabled', False)
+        )
+
+        if needs_loaders and context_files:
             config_dir = Path(config_path).parent
             self.brand_context_loader = BrandContextLoader(
                 config_dir=config_dir,
@@ -153,15 +172,14 @@ class ResearchOrchestrator:
             )
 
             # Initialize brand assets loader (optional — degrades gracefully)
-            assets_file = brand_config.get(
-                'assets_file',
-                '../../../research-manager/context/brand-assets.yaml'
-            )
-            self.brand_assets_loader = BrandAssetsLoader(
-                config_dir=config_dir,
-                file_path=assets_file,
-                logger=self.logger
-            )
+            if assets_file:
+                self.brand_assets_loader = BrandAssetsLoader(
+                    config_dir=config_dir,
+                    file_path=assets_file,
+                    logger=self.logger
+                )
+            else:
+                self.brand_assets_loader = None
         else:
             self.brand_context_loader = None
             self.brand_assets_loader = None
@@ -825,12 +843,19 @@ class ResearchOrchestrator:
             title_name = TITLE_CLUSTERS.get(title_key, {}).get('name', title_key)
             service_category_name = service_category_key
 
+            # Build company context for brand alignment validation
+            brand_context_str = self._build_company_context(
+                vertical=vertical_key,
+                service_category=service_category_key
+            )
+
             # Build validation prompt
             prompt = build_validation_prompt(
                 playbook_content=playbook_content,
                 vertical_name=vertical_name,
                 title_name=title_name,
-                service_category_name=service_category_name
+                service_category_name=service_category_name,
+                brand_context=brand_context_str
             )
 
             # Get validation model configuration (use haiku for fast validation)
@@ -1305,11 +1330,17 @@ class ResearchOrchestrator:
                         extra={"category_count": len(layer_0_context)}
                     )
 
-            # Format prompt with Layer 0 and prior agent context
+            # Build company context for GTM synthesis only
+            company_context_str = ""
+            if agent_name == 'gtm_synthesis':
+                company_context_str = self._build_company_context()
+
+            # Format prompt with Layer 0, prior agent, and company context
             prompt = format_layer_1_prompt(
                 prompt_template=prompt_template,
                 layer_0_context=layer_0_context,
-                prior_agent_context=context
+                prior_agent_context=context,
+                company_context=company_context_str
             )
             
             # Execute research session with resolved model settings
@@ -1623,10 +1654,14 @@ class ResearchOrchestrator:
             layer_2_context = get_layer_2_context(self.state, self.config['verticals'])
             layer_3_context = get_layer_3_context(self.state, self.config['title_clusters'])
             
+            # Build company context for early injection
+            company_context_str = self._build_company_context(vertical=vertical)
+
             # Build playbook prompt
             prompt = build_playbook_prompt(
                 vertical, title,
-                layer_1_context, layer_2_context, layer_3_context
+                layer_1_context, layer_2_context, layer_3_context,
+                company_context=company_context_str
             )
             
             # Resolve model for playbook
@@ -1771,6 +1806,11 @@ class ResearchOrchestrator:
             layer_2_context = get_layer_2_context(self.state, verticals_for_context)
             layer_3_context = get_layer_3_context(self.state, self.config['title_clusters'])
 
+            # Build company context for early injection
+            company_context_str = self._build_company_context(
+                vertical=vertical, service_category=service_category
+            )
+
             # Build 3D playbook prompt
             prompt = build_playbook_prompt_3d(
                 vertical_key=vertical,
@@ -1780,7 +1820,8 @@ class ResearchOrchestrator:
                 layer_0_context=layer_0_context,
                 layer_1_context=layer_1_context,
                 layer_2_context=layer_2_context,
-                layer_3_context=layer_3_context
+                layer_3_context=layer_3_context,
+                company_context=company_context_str
             )
 
             # Resolve model for playbook
@@ -1862,6 +1903,48 @@ class ResearchOrchestrator:
             self.logger.error(f"3D Playbook {vertical}_{title}_{service_category} failed: {e}", exc_info=True)
             self.state.mark_failed(agent_name, str(e), layer='integrations')
             raise
+
+    def _build_company_context(
+        self,
+        vertical: str | None = None,
+        service_category: str | None = None
+    ) -> str:
+        """
+        Build compact company context string from loaders.
+
+        Combines company fact sheet (from baseline.yaml) with verified proof points
+        (from brand-assets.yaml) into a single string for prompt injection.
+
+        Args:
+            vertical: Optional vertical for proof point filtering
+            service_category: Optional service category for proof point filtering
+
+        Returns:
+            Formatted company context string, or empty string if loaders unavailable
+        """
+        company_ctx_config = self.config.get('company_context', {})
+        if not company_ctx_config.get('enabled', False):
+            return ""
+
+        parts: list[str] = []
+
+        if self.brand_context_loader:
+            ctx = self.brand_context_loader.load_all()
+            company_text = self.brand_context_loader.format_company_context(ctx)
+            if company_text:
+                parts.append(company_text)
+
+        if self.brand_assets_loader:
+            assets = self.brand_assets_loader.load()
+            if assets:
+                compact = self.brand_assets_loader.format_compact_proof_points(
+                    vertical=vertical,
+                    service_category=service_category
+                )
+                if compact:
+                    parts.append(compact)
+
+        return "\n\n".join(parts)
 
     def _get_agent_prompt(self, agent_name: str) -> str:
         """Get prompt template for agent."""

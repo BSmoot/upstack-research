@@ -51,8 +51,9 @@ priority_combinations:
       - "vp_it_operations"
     priority: 2
 
-# Company context
+# Company context (early injection into playbooks, GTM synthesis, validation)
 company_context:
+  enabled: true
   name: "UPSTACK"
 
   context_files:
@@ -60,6 +61,13 @@ company_context:
     glossary: "../../research-manager/context/glossary.yaml"
     audience_personas: "../../research-manager/context/audience-personas.yaml"
     writing_standards: "../../research-manager/context/writing-standards.yaml"
+
+  assets_file: "../../research-manager/context/brand-assets.yaml"
+
+  inject_at:
+    - "playbooks"
+    - "gtm_synthesis"
+    - "validation"
 
 # Disable review gates (all prior layers already complete and reviewed)
 execution_settings:

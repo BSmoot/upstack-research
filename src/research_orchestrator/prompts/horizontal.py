@@ -19,6 +19,8 @@ MISSION: Research how enterprises in target verticals currently discover, evalua
 
 {context_section}
 
+{company_context_section}
+
 CRITICAL CONTEXT:
 You are researching for a vendor-neutral, vendor-reimbursed technology advisory firm. Buyers pay nothing - suppliers pay commission. This creates unique trust dynamics you MUST investigate.
 
@@ -130,6 +132,8 @@ MISSION: Research the competitive landscape for infrastructure advisory, includi
 {layer_0_context_section}
 
 {context_section}
+
+{company_context_section}
 
 YOUR RESEARCH QUESTIONS:
 
@@ -243,6 +247,8 @@ MISSION: Research how advisory relationships expand over time.
 
 {context_section}
 
+{company_context_section}
+
 YOUR RESEARCH QUESTIONS:
 
 1. INITIAL ENGAGEMENT PATTERNS
@@ -325,6 +331,8 @@ MISSION: Research what language, framing, and proof points resonate with enterpr
 {layer_0_context_section}
 
 {context_section}
+
+{company_context_section}
 
 CRITICAL CONTEXT:
 You are researching for a vendor-neutral, vendor-reimbursed technology advisory firm. The model is unfamiliar to most buyers. Your research must identify language that educates without confusing, and builds trust despite the "free to buyer" model.
@@ -473,6 +481,14 @@ MISSION: Synthesize all prior research into actionable go-to-market strategy.
 
 {context_section}
 
+{company_context_section}
+
+CRITICAL: Your recommendations MUST align with the company model above (if provided):
+- Do NOT recommend pricing tiers or advisory fees — the model is vendor-reimbursed
+- Do NOT recommend building a sales team from scratch — use the existing advisory specialists
+- Reference actual operational metrics when making claims
+- Recommendations should extend the existing engagement model, not replace it
+
 YOUR ANALYSIS:
 
 1. STRATEGIC SYNTHESIS
@@ -586,15 +602,17 @@ Build on these findings.
 def format_layer_1_prompt(
     prompt_template: str,
     layer_0_context: dict[str, Any] | None = None,
-    prior_agent_context: dict[str, Any] | None = None
+    prior_agent_context: dict[str, Any] | None = None,
+    company_context: str = ""
 ) -> str:
     """
-    Format a Layer 1 prompt with Layer 0 and prior agent context.
+    Format a Layer 1 prompt with Layer 0, prior agent, and company context.
 
     Args:
         prompt_template: The raw prompt template with placeholders
         layer_0_context: Dictionary of Layer 0 service category agent outputs
         prior_agent_context: Dictionary of prior Layer 1 agent outputs (for dependent agents)
+        company_context: Optional pre-formatted company context string
 
     Returns:
         Formatted prompt string ready for ResearchSession
@@ -622,8 +640,15 @@ Apply these category-specific insights to your research.
     else:
         context_section = ""
 
+    # Format company context section
+    if company_context:
+        company_section = f"=== COMPANY MODEL CONTEXT ===\n\n{company_context}\n\n---"
+    else:
+        company_section = ""
+
     # Fill in placeholders
     return prompt_template.format(
         layer_0_context_section=layer_0_section,
-        context_section=context_section
+        context_section=context_section,
+        company_context_section=company_section
     )
