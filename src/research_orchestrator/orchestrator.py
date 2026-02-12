@@ -112,11 +112,14 @@ class ResearchOrchestrator:
         self.model = api_config['model']
         self.max_tokens = api_config['max_tokens']
         
-        # Initialize state tracker
+        # Initialize state tracker with timestamped execution ID
         checkpoint_config = self.config['execution_settings']['checkpointing']
+        base_id = execution_id or self.config['execution']['id']
+        self._run_timestamp = datetime.utcnow().strftime('%y%m%d_%H%M')
+        timestamped_id = f"{base_id}_{self._run_timestamp}"
         self.state = StateTracker(
             checkpoint_dir=Path(checkpoint_config['directory']),
-            execution_id=execution_id or self.config['execution']['id'],
+            execution_id=timestamped_id,
             logger=self.logger
         )
         
@@ -2042,7 +2045,7 @@ class ResearchOrchestrator:
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create output file
-        output_file = output_dir / f"{agent_name}.md"
+        output_file = output_dir / f"{agent_name}_{self._run_timestamp}.md"
         
         # Write deliverables (handle None case)
         deliverables = result.get('deliverables')

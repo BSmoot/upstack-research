@@ -46,7 +46,7 @@ class StateTracker:
     
     def _generate_execution_id(self) -> str:
         """Generate execution ID with timestamp."""
-        return f"research_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+        return f"research_{datetime.utcnow().strftime('%y%m%d_%H%M')}"
     
     def load_or_initialize(self) -> dict[str, Any]:
         """Load existing checkpoint or initialize new state."""
