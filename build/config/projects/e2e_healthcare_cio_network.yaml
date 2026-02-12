@@ -26,6 +26,7 @@ priority_combinations:
     priority: 1
 
 company_context:
+  enabled: true
   name: "UPSTACK"
   description: "Infrastructure technology advisory services"
   context_files:
@@ -33,6 +34,8 @@ company_context:
     glossary: "../../../research-manager/context/glossary.yaml"
     audience_personas: "../../../research-manager/context/audience-personas.yaml"
     writing_standards: "../../../research-manager/context/writing-standards.yaml"
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
   business_model: "vendor_reimbursed"
   business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
   primary_competition: "direct_vendor_sales"
@@ -65,6 +68,7 @@ validation:
 brand_alignment:
   enabled: true
   assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
   context_files:
     baseline: "../../../research-manager/context/baseline.yaml"
     writing_standards: "../../../research-manager/context/writing-standards.yaml"

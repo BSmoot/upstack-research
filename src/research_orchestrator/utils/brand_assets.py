@@ -249,6 +249,57 @@ class BrandAssetsLoader:
 
         return "\n".join(lines)
 
+    def get_language_standards(self) -> dict[str, Any]:
+        """
+        Get language standards from brand assets.
+
+        Returns:
+            Dictionary with required_terms, prohibited_terms, and positioning_guidance.
+            Empty dict if no language standards defined.
+        """
+        assets = self.load()
+        return assets.get('language_standards', {})
+
+    def get_unverified_claims(self) -> list[dict[str, Any]]:
+        """
+        Get list of unverified claims that must not appear in outputs.
+
+        Returns:
+            List of unverified claim dictionaries with id, claim, status.
+        """
+        assets = self.load()
+        return assets.get('unverified_claims', [])
+
+    def get_buyer_intelligence(self) -> dict[str, Any]:
+        """
+        Get buyer intelligence data points.
+
+        Returns:
+            Dictionary with buying_committee, ai_procurement_adoption,
+            customer_expansion, and market_drivers sections.
+        """
+        assets = self.load()
+        return assets.get('buyer_intelligence', {})
+
+    def get_vertical_intelligence(
+        self,
+        vertical: Optional[str] = None
+    ) -> dict[str, Any]:
+        """
+        Get vertical intelligence data filtered by vertical.
+
+        Args:
+            vertical: Vertical key (e.g., 'financial_services')
+
+        Returns:
+            Vertical-specific intelligence dict, or all verticals if no filter.
+        """
+        assets = self.load()
+        all_verticals = assets.get('vertical_intelligence', {})
+        if vertical and vertical in all_verticals:
+            return {vertical: all_verticals[vertical]}
+        return all_verticals
+
     def format_for_prompt(
         self,
         context: dict[str, Any],
@@ -273,6 +324,11 @@ class BrandAssetsLoader:
             Formatted string for prompt injection
         """
         sections = []
+
+        # Language standards (always included — highest priority)
+        language_standards = context.get('language_standards', {})
+        if language_standards:
+            sections.append(self._format_language_standards(language_standards))
 
         # Methodology (always included)
         methodology = context.get('methodology', {})
@@ -304,6 +360,23 @@ class BrandAssetsLoader:
         credentials = context.get('credentials', {})
         if credentials:
             sections.append(self._format_credentials(credentials, vertical=vertical))
+
+        # Buyer intelligence (always included)
+        buyer_intel = context.get('buyer_intelligence', {})
+        if buyer_intel:
+            sections.append(self._format_buyer_intelligence(buyer_intel))
+
+        # Vertical intelligence (filtered)
+        vertical_intel = context.get('vertical_intelligence', {})
+        if vertical and vertical in vertical_intel:
+            sections.append(
+                self._format_vertical_intelligence(vertical, vertical_intel[vertical])
+            )
+
+        # Unverified claims (always included as warning)
+        unverified = context.get('unverified_claims', [])
+        if unverified:
+            sections.append(self._format_unverified_claims(unverified))
 
         # Filter out empty sections
         sections = [s for s in sections if s and s.strip()]
@@ -425,5 +498,134 @@ class BrandAssetsLoader:
                 for cred in vertical_creds:
                     lines.append(f"- {cred}")
                 lines.append("")
+
+        return "\n".join(lines)
+
+    def _format_language_standards(self, standards: dict[str, Any]) -> str:
+        """Format language standards for prompt injection."""
+        lines = ["## LANGUAGE STANDARDS (MANDATORY)", ""]
+
+        # Required terms
+        required = standards.get('required_terms', {})
+        if required:
+            lines.append("**Required Terminology:**")
+            if 'company_descriptor' in required:
+                lines.append(f"- Company descriptor: \"{required['company_descriptor']}\"")
+            if 'cost_model' in required:
+                lines.append(f"- Cost language: \"{required['cost_model']}\"")
+            if 'funding_model' in required:
+                lines.append(f"- Funding model: \"{required['funding_model']}\"")
+            if 'revenue_model' in required:
+                lines.append(f"- Revenue model: \"{required['revenue_model']}\"")
+            if 'revenue_model_note' in required:
+                lines.append(f"  Note: {required['revenue_model_note'].strip()}")
+            lines.append("")
+
+        # Prohibited terms
+        prohibited = standards.get('prohibited_terms', [])
+        if prohibited:
+            lines.append("**Prohibited Terms (flag and replace):**")
+            for item in prohibited:
+                if isinstance(item, dict):
+                    term = item.get('term', '')
+                    replacement = item.get('use_instead', 'N/A')
+                    reason = item.get('reason', '')
+                    if replacement:
+                        lines.append(f"- NEVER use \"{term}\" → use \"{replacement}\" ({reason})")
+                    else:
+                        lines.append(f"- NEVER use \"{term}\" ({reason})")
+            lines.append("")
+
+        # Positioning guidance
+        guidance = standards.get('positioning_guidance', {})
+        if guidance:
+            lines.append("**Positioning Guidance:**")
+            if 'category_first' in guidance:
+                lines.append(f"- Category-first approach: {guidance['category_first'].strip()}")
+            if 'cost_language' in guidance:
+                lines.append(f"- Cost messaging: {guidance['cost_language'].strip()}")
+
+        return "\n".join(lines)
+
+    def _format_buyer_intelligence(self, buyer_intel: dict[str, Any]) -> str:
+        """Format buyer intelligence data points for prompt injection."""
+        lines = ["## Buyer Intelligence (Citable Data)", ""]
+
+        section_labels = {
+            'buying_committee': 'Buying Committee',
+            'ai_procurement_adoption': 'AI in Procurement',
+            'customer_expansion': 'Customer Expansion',
+            'market_drivers': 'Market Drivers',
+        }
+
+        for section_key, label in section_labels.items():
+            items = buyer_intel.get(section_key, [])
+            if items:
+                lines.append(f"**{label}:**")
+                for item in items:
+                    if isinstance(item, dict):
+                        point = item.get('point', '')
+                        source = item.get('source', '')
+                        if point:
+                            lines.append(f"- {point} (Source: {source})")
+                lines.append("")
+
+        return "\n".join(lines)
+
+    def _format_vertical_intelligence(
+        self,
+        vertical: str,
+        intel: dict[str, Any]
+    ) -> str:
+        """Format vertical-specific intelligence for prompt injection."""
+        vertical_label = vertical.replace('_', ' ').title()
+        lines = [f"## {vertical_label} Vertical Intelligence", ""]
+
+        # Regulatory frameworks
+        frameworks = intel.get('regulatory_frameworks', [])
+        if frameworks:
+            lines.append("**Regulatory Frameworks:**")
+            for fw in frameworks:
+                if isinstance(fw, dict):
+                    name = fw.get('framework', '')
+                    relevance = fw.get('relevance', '')
+                    lines.append(f"- **{name}**: {relevance}")
+            lines.append("")
+
+        # Spending intensity
+        spending = intel.get('spending_intensity', {})
+        if spending:
+            lines.append("**IT Spending Intensity:**")
+            pct = spending.get('it_spend_as_revenue_pct', '')
+            vs_other = spending.get('vs_other_industries', '')
+            if pct:
+                lines.append(f"- IT spend as % of revenue: {pct}")
+            if vs_other:
+                lines.append(f"- Compared to other industries: {vs_other}")
+            lines.append("")
+
+        # Structural alignment
+        alignment = intel.get('structural_alignment', '')
+        if alignment:
+            lines.append(f"**Strategic Alignment:** {alignment.strip()}")
+
+        return "\n".join(lines)
+
+    def _format_unverified_claims(self, claims: list[dict[str, Any]]) -> str:
+        """Format unverified claims as warnings for prompt injection."""
+        lines = [
+            "## UNVERIFIED CLAIMS — DO NOT USE",
+            "",
+            "The following claims were found in research outputs but are NOT verified.",
+            "Do NOT include these in any output. Flag them if they appear in source material.",
+            ""
+        ]
+
+        for claim in claims:
+            if isinstance(claim, dict):
+                claim_id = claim.get('id', '')
+                claim_text = claim.get('claim', '')
+                status = claim.get('status', '')
+                lines.append(f"- [{claim_id}] {status}: \"{claim_text}\"")
 
         return "\n".join(lines)

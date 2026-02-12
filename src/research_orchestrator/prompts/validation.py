@@ -128,7 +128,7 @@ Check that recommendations are grounded in research from prior layers:
 
 {brand_context_section}
 
-Check that the playbook accurately represents the company's business model, uses verified proof points, and maintains brand positioning:
+Check that the playbook accurately represents the company's business model, uses verified proof points, maintains brand positioning, and follows language standards:
 
 **Alignment Indicators:**
 - Business model description is accurate (compensation model, engagement type)
@@ -136,21 +136,29 @@ Check that the playbook accurately represents the company's business model, uses
 - Value proposition language aligns with company positioning
 - No invented pricing tiers, fees, or team structures
 - Recommendations extend existing engagement model rather than inventing new ones
+- Language Standards are followed (required terms used, prohibited terms absent)
+- No claims from the UNVERIFIED CLAIMS list appear in the playbook
 
-**Red Flags (deduct points):**
-- Invented statistics or proof points not from company data
-- Incorrect business model description (e.g., suggesting fees when service is vendor-reimbursed)
+**Red Flags (AUTOMATIC DEDUCTIONS):**
+- Uses prohibited terms (e.g., "independent advisor", "strategic technology audit", "outcome-based pricing", "not commission-based") → deduct 2 points per instance
+- Contains claims matching UNVERIFIED CLAIMS list (e.g., "40+ financial institutions", "100% regulatory approval rate", unqualified "35% cost reduction" for specific verticals) → deduct 4 points per instance
+- Invented statistics or proof points not from company data → deduct 4 points per instance
+- Incorrect business model description (e.g., suggesting fees when service is vendor-reimbursed) → deduct 4 points
+- Recommending "outcome-based pricing", "vendor certification programs", or other models incompatible with commission-based structure → deduct 4 points
+
+**Additional Red Flags (deduct points):**
 - Recommending organizational structures that contradict existing team composition
 - Language that conflicts with brand positioning guidelines
+- Missing champion enablement content (playbook only addresses 1:1 BDR outreach, not 25-person buying committees)
 
 **Scoring:**
-- 20 points: Fully aligned with company model and verified data
-- 16 points: Mostly aligned with minor inaccuracies
+- 20 points: Fully aligned with company model, verified data, and language standards
+- 16 points: Mostly aligned with minor language/terminology issues
 - 12 points: Some alignment issues requiring correction
-- 8 points: Significant model or brand misalignment
+- 8 points: Significant model or brand misalignment, or unverified claims present
 - 4 points: Fundamentally misrepresents the company
 
-**Default (no brand context provided):** Award 16/20 — cannot fully assess without company context.
+**Default (no brand context provided):** Award 12/20 — cannot assess language standards or proof point verification without company context.
 
 ---
 
@@ -176,31 +184,45 @@ STATUS: [APPROVED | NEEDS_REVISION | REJECTED]
 | Research Grounding | /20 | [Brief assessment] |
 | Brand & Model Alignment | /20 | [Brief assessment] |
 
-### 3. CRITICAL ISSUES (if any)
+### 3. LANGUAGE & CLAIM AUDIT
+
+**Prohibited Terms Found:**
+- [List each prohibited term found, with location in document]
+
+**Unverified Claims Found:**
+- [List each claim matching the UNVERIFIED CLAIMS list, with location]
+
+**Language Standards Compliance:** [PASS / FAIL — list specific violations]
+
+### 4. CRITICAL ISSUES (if any)
 
 List any issues that MUST be fixed before the playbook is production-ready:
 - [Issue 1]: [Specific problem and location]
 - [Issue 2]: [Specific problem and location]
 
-### 4. IMPROVEMENT RECOMMENDATIONS
+### 5. IMPROVEMENT RECOMMENDATIONS
 
 List specific, actionable improvements (prioritized):
 1. [High priority]: [Specific recommendation]
 2. [Medium priority]: [Specific recommendation]
 3. [Low priority]: [Specific recommendation]
 
-### 5. STRENGTHS
+### 6. STRENGTHS
 
 Note what the playbook does well:
 - [Strength 1]
 - [Strength 2]
 
-### 6. VERDICT
+### 7. VERDICT
+
+**IMPORTANT**: If the Language & Claim Audit (Section 3) found prohibited terms or
+unverified claims, the playbook CANNOT be APPROVED regardless of total score.
+Status must be NEEDS_REVISION at minimum until language compliance is achieved.
 
 **Status**: [APPROVED | NEEDS_REVISION | REJECTED]
 
-- **APPROVED** (80+ points): Ready for production use
-- **NEEDS_REVISION** (60-79 points): Specific issues must be addressed
+- **APPROVED** (80+ points, AND language audit PASS): Ready for production use
+- **NEEDS_REVISION** (60-79 points, OR language audit FAIL): Specific issues must be addressed
 - **REJECTED** (<60 points): Fundamental problems require regeneration
 
 **Rationale**: [1-2 sentences explaining the verdict]

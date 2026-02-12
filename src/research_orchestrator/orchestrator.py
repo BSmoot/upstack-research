@@ -37,6 +37,7 @@ from .prompts.horizontal import (
 from .prompts.context_helpers import get_layer_0_context
 from .utils.brand_context import BrandContextLoader
 from .utils.brand_assets import BrandAssetsLoader
+from .utils.strategic_messaging import StrategicMessagingLoader
 from .utils.target_context import TargetContextLoader
 from .prompts.brand_alignment import build_brand_alignment_prompt
 from .prompts.target_alignment import build_target_alignment_prompt
@@ -158,6 +159,9 @@ class ResearchOrchestrator:
             or brand_config.get('assets_file', '')
         )
 
+        # Determine strategic_messaging_file: company_context only
+        strategic_messaging_file = company_ctx_config.get('strategic_messaging_file', '')
+
         needs_loaders = (
             company_ctx_config.get('enabled', False)
             or brand_config.get('enabled', False)
@@ -180,9 +184,20 @@ class ResearchOrchestrator:
                 )
             else:
                 self.brand_assets_loader = None
+
+            # Initialize strategic messaging loader (optional — degrades gracefully)
+            if strategic_messaging_file:
+                self.strategic_messaging_loader = StrategicMessagingLoader(
+                    config_dir=config_dir,
+                    file_path=strategic_messaging_file,
+                    logger=self.logger
+                )
+            else:
+                self.strategic_messaging_loader = None
         else:
             self.brand_context_loader = None
             self.brand_assets_loader = None
+            self.strategic_messaging_loader = None
 
         # Initialize target context loader if target alignment enabled
         target_config = self.config.get('target_alignment', {})
@@ -671,8 +686,33 @@ class ResearchOrchestrator:
 
         return await asyncio.gather(*tasks, return_exceptions=True)
 
+    async def _sequential_execute(self, coroutines: list, cooldown: float = 5.0):
+        """
+        Execute coroutines sequentially (one at a time) with cooldown between each.
+
+        Prevents API overload by ensuring only one agent runs at a time.
+
+        Args:
+            coroutines: List of coroutine objects to execute
+            cooldown: Seconds to wait between completing one and starting next
+
+        Returns:
+            List of results (or exceptions) matching asyncio.gather semantics
+        """
+        results = []
+        for i, coro in enumerate(coroutines):
+            if i > 0 and cooldown > 0:
+                self.logger.info(f"Cooling down {cooldown}s before next agent...")
+                await asyncio.sleep(cooldown)
+            try:
+                result = await coro
+                results.append(result)
+            except Exception as e:
+                results.append(e)
+        return results
+
     async def execute_layer_3_parallel(self):
-        """Execute all configured title clusters in parallel with staggered starts."""
+        """Execute all configured title clusters sequentially to avoid API overload."""
         self.logger.info("Executing Layer 3: Title Research")
 
         # Check if Layer 1 and 2 are complete
@@ -685,7 +725,7 @@ class ResearchOrchestrator:
             return
 
         title_clusters = self.config['title_clusters']
-        self.logger.info(f"Launching {len(title_clusters)} title agents with staggered starts")
+        self.logger.info(f"Launching {len(title_clusters)} title agents sequentially")
 
         # Build list of coroutines (not executed yet)
         coroutines = []
@@ -697,8 +737,8 @@ class ResearchOrchestrator:
                 self.logger.info(f"Skipping {title_cluster} (already complete)")
 
         if coroutines:
-            # Use staggered execution to prevent rate limiting (2s delay between starts)
-            results = await self._staggered_gather(coroutines, stagger_delay=2.0)
+            # Execute sequentially to prevent API overload (5s cooldown between agents)
+            results = await self._sequential_execute(coroutines, cooldown=5.0)
             self._check_gather_results(results)
 
         self.logger.info("Layer 3 complete!")
@@ -721,7 +761,8 @@ class ResearchOrchestrator:
                 self.logger.info(f"Skipping {vertical}_{title} playbook (already complete)")
 
         if tasks_2d:
-            results = await asyncio.gather(*tasks_2d, return_exceptions=True)
+            # Execute sequentially to prevent API overload
+            results = await self._sequential_execute(tasks_2d, cooldown=5.0)
             self._check_gather_results(results)
 
         # Phase 2: Generate 3D playbooks (V × T × SC) if priority_service_categories configured
@@ -745,7 +786,8 @@ class ResearchOrchestrator:
                     self.logger.info(f"Skipping {vertical}_{title}_{service_category} 3D playbook (already complete)")
 
             if tasks_3d:
-                results = await asyncio.gather(*tasks_3d, return_exceptions=True)
+                # Execute sequentially to prevent API overload
+                results = await self._sequential_execute(tasks_3d, cooldown=5.0)
                 self._check_gather_results(results)
 
         self.logger.info("Integration complete!")
@@ -791,7 +833,8 @@ class ResearchOrchestrator:
                 self.logger.info(f"Skipping {playbook_name} validation (already complete)")
 
         if tasks:
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            # Execute sequentially to prevent API overload
+            results = await self._sequential_execute(tasks, cooldown=5.0)
             self._check_gather_results(results)
 
         self.logger.info("Validation complete!")
@@ -960,7 +1003,8 @@ class ResearchOrchestrator:
                 self.logger.info(f"Skipping {agent_name} alignment (already complete)")
 
         if tasks:
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            # Execute sequentially to prevent API overload
+            results = await self._sequential_execute(tasks, cooldown=5.0)
             self._check_gather_results(results)
 
         self.logger.info("Brand alignment complete!")
@@ -1943,6 +1987,18 @@ class ResearchOrchestrator:
                 )
                 if compact:
                     parts.append(compact)
+
+        if self.strategic_messaging_loader:
+            messaging_data = self.strategic_messaging_loader.load()
+            if messaging_data:
+                if vertical or service_category:
+                    formatted = self.strategic_messaging_loader.format_for_playbook(
+                        vertical=vertical
+                    )
+                else:
+                    formatted = self.strategic_messaging_loader.format_for_research()
+                if formatted:
+                    parts.append(formatted)
 
         return "\n\n".join(parts)
 

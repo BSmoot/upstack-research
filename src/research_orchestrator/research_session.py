@@ -183,9 +183,45 @@ class ResearchSession:
                         self.logger.info(
                             f"[{self.agent_name}] Extended thinking pause - continuing conversation..."
                         )
+                        # Fix orphaned server_tool_use blocks that lack web_search_tool_result pairs.
+                        # On pause_turn, the response may contain server_tool_use blocks whose
+                        # results were not yet returned. The API will reject these on the next call.
+                        assistant_content = messages[-1]["content"]
+                        # Log block types for diagnosis
+                        block_types = [(getattr(b, 'type', '?'), getattr(b, 'id', getattr(b, 'tool_use_id', None))) for b in assistant_content]
+                        self.logger.info(
+                            f"[{self.agent_name}] pause_turn content blocks: {[(t, i) for t, i in block_types if t in ('server_tool_use', 'web_search_tool_result')]}"
+                        )
+                        result_ids = set()
+                        for block in assistant_content:
+                            if hasattr(block, 'type') and block.type == "web_search_tool_result":
+                                tool_id = getattr(block, 'tool_use_id', None)
+                                result_ids.add(tool_id)
+                        cleaned_content = []
+                        removed_count = 0
+                        for block in assistant_content:
+                            if hasattr(block, 'type') and block.type == "server_tool_use":
+                                block_id = getattr(block, 'id', None)
+                                if block_id not in result_ids:
+                                    self.logger.info(
+                                        f"[{self.agent_name}] Removing orphaned server_tool_use {block_id}"
+                                    )
+                                    removed_count += 1
+                                    continue
+                            cleaned_content.append(block)
+                        if removed_count > 0:
+                            self.logger.info(
+                                f"[{self.agent_name}] Removed {removed_count} orphaned tool_use blocks, {len(result_ids)} matched results"
+                            )
+                        # Replace the last assistant message with cleaned content
+                        if cleaned_content:
+                            messages[-1] = {"role": "assistant", "content": cleaned_content}
+                        else:
+                            # If nothing left, remove the empty assistant message
+                            messages.pop()
                         # Add continuation prompt to resume the conversation
                         messages.append({
-                            "role": "user", 
+                            "role": "user",
                             "content": "Please continue with your research and provide the complete analysis."
                         })
                         continue
@@ -263,7 +299,7 @@ class ResearchSession:
     async def _api_call_with_retry(
         self, 
         messages: List[Dict[str, Any]], 
-        max_retries: int = 3
+        max_retries: int = 5
     ) -> Any:
         """
         Make API call with exponential backoff retry logic.
@@ -363,7 +399,18 @@ class ResearchSession:
                     self.thinking_budget = 0  # Disable for future calls
                     continue
 
-                # Other API errors - don't retry
+                # Transient API errors (overloaded, internal server error) - retry with backoff
+                error_body = getattr(e, 'body', {}) or {}
+                error_type = error_body.get('error', {}).get('type', '') if isinstance(error_body, dict) else ''
+                if error_type in ('overloaded_error', 'api_error') and attempt < max_retries - 1:
+                    delay = 2 ** attempt * 30  # Longer backoff for server issues: 30s, 60s
+                    self.logger.warning(
+                        f"[{self.agent_name}] Transient API error ({error_type}). Retrying in {delay}s (attempt {attempt + 1}/{max_retries})"
+                    )
+                    await asyncio.sleep(delay)
+                    continue
+
+                # Non-transient API errors - don't retry
                 self.logger.error(f"[{self.agent_name}] API error: {e}")
                 raise
     

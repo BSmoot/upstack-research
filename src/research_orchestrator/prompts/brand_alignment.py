@@ -19,6 +19,16 @@ replacements.
 
 Make ONLY these specific changes to the original content:
 
+## 0. LANGUAGE STANDARDS ENFORCEMENT (HIGHEST PRIORITY)
+Before any other enrichment, scan the entire document and apply mandatory
+language corrections:
+- Replace ALL prohibited terms with their required alternatives (see Language Standards)
+- Ensure the company is described as a "technology advisory firm" throughout
+- Ensure cost language uses "at no cost to you" not "free"
+- Ensure the revenue model is described honestly as "commission-based" / "vendor-funded"
+- Flag and remove any claims that appear in the UNVERIFIED CLAIMS section
+- Do NOT invent pricing tiers, outcome-based models, or vendor certification programs
+
 ## 1. UPSTACK Advisory Perspective Insertions
 After each major pain point or challenge section, add a brief (2-3 sentence)
 "UPSTACK Advisory Perspective" callout that connects the pain point to
@@ -40,10 +50,20 @@ Replace generic advisory language with UPSTACK-specific terms:
 - "advisory firm" -> "UPSTACK" (where contextually appropriate)
 - "vendor-neutral advisor" -> use UPSTACK's positioning language
 - Generic trust model descriptions -> UPSTACK's specific trust model
+- Apply ALL prohibited/required term substitutions from Language Standards
 
 ## 5. Credentials & Credibility
 In sections discussing qualifications or credibility, add relevant UPSTACK
 credentials and partnerships from the Brand Assets.
+
+## 6. Buyer Intelligence Integration
+Where relevant, incorporate citable buyer intelligence data points to
+strengthen claims about market dynamics, buying committee complexity, or
+advisory value proposition.
+
+## 7. Vertical Intelligence Integration
+If vertical-specific regulatory frameworks or spending data are available
+in the Brand Assets, integrate them into relevant sections to add specificity.
 
 # Rules
 
@@ -54,6 +74,8 @@ credentials and partnerships from the Brand Assets.
 - If no relevant Brand Asset exists for a section, leave that section unchanged
 - Additions should feel organic, not bolted on
 - Use the brand voice standards for any new text you write
+- NEVER include any claim listed under UNVERIFIED CLAIMS
+- NEVER use any term listed under Prohibited Terms
 
 Return the complete enriched document in markdown.
 """

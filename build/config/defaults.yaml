@@ -120,6 +120,9 @@ company_context:
   # Brand assets file for proof points
   assets_file: "../../../research-manager/context/brand-assets.yaml"
 
+  # Strategic messaging file for category positioning
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
+
   # Where to inject company context
   inject_at:
     - "playbooks"

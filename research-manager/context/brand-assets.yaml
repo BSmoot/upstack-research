@@ -674,6 +674,185 @@ credentials:
       - credential: "🔲 GAP: SOX/GLBA compliance capabilities not systematically documented"
         relevance: "Required for credibility with financial services compliance buyers"
 
+# =============================================================================
+# LANGUAGE STANDARDS
+# =============================================================================
+# These terms are mandatory across all playbooks, outreach, and marketing.
+# Research agents MUST use these terms and flag deviations.
+
+language_standards:
+  required_terms:
+    company_descriptor: "technology advisory firm"
+    cost_model: "at no cost to you"
+    funding_model: "vendor-funded advisory model"
+    revenue_model: "commission-based"
+    revenue_model_note: >
+      UPSTACK earns commission from the vendors clients select. This is the honest
+      description of the revenue model and should be explained transparently, not hidden.
+      The established language is: 'Our fees are reimbursed by the vendor you select.'
+
+  prohibited_terms:
+    - term: "independent advisor"
+      use_instead: "technology advisory firm"
+      reason: "Not the established descriptor"
+
+    - term: "strategic technology audit"
+      use_instead: "Discovery & Assessment"
+      reason: "Not an UPSTACK term; use methodology step names"
+
+    - term: "advisory platform"
+      use_instead: "technology advisory firm"
+      reason: "UPSTACK is a firm with a platform, not a platform"
+
+    - term: "outcome-based pricing"
+      use_instead: "vendor-funded advisory model"
+      reason: "Incompatible with UPSTACK's commission-based model"
+
+    - term: "performance-based"
+      use_instead: "commission-based"
+      reason: "Flagged as false claim in outreach audit; UPSTACK is commission-based"
+
+    - term: "not commission-based"
+      use_instead: "commission-based, vendor-funded"
+      reason: "Kill item from outreach audit — this is factually false"
+
+    - term: "free"
+      use_instead: "at no cost to you"
+      reason: "Established standard language; 'free' undersells the model"
+
+    - term: "vendor certification program"
+      use_instead: null
+      reason: "UPSTACK does not certify vendors; it evaluates them via transactional intelligence"
+
+  positioning_guidance:
+    category_first: >
+      Lead with the unmanaged problem (vendor lifecycle without portfolio-level oversight),
+      not with UPSTACK's capabilities. Category creation positioning expands the market by
+      making buyers realize they have an unmanaged problem, rather than competing within the
+      existing advisory market for the small percentage of buyers already looking.
+    cost_language: >
+      Evaluation-mode buyers respond to risk language, not pricing language.
+      Cost savings is not the primary driver — cloud enablement is #1, security is #2,
+      skill gap is #3.
+
+# =============================================================================
+# BUYER INTELLIGENCE
+# =============================================================================
+# Citable data points from research for use in playbooks and content.
+# Each point includes source citation for verification.
+
+buyer_intelligence:
+  buying_committee:
+    - point: "Average B2B buying committee now includes 25 decision-makers"
+      source: "Forrester/Gartner B2B buyer research, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Champion enablement content; justifying need for internal forwarding assets"
+      implication: "Playbooks must include content designed for internal forwarding, not just 1:1 BDR outreach"
+
+    - point: "Buyers spend only 17% of their time meeting potential suppliers"
+      source: "Gartner B2B Buyer Survey, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Justifying advisory value proposition — time is the scarce resource"
+
+    - point: "80% of B2B buyers report post-purchase regret"
+      source: "Gartner Post-Purchase Buyer Survey, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Establishing the need for advisory guidance; aligns with IRIS/Lumopath operational findings"
+
+  ai_procurement_adoption:
+    - point: "46% of enterprise buyers now use GenAI for procurement research"
+      source: "B2B buyer behavior research, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Discussing AI-mediated buying journey; AEO strategy"
+
+    - point: "Only 36% of Chief Procurement Officers have meaningful AI implementation"
+      source: "CPO Survey, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Showing gap between AI adoption intent and reality"
+
+  customer_expansion:
+    - point: "35% of ARR typically comes from expansion within existing accounts"
+      source: "B2B SaaS benchmarking data, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Justifying cross-sell/upsell strategy and QBR investment"
+
+    - point: "60-70% probability of selling to an existing customer vs. 5-20% for new prospects"
+      source: "Marketing metrics benchmarking, 2025"
+      status: "✅ VERIFIED — external research"
+      use_when: "Prioritizing existing account expansion"
+
+  market_drivers:
+    - point: "Cloud enablement is the #1 driver of technology advisory engagement, security #2, skill gap #3"
+      source: "GTM research synthesis, 2026"
+      status: "✅ VERIFIED — internal research"
+      use_when: "Framing value proposition; cost savings is NOT the primary driver"
+      implication: "Do not lead with cost savings messaging. Lead with enabling capability and managing risk."
+
+    - point: "Primary competition is direct vendor sales, not other advisory firms"
+      source: "Competitive analysis, 2026"
+      status: "✅ VERIFIED — internal research"
+      use_when: "Competitive positioning; playbooks should position against vendor direct, not other advisors"
+
+# =============================================================================
+# VERTICAL INTELLIGENCE
+# =============================================================================
+# Regulatory context and industry data for vertical-specific playbooks.
+
+vertical_intelligence:
+  financial_services:
+    regulatory_frameworks:
+      - framework: "SOX (Sarbanes-Oxley Act)"
+        relevance: "IT controls for financial reporting; affects infrastructure decisions"
+      - framework: "PCI DSS (Payment Card Industry Data Security Standard)"
+        relevance: "Mandatory for any system handling payment card data"
+      - framework: "GLBA (Gramm-Leach-Bliley Act)"
+        relevance: "Requires financial institutions to explain information-sharing practices and safeguard sensitive data"
+      - framework: "FFIEC Guidelines"
+        relevance: "Federal Financial Institutions Examination Council — IT examination guidance for banks"
+      - framework: "PRA SS1/21 (UK Prudential Regulation Authority)"
+        relevance: "Operational resilience requirements for UK-regulated financial institutions"
+
+    spending_intensity:
+      it_spend_as_revenue_pct: "6-12%"
+      vs_other_industries: "~3x average industry IT spend"
+      source: "Gartner IT Spending Forecast, 2025"
+      use_when: "Establishing financial services as high-value vertical; justifying advisory investment"
+
+    structural_alignment: >
+      Financial services is structurally aligned with UPSTACK's strengths because
+      regulatory pressure creates permanent advisory dependency. Unlike industries
+      where technology advisory is episodic, financial services institutions face
+      continuous compliance obligations that require ongoing vendor evaluation,
+      contract management, and technology lifecycle oversight.
+
+# =============================================================================
+# UNVERIFIED CLAIMS — REQUIRES INVESTIGATION
+# =============================================================================
+# Claims found in research outputs that are NOT in verified brand assets.
+# Must be verified before use in any client-facing material.
+
+unverified_claims:
+  - id: "UV-001"
+    claim: "Advised 40+ financial institutions on cloud migration strategies with 100% regulatory approval rate"
+    found_in: "align_playbook — Regulatory Track Record proof point"
+    action: "VERIFY OR REMOVE — no supporting data in Salesforce or brand assets"
+    status: "🔴 UNVERIFIED"
+    priority: "HIGH — currently in a playbook that could be deployed"
+
+  - id: "UV-002"
+    claim: "200+ years combined industry experience in financial services specialization"
+    found_in: "align_playbook — financial services specialization proof point"
+    action: "VERIFY — could be calculated from team data but is not currently documented"
+    status: "🔴 UNVERIFIED"
+    priority: "MEDIUM"
+
+  - id: "UV-003"
+    claim: "35% cost reduction for financial services specifically"
+    found_in: "align_playbook — Objection 4 response"
+    action: "VERIFY — the 35% is a weighted average across ALL categories, heavily networking-skewed. Financial services breakdown not available."
+    status: "⚠️ CAUTION — misleading without qualification"
+    priority: "HIGH — suggests category-specific data that doesn't exist"
+
 ---
 
 contradictions_and_gaps:
@@ -752,8 +931,21 @@ contradictions_and_gaps:
 
 metadata:
   generated_by: "brand_assets_data_agent"
-  version: "2.0"
-  generated_date: "2026-02-09"
+  version: "3.0"
+  generated_date: "2026-02-11"
+  changelog:
+    - version: "3.0"
+      date: "2026-02-11"
+      changes:
+        - "Added language_standards section — required/prohibited terminology for all outputs"
+        - "Added buyer_intelligence section — citable buyer behavior data points"
+        - "Added vertical_intelligence section — financial services regulatory frameworks and spending data"
+        - "Added unverified_claims section — claims from research outputs requiring verification"
+        - "Added positioning_guidance to language_standards — category-first, risk-over-cost framing"
+    - version: "2.0"
+      date: "2026-02-09"
+      changes:
+        - "Initial verified brand assets with Salesforce data"
   sources_consulted:
     - "UPSTACK Salesforce database (via IRIS internal AI, February 2026)"
     - "UPSTACK Supplier Knowledge Base (via IRIS)"
@@ -765,8 +957,12 @@ metadata:
     - "Data Center Dynamics acquisition coverage"
     - "UPSTACK 2022 and 2023 Annual Reports"
     - "UPSTACK internal strategic context documents (Cornerstones 00-05)"
+    - "Research output critique and reconciliation analysis (February 2026)"
+    - "Gartner B2B Buyer Survey, 2025"
+    - "B2B buyer behavior and procurement AI research, 2025"
   data_freshness: "Internal Salesforce data as of February 2026; public sources as of February 2026"
   next_review_triggers:
     - "Resolution of CONFLICT-003 (80 million data points claim)"
+    - "Resolution of UV-001, UV-002, UV-003 (unverified claims in playbooks)"
     - "Completion of team credentials survey"
     - "Q2 2026 Program 04 data governance progress"

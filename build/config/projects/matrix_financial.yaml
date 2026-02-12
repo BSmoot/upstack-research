@@ -8,6 +8,11 @@
 
 extends: "../defaults.yaml"
 
+# Override L3 model: Haiku is overloaded, use Sonnet for title research
+model_strategy:
+  layers:
+    layer_3: "claude-sonnet-4-20250514"
+
 execution:
   id: "matrix_financial"
   description: "Full matrix: Financial Services x [colo, network, CX/AI, security] x [VP, CIO, CISO, CFO]"
@@ -75,6 +80,7 @@ validation:
 brand_alignment:
   enabled: true
   assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
   context_files:
     baseline: "../../../research-manager/context/baseline.yaml"
     writing_standards: "../../../research-manager/context/writing-standards.yaml"
