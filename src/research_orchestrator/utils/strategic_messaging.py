@@ -45,13 +45,19 @@ class StrategicMessagingLoader:
 
         try:
             with open(full_path, 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
+                documents = list(yaml.safe_load_all(f))
 
-            if not isinstance(data, dict):
-                self.logger.warning(f"Strategic messaging file is not a dict: {full_path}")
+            # Merge all YAML documents into a single dict
+            merged: dict[str, Any] = {}
+            for doc in documents:
+                if isinstance(doc, dict):
+                    merged.update(doc)
+
+            if not merged:
+                self.logger.warning(f"Strategic messaging file is empty: {full_path}")
                 return {}
 
-            self._cache = data
+            self._cache = merged
             self.logger.info(f"Loaded strategic messaging from {full_path}")
             return self._cache
 
