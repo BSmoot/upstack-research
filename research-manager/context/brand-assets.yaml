@@ -1,6 +1,7 @@
 # brand-assets.yaml
 # UPSTACK Brand Assets for Research Playbook Enrichment
-# Version 2.0 — Updated with internal Salesforce data
+# Version 3.1 — Updated with stakeholder data reconciliation, proof point reordering,
+#                terminology standardization, and healthcare compliance guardrails
 #
 # STATUS KEY:
 #   ✅ VERIFIED    — Supported by internal data, defensible
@@ -28,7 +29,8 @@ methodology:
       description: "Ongoing vendor coordination, contract renewal management, trouble ticket resolution, and strategic account reviews. We serve as your single point of contact across all technology vendors, continuously optimizing your environment as your business evolves."
   description: "UPSTACK's advisory process takes enterprises from technology assessment through ongoing lifecycle management. Every recommendation is informed by real-world transactional data, delivered by experienced advisors, and backed by dedicated implementation and support teams. The entire engagement costs you nothing — our fees are reimbursed by the vendors you select."
   differentiators:
-    - "Zero cost to the client — vendor-reimbursed model eliminates upfront fees and hourly billing"
+    # EDIT (Issue 2): "vendor-reimbursed" → "vendor-funded" to match language standard
+    - "Zero cost to the client — vendor-funded model eliminates upfront fees and hourly billing"
     - "Vendor-neutral across 300+ suppliers — no quotas, no exclusive relationships, no biased incentives"
     - "Data-driven evaluation using transactional intelligence from thousands of completed engagements"
     - "End-to-end engagement from evaluation through ongoing lifecycle management, not just procurement"
@@ -38,23 +40,69 @@ methodology:
 
 proof_points:
   general:
-    # --- GROWTH & SCALE (verified public) ---
-    - point: "Ranked #101 on the 2024 Inc. 5000 with 3,190% three-year revenue growth"
-      source: "Inc. 5000 2024 list; UPSTACK press release August 13, 2024"
-      date: "2024-08-13"
-      use_when: "Establishing company credibility and growth trajectory"
+    # ==========================================================================
+    # EDIT (Issue 4): REORDERED — Most messaging-critical proof points first.
+    # format_compact_proof_points() defaults to max_points=8. The first 8
+    # entries below are the data points that appear most frequently across
+    # outreach frameworks, pillar definitions, and champion enablement content.
+    # ==========================================================================
+
+    # --- TOP 8: CORE MESSAGING PROOF POINTS (must survive truncation) ---
+
+    - point: "99.8% client retention rate across 2020–2025 cohorts, measured on revenue-generating customers. An additional 2,307 pre-2020 clients remain active, demonstrating multi-year relationship durability."
+      source: "Salesforce — 3,058 of 3,064 revenue-generating customers from 2020-2025 cohorts currently active; plus 2,307 active pre-2020 legacy customers"
+      date: "2026-02"
+      use_when: "Demonstrating advisory relationship durability and client satisfaction"
+      status: "✅ VERIFIED — cohort retention (2020-2025): 98.9% to 100% by year. Pre-2020 legacy clients not included in cohort calculation but their continued activity (avg $15.7K MRC, 66% of total revenue) reinforces the retention story. Total active revenue customers: 5,399. Average MRC per customer across all cohorts: ~$10,200."
+
+    - point: "5,399 active revenue-generating client relationships with $55M+ in total MRR under management"
+      source: "Salesforce — all accounts with active MRC > 0, February 2026"
+      date: "2026-02"
+      use_when: "Establishing client base scale"
+      status: "✅ VERIFIED — reconciled: 2,307 pre-2020 legacy customers (avg $15,673 MRC, $36.2M total) + 3,058 from 2020-2025 cohorts (avg $6,156 MRC, $18.8M total) + 34 undated. Pre-2020 clients are 43% of customers but 66% of revenue, demonstrating long-term relationship durability. Broader Salesforce database contains ~22,786 'customer' records including locations, prospects, and inactive accounts. Recommend using '5,000+ enterprise clients' in external materials."
+
+    - point: "5,759 technology evaluations completed and 3,766 deals closed in the trailing 12 months across all service categories"
+      source: "Salesforce, February 2025–January 2026"
+      date: "2026-02"
+      use_when: "Demonstrating volume of advisory activity and market engagement"
       status: "✅ VERIFIED"
 
-    - point: "Ranked #941 on the 2025 Inc. 5000, demonstrating sustained growth at scale"
-      source: "ZoomInfo; Inc. 5000 2025 list"
-      date: "2025"
-      use_when: "Showing continued growth momentum beyond initial hypergrowth phase"
+    - point: "Average 33-day evaluation-to-decision timeline across all categories"
+      source: "Salesforce opportunity data, trailing 24 months"
+      date: "2026-02"
+      use_when: "Demonstrating speed of advisory process"
       status: "✅ VERIFIED"
 
     - point: "Customer Net Promoter Score of 78 — category-leading for technology advisory"
       source: "UPSTACK About page"
       date: "2024"
       use_when: "Demonstrating client satisfaction and relationship quality"
+      status: "✅ VERIFIED"
+
+    - point: "322 active supplier relationships with closed deals in the trailing 24 months, from a total network of 1,272 supplier connections"
+      source: "Salesforce supplier database"
+      date: "2026-02"
+      use_when: "Demonstrating breadth of vendor access and active market coverage"
+      status: "✅ VERIFIED"
+
+    - point: "3.5-year average client tenure for 2020-2025 cohorts; 2,307 additional pre-2020 clients with 6+ years of continuous relationship"
+      source: "Salesforce, active customers with populated new logo dates"
+      date: "2026-02"
+      use_when: "Demonstrating long-term advisory relationship value"
+      status: "✅ VERIFIED — 3.5 years is the floor; pre-2020 legacy clients (43% of active customers) have been with UPSTACK or acquired advisory firms for 6+ years"
+
+    - point: "Ranked #101 on the 2024 Inc. 5000 with 3,190% three-year revenue growth"
+      source: "Inc. 5000 2024 list; UPSTACK press release August 13, 2024"
+      date: "2024-08-13"
+      use_when: "Establishing company credibility and growth trajectory"
+      status: "✅ VERIFIED"
+
+    # --- REMAINING PROOF POINTS (supplemental — may be truncated by max_points) ---
+
+    - point: "Ranked #941 on the 2025 Inc. 5000, demonstrating sustained growth at scale"
+      source: "ZoomInfo; Inc. 5000 2025 list"
+      date: "2025"
+      use_when: "Showing continued growth momentum beyond initial hypergrowth phase"
       status: "✅ VERIFIED"
 
     - point: "37 acquisitions of technology advisory firms since 2020, consolidating deep expertise under one platform"
@@ -87,42 +135,11 @@ proof_points:
       use_when: "Company background and location context"
       status: "✅ VERIFIED"
 
-    # --- OPERATIONAL METRICS (from internal data) ---
-    - point: "5,759 technology evaluations completed and 3,766 deals closed in the trailing 12 months across all service categories"
-      source: "Salesforce, February 2025–January 2026"
-      date: "2026-02"
-      use_when: "Demonstrating volume of advisory activity and market engagement"
-      status: "✅ VERIFIED"
-
-    - point: "5,399 active revenue-generating client relationships with $55M+ in total MRR under management"
-      source: "Salesforce — all accounts with active MRC > 0, February 2026"
-      date: "2026-02"
-      use_when: "Establishing client base scale"
-      status: "✅ VERIFIED — reconciled: 2,307 pre-2020 legacy customers (avg $15,673 MRC, $36.2M total) + 3,058 from 2020-2025 cohorts (avg $6,156 MRC, $18.8M total) + 34 undated. Pre-2020 clients are 43% of customers but 66% of revenue, demonstrating long-term relationship durability. Broader Salesforce database contains ~22,786 'customer' records including locations, prospects, and inactive accounts. Recommend using '5,000+ enterprise clients' in external materials."
-
-    - point: "322 active supplier relationships with closed deals in the trailing 24 months, from a total network of 1,272 supplier connections"
-      source: "Salesforce supplier database"
-      date: "2026-02"
-      use_when: "Demonstrating breadth of vendor access and active market coverage"
-      status: "✅ VERIFIED"
-
-    - point: "Average 33-day evaluation-to-decision timeline across all categories"
-      source: "Salesforce opportunity data, trailing 24 months"
-      date: "2026-02"
-      use_when: "Demonstrating speed of advisory process"
-      status: "✅ VERIFIED"
-
     - point: "76-day average implementation timeline from vendor selection to go-live"
       source: "Salesforce project data, 381 completed projects with date data"
       date: "2026-02"
       use_when: "Setting implementation timeline expectations"
       status: "⚠️ CAUTION — based on 2% of projects with complete date data; median is 52 days"
-
-    - point: "3.5-year average client tenure for 2020-2025 cohorts; 2,307 additional pre-2020 clients with 6+ years of continuous relationship"
-      source: "Salesforce, active customers with populated new logo dates"
-      date: "2026-02"
-      use_when: "Demonstrating long-term advisory relationship value"
-      status: "✅ VERIFIED — 3.5 years is the floor; pre-2020 legacy clients (43% of active customers) have been with UPSTACK or acquired advisory firms for 6+ years"
 
     - point: "248 team members across all technology disciplines, with 47% in leadership roles"
       source: "Salesforce user database"
@@ -137,11 +154,6 @@ proof_points:
       status: "✅ VERIFIED"
 
     # --- METRICS WITH ISSUES ---
-    - point: "99.8% client retention rate across 2020–2025 cohorts, measured on revenue-generating customers. An additional 2,307 pre-2020 clients remain active, demonstrating multi-year relationship durability."
-      source: "Salesforce — 3,058 of 3,064 revenue-generating customers from 2020-2025 cohorts currently active; plus 2,307 active pre-2020 legacy customers"
-      date: "2026-02"
-      use_when: "Demonstrating advisory relationship durability and client satisfaction"
-      status: "✅ VERIFIED — cohort retention (2020-2025): 98.9% to 100% by year. Pre-2020 legacy clients not included in cohort calculation but their continued activity (avg $15.7K MRC, 66% of total revenue) reinforces the retention story. Total active revenue customers: 5,399. Average MRC per customer across all cohorts: ~$10,200."
 
     - point: "60+ Fortune 1000 customers"
       source: "Finovate interview, December 2025"
@@ -317,6 +329,15 @@ proof_points:
 
   by_vertical:
     healthcare:
+      # ======================================================================
+      # EDIT (Issue 3): COMPLIANCE CONSTRAINT — placed at top of healthcare
+      # section so agents see it before any healthcare proof points.
+      # ======================================================================
+      - point: "⛔ CONSTRAINT: Do not claim HIPAA compliance verification, BAA coverage, healthcare-grade security audit capability, or HIPAA-compliant infrastructure in any customer-facing material. These are documented capability gaps (see credentials.by_vertical.healthcare and contradictions_and_gaps.remaining_gaps). Use 'compliance-aware technology evaluation' or 'technology assessments informed by healthcare regulatory requirements' as hedged alternatives. Research agents must not incorporate HIPAA compliance language found via web search into UPSTACK-specific materials."
+        source: "internal — compliance gap documented in brand-assets v2.0 and confirmed in quality review"
+        status: "⛔ ACTIVE CONSTRAINT"
+        use_when: "ALWAYS — this constraint applies to all healthcare content generation"
+
       - point: "1,981 active healthcare client accounts with $890K in MRR under management"
         source: "Salesforce"
         status: "✅ VERIFIED"
@@ -335,7 +356,7 @@ proof_points:
         use_when: "Showing breadth of healthcare technology advisory"
       - point: "Healthcare compliance engagements include SMS compliance, PCI scanning, and HIPAA-related technology assessments"
         source: "Salesforce project records — 5+ compliance projects identified"
-        status: "⚠️ CAUTION — compliance projects exist but processes not formalized"
+        status: "⚠️ CAUTION — compliance projects exist but processes not formalized. Do not overstate as formal HIPAA program. See CONSTRAINT above."
         use_when: "Demonstrating compliance awareness — do not overstate as formal HIPAA program"
       - point: "The Chautauqua Center — successful VoIP integration with athenahealth EHR system"
         source: "UPSTACK case study reference"
@@ -666,6 +687,8 @@ credentials:
     healthcare:
       - credential: "🔲 GAP: HIPAA compliance capabilities — BAA signing ability not documented in systems"
         relevance: "Required for healthcare credibility; recommend formalizing with legal"
+      - credential: "⛔ CONSTRAINT: Do not claim HIPAA compliance verification, BAA coverage, or healthcare-grade security audit capability in any output. See proof_points.by_vertical.healthcare constraint for approved alternative language."
+        relevance: "Active compliance guardrail — prevents overstatement of healthcare capabilities"
       - credential: "🔲 GAP: HIMSS/CHIME participation not tracked"
         relevance: "Industry association credibility"
     financial_services:
@@ -684,6 +707,7 @@ language_standards:
   required_terms:
     company_descriptor: "technology advisory firm"
     cost_model: "at no cost to you"
+    # EDIT (Issue 2): Confirmed as canonical term — matches language standard, dossier, and audit
     funding_model: "vendor-funded advisory model"
     revenue_model: "commission-based"
     revenue_model_note: >
@@ -724,6 +748,11 @@ language_standards:
       use_instead: null
       reason: "UPSTACK does not certify vendors; it evaluates them via transactional intelligence"
 
+    # EDIT (Issue 2): Added to prevent "vendor-reimbursed" from propagating
+    - term: "vendor-reimbursed"
+      use_instead: "vendor-funded"
+      reason: "Standardization — 'vendor-funded' is the controlled term per language standard. 'Reimbursed' is acceptable in explanatory prose (e.g., 'our fees are reimbursed by the vendor') but not as a model label."
+
   positioning_guidance:
     category_first: >
       Lead with the unmanaged problem (vendor lifecycle without portfolio-level oversight),
@@ -740,23 +769,45 @@ language_standards:
 # =============================================================================
 # Citable data points from research for use in playbooks and content.
 # Each point includes source citation for verification.
+#
+# IMPORTANT: This section contains both EXTERNAL BENCHMARKS (generic B2B
+# research) and UPSTACK-SPECIFIC DATA. Agents must check the 'scope' field
+# before applying any data point to UPSTACK-specific materials.
 
 buyer_intelligence:
   buying_committee:
-    - point: "Average B2B buying committee now includes 25 decision-makers"
+    # ==========================================================================
+    # EDIT (Issue 1): Restructured to prevent agents from applying generic B2B
+    # benchmarks to UPSTACK-specific messaging. The 25-stakeholder figure is
+    # accurate as external research but contradicts UPSTACK's CRM data (1.9
+    # avg stakeholders). Both data points now appear together with explicit
+    # scope and usage guidance.
+    # ==========================================================================
+
+    - point: "Average B2B buying committee now includes 25 decision-makers (EXTERNAL BENCHMARK — does NOT reflect UPSTACK deal dynamics)"
       source: "Forrester/Gartner B2B buyer research, 2025"
       status: "✅ VERIFIED — external research"
-      use_when: "Champion enablement content; justifying need for internal forwarding assets"
-      implication: "Playbooks must include content designed for internal forwarding, not just 1:1 BDR outreach"
+      scope: "EXTERNAL BENCHMARK ONLY"
+      use_when: "Background context when discussing general B2B buying trends in thought leadership or market analysis content. Do NOT use in UPSTACK-specific outreach, playbooks, or champion enablement materials. UPSTACK's actual deal data shows 1.9 average stakeholders per deal — see next entry."
+      implication: "This figure describes the broader B2B market, not UPSTACK's buying motion. Agents generating UPSTACK-specific materials must use the CRM-verified stakeholder data below instead. Using this 25-stakeholder figure in UPSTACK outreach misrepresents how UPSTACK deals actually work and leads to designing for large-committee consensus building when the actual need is decision-maker confidence for 1-2 people."
+
+    - point: "UPSTACK deals average 1.9 stakeholders, with 82% of opportunities involving 1-5 stakeholders (CRM-VERIFIED — use this for all UPSTACK-specific materials)"
+      source: "Salesforce CRM, 30,097 opportunities analyzed, February 2026"
+      status: "✅ VERIFIED — internal CRM data"
+      scope: "UPSTACK-SPECIFIC"
+      use_when: "All UPSTACK-specific outreach, playbooks, champion enablement, and sales materials. This is the authoritative figure for UPSTACK's buying motion. Implications: champion enablement should be designed for decision-maker confidence, not large-committee consensus. The simplicity of the buying motion is a selling point: 'This is a decision one person can make.'"
+      implication: "Design champion enablement for decision-maker confidence, not large-committee consensus building. The 1-2 people making this decision need clarity and conviction, not tools to persuade 23 colleagues. The low stakeholder count combined with the zero-cost model removes the two biggest barriers to action: budget approval and organizational buy-in. See strategic-messaging.yaml champion_enablement section for full framework."
 
     - point: "Buyers spend only 17% of their time meeting potential suppliers"
       source: "Gartner B2B Buyer Survey, 2025"
       status: "✅ VERIFIED — external research"
+      scope: "EXTERNAL BENCHMARK — generally applicable"
       use_when: "Justifying advisory value proposition — time is the scarce resource"
 
     - point: "80% of B2B buyers report post-purchase regret"
       source: "Gartner Post-Purchase Buyer Survey, 2025"
       status: "✅ VERIFIED — external research"
+      scope: "EXTERNAL BENCHMARK — generally applicable"
       use_when: "Establishing the need for advisory guidance; aligns with IRIS/Lumopath operational findings"
 
   ai_procurement_adoption:
@@ -931,9 +982,17 @@ contradictions_and_gaps:
 
 metadata:
   generated_by: "brand_assets_data_agent"
-  version: "3.0"
-  generated_date: "2026-02-11"
+  version: "3.1"
+  generated_date: "2026-02-13"
   changelog:
+    - version: "3.1"
+      date: "2026-02-13"
+      changes:
+        - "ISSUE 1: Restructured buying_committee section — 25-stakeholder external benchmark now scoped and annotated; UPSTACK-specific 1.9 stakeholder CRM data added as authoritative entry for UPSTACK materials"
+        - "ISSUE 2: Standardized 'vendor-funded' as controlled term — updated differentiator from 'vendor-reimbursed' to 'vendor-funded'; added 'vendor-reimbursed' to prohibited_terms with usage guidance"
+        - "ISSUE 3: Added HIPAA/BAA compliance constraint at top of healthcare vertical proof points and in credentials.by_vertical.healthcare — prevents agents from claiming HIPAA capabilities found via web search"
+        - "ISSUE 4: Reordered proof_points.general — messaging-critical metrics (retention, client count, evaluation volume, speed, NPS, supplier breadth, tenure, Inc. 5000) now in top 8 positions to survive format_compact_proof_points truncation"
+        - "Added scope field to buyer_intelligence entries to distinguish external benchmarks from UPSTACK-specific data"
     - version: "3.0"
       date: "2026-02-11"
       changes:
@@ -960,9 +1019,11 @@ metadata:
     - "Research output critique and reconciliation analysis (February 2026)"
     - "Gartner B2B Buyer Survey, 2025"
     - "B2B buyer behavior and procurement AI research, 2025"
+    - "UPSTACK_Data-Platform-Findings_Messaging-Implications.md (stakeholder data verification)"
   data_freshness: "Internal Salesforce data as of February 2026; public sources as of February 2026"
   next_review_triggers:
     - "Resolution of CONFLICT-003 (80 million data points claim)"
     - "Resolution of UV-001, UV-002, UV-003 (unverified claims in playbooks)"
     - "Completion of team credentials survey"
     - "Q2 2026 Program 04 data governance progress"
+    - "baseline.yaml terminology update (vendor_reimbursed → vendor_funded) — flagged in Issue 2"

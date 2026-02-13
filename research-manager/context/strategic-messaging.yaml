@@ -1,7 +1,7 @@
 # strategic-messaging.yaml
 # UPSTACK Strategic Messaging Architecture for Research Agent Context
-# Version: 1.0
-# Date: 2026-02-11
+# Version: 1.1
+# Date: 2026-02-13
 # Status: POPULATED
 #
 # PURPOSE: This file is injected into research agent prompt context to ensure
@@ -12,6 +12,11 @@
 # COMPANION FILE: brand-assets.yaml contains verified proof points,
 # case studies, and operational metrics. This file provides the strategic
 # interpretation layer that tells agents HOW to use those proof points.
+#
+# v1.1 CHANGES:
+#   - Added HIPAA/healthcare compliance claims to intelligence_staging unsafe_language (Issue 3)
+#   - Added compliance constraint reminder in healthcare vertical_adaptation champion_profile
+#   - Added scope note to champion_enablement referencing UPSTACK-specific stakeholder data
 
 ---
 
@@ -121,25 +126,17 @@ category_creation:
   framing_rules:
     - rule: "Lead with the problem, not the solution. Spend more time educating on the unmanaged vendor lifecycle gap than describing UPSTACK's services."
       example_bad: "UPSTACK is a vendor-neutral technology advisory firm that evaluates 300+ suppliers on your behalf."
-      example_good: "Most enterprises invest heavily in selecting the right technology. Almost none invest in managing those technology relationships after the decision is made. The result: 30+ vendor relationships operating without portfolio-level oversight."
+      example_good: "Between procurement events, your technology vendor relationships operate without oversight, accountability, or advocacy. That's where the real cost lives."
 
-    - rule: "Name the cost of inaction, not the benefit of action. The real competitor is the status quo, not other advisory firms."
-      example_bad: "See why companies choose UPSTACK over alternatives."
-      example_good: "The alternative to UPSTACK isn't another advisory firm. It's continuing to manage this yourself. Here's what that's actually costing."
+    - rule: "Use the five manifestations to make the problem concrete. Never describe it abstractly."
+      example_bad: "Companies waste money on technology."
+      example_good: "One of our clients was paying $2,000 a month for equipment on circuits that had been disconnected three years earlier. Nobody caught it because nobody was looking."
 
-    - rule: "Attack the incumbent architecture, not the buyer's past decisions. Frame the problem as structural, not as a mistake the buyer made."
-      example_bad: "Traditional procurement is broken."
-      example_good: "Managing 50+ vendor relationships without a strategic partner isn't saving money — it's hiding cost."
+    - rule: "Position UPSTACK as the category answer, not a service provider. The category is Technology Vendor Lifecycle Management. UPSTACK is the firm that practices it."
+      example_bad: "UPSTACK is a technology brokerage / sourcing advisory / IT consulting firm."
+      example_good: "Technology Vendor Lifecycle Management is a discipline most enterprises don't have and all of them need. UPSTACK is where it lives."
 
-    - rule: "Use the five problem manifestations as structural evidence. Every first-touch message should make one of them concrete and specific."
-      example_bad: "We help optimize your technology spend."
-      example_good: "Your colleague at a 200-location retail chain discovered last month they'd been paying $2,000/month for equipment on circuits disconnected three years ago. Nobody at the carrier flagged it. Nobody on the internal team caught it."
-
-    - rule: "Position UPSTACK as the firm that defined this discipline, not as a vendor competing within an existing market."
-      example_bad: "UPSTACK is the leading technology advisory firm."
-      example_good: "UPSTACK defined the practice of Technology Vendor Lifecycle Management and built the infrastructure to deliver it at enterprise scale."
-
-    - rule: "Frame the category for the audience altitude. C-suite gets portfolio-level oversight language. VP/Director gets operational burden language. Practitioners get multi-vendor coordination language."
+    - rule: "Adapt language by audience register. C-suite gets portfolio-level language. VP gets operational-burden language. Practitioners get multi-vendor coordination language."
       example_bad: "We manage your technology vendors. (same language regardless of audience)"
       example_good: "C-suite: 'An average of 30+ vendor relationships operating without portfolio-level oversight.' VP: 'Your team spends its time firefighting — not auditing invoices or tracking renewal windows.' Practitioner: 'You manage 30 vendor relationships, each with its own portal, billing format, and support queue.'"
 
@@ -147,7 +144,7 @@ category_creation:
       example_bad: "We don't earn commissions from any supplier. Our model is performance-based."
       example_good: "Like TSDs, our advisory is vendor-funded — you pay nothing. The difference: curated senior expertise, a proprietary intelligence platform, and a dedicated team that stays through lifecycle management. Our 99.8% retention proves the model produces accountability."
 
-
+---
 
 three_pillars:
   status: "POPULATED"
@@ -163,16 +160,16 @@ three_pillars:
 
   architecture: |
     CATEGORY DEFINITION (what the discipline is)
-    ├── Six service components (the "what")
-    ├── Maturity model (the "where are you now")
-    └── Self-assessment tool (the "find out")
+    +-- Six service components (the "what")
+    +-- Maturity model (the "where are you now")
+    +-- Self-assessment tool (the "find out")
 
     DIFFERENTIATION (why UPSTACK specifically)
-    ├── Pillar 1: Vendor-neutral evaluation
-    ├── Pillar 2: Expert advisory at zero cost
-    └── Pillar 3: Measurable results, ongoing relationship
-        ├── Operational proof (IRIS/Lumopath stories)
-        └── Intelligence advantage (proprietary data flywheel)
+    +-- Pillar 1: Vendor-neutral evaluation
+    +-- Pillar 2: Expert advisory at zero cost
+    +-- Pillar 3: Measurable results, ongoing relationship
+        +-- Operational proof (IRIS/Lumopath stories)
+        +-- Intelligence advantage (proprietary data flywheel)
 
   pillars:
     - name: "Vendor-Neutral Evaluation"
@@ -234,7 +231,7 @@ three_pillars:
         between "I can evaluate vendors myself with AI" and "someone is
         accountable for my entire vendor ecosystem" becomes more visible.
 
-
+---
 
 maturity_model:
   status: "POPULATED"
@@ -273,158 +270,40 @@ maturity_model:
         - "Multiple advisors or tools used for different categories, none with portfolio-level view"
         - "May include AI-assisted DIY research that feels like progress but provides no accountability, proprietary benchmarking, or escalation leverage"
         - "Cost savings are captured at point-of-purchase but erode over the contract lifecycle because nobody watches"
-      upstack_value: "UPSTACK consolidates fragmented advisory relationships into a single partner with cross-category intelligence. Every decision benefits from every prior decision — proprietary benchmarking, vendor performance history, and institutional knowledge that doesn't evaporate when staff turns over."
+      upstack_value: "UPSTACK consolidates fragmented advisory relationships into a single partner with cross-category intelligence. Every decision builds on the last — your fifth evaluation is smarter than your first because the intelligence compounds."
 
     - level_number: 3
       name: "Strategic Partner"
-      description: "The enterprise works with one advisory partner across all technology categories and all lifecycle stages — from evaluation through ongoing management. The partner has accountability, institutional knowledge, and relationship leverage with vendors."
+      description: "One partner manages the full vendor lifecycle across all technology categories, with dedicated accountability, proprietary intelligence, and continuous optimization."
       symptoms:
-        - "A dedicated advisory team knows the enterprise's technology environment, contracts, and business objectives"
-        - "Vendor issues get resolved through established relationships, not cold support queues"
-        - "Renewal timelines are tracked proactively, with renegotiation happening ahead of auto-renewal windows"
-        - "Billing is audited regularly, and anomalies are caught before they compound"
-        - "Every new technology decision is benchmarked against real transaction data from comparable enterprises"
-      upstack_value: "This is where UPSTACK delivers today for its highest-value clients. The advisory relationship produces compounding intelligence — after six technology decisions, the enterprise has built an intelligence baseline that improves every subsequent decision."
+        - "A dedicated partner handles vendor evaluation, implementation, and ongoing management"
+        - "Renewal exposure is tracked proactively — no auto-renewals at inflated rates"
+        - "Technology decisions are benchmarked against real market data from comparable engagements"
+        - "Escalation leverage exists — someone with carrier executive relationships picks up the phone when things break"
+        - "The team has reclaimed bandwidth for strategic initiatives by offloading vendor coordination"
+      upstack_value: "This is where UPSTACK operates today for most enterprise clients. Human expertise + proprietary intelligence + structural leverage + accountability."
 
     - level_number: 4
       name: "Optimized"
-      description: "The advisory relationship is customized by industry, company size, and service category. Proprietary intelligence from thousands of comparable engagements drives proactive recommendations, predictive issue identification, and continuous portfolio optimization."
+      description: "The advisory partnership is customized by industry, company size, and service category, with intelligence that compounds across every engagement and anticipates needs before they're expressed."
       symptoms:
-        - "Advisory partner proactively identifies optimization opportunities before the enterprise asks"
-        - "Vendor performance is benchmarked against comparable enterprises in the same industry"
-        - "Technology decisions are informed by proprietary data — real pricing, real outcomes, real timelines — not vendor list prices or public benchmarks"
-        - "The advisory relationship has produced measurable, documented value over multiple years"
-        - "Enterprise treats advisory partner as extension of IT team, not external vendor"
-      upstack_value: "UPSTACK's intelligence platform, operational depth, and multi-decade relationships with enterprises like Visionworks (16 years, 4,567 assets), WeWork (9 years, 373 locations), and Under Armour (10 years, 1,007 assets) demonstrate what optimized lifecycle management looks like. Every engagement adds to the intelligence base, making the next recommendation smarter."
+        - "Vendor performance is monitored proactively, not just when something breaks"
+        - "Technology roadmaps are informed by intelligence from thousands of comparable decisions in the same industry"
+        - "The advisory partner functions as a strategic technology operations resource, not just a procurement assistant"
+        - "Cost optimization is continuous, not episodic"
+      upstack_value: "UPSTACK's intelligence flywheel produces this level over time. Every engagement adds to a proprietary intelligence base that makes the next recommendation smarter — a compounding advantage no competitor can replicate by starting today."
 
-  agent_guidance: |
-    Use the maturity model in playbooks as a qualification and positioning
-    framework. When writing for a specific vertical or prospect profile,
-    identify the most likely current maturity level and write messaging that
-    speaks to the symptoms at that level. Most net-new prospects are at
-    Level 1 or Level 2. The messaging should help them recognize their
-    current level and understand what the next level looks like.
-
-    Important: AI-assisted self-service (using ChatGPT or similar for
-    vendor research) is a Level 2 variant, not Level 3. It provides better
-    research but no accountability, no proprietary benchmarking, no
-    escalation leverage, and no one watching the portfolio between decisions.
-    Use this as a positioning tool: "AI gives you better research. It
-    doesn't give you accountability, proprietary benchmarking, or someone
-    who picks up the phone when your carrier drops a live circuit."
-
-    Never present the maturity model as judgmental. Frame it as progressive:
-    most enterprises are at Level 1 or 2 because the category didn't exist.
-    UPSTACK is defining it.
-
-
-
-service_components:
-  status: "POPULATED"
-
-  context: |
-    The six service components define WHAT Technology Vendor Lifecycle
-    Management includes as a discipline. They solve the "how do we explain
-    what we do to people who've never heard of the channel" problem. Instead
-    of explaining the brokerage model, define the service category and
-    position UPSTACK as the best provider within it. The prospect doesn't
-    need to understand TSDs and commission structures — they need to
-    understand that this is a thing companies do, and here's what a good
-    one provides.
-
-  components:
-    - name: "Market Intelligence & Supplier Insights"
-      description: "Proprietary pricing intelligence, vendor performance data, and market benchmarking from thousands of enterprise technology decisions."
-      methodology_mapping:
-        - "Discovery & Assessment"
-        - "Strategy & Solution Design"
-      without_it: "Every vendor evaluation starts from public list prices and vendor marketing claims. No benchmark for what comparable enterprises actually pay, how vendors actually perform, or which contract terms are negotiable. The enterprise negotiates in the dark."
-      agent_guidance: |
-        Reference the proprietary transaction dataset: nearly 6,000
-        evaluations and 3,700+ deals annually across 300+ suppliers. Lead
-        with the buyer benefit: "Your evaluation is informed by real
-        pricing from thousands of comparable deals — not vendor list
-        prices." This component maps primarily to Pillar 1 (Vendor-Neutral
-        Evaluation). Use Layer 1 intelligence language only.
-
-    - name: "Architecture & Requirements Definition"
-      description: "Expert assessment of current technology environment, business requirements mapping, and solution architecture across the full vendor landscape."
-      methodology_mapping:
-        - "Discovery & Assessment"
-        - "Strategy & Solution Design"
-      without_it: "Internal IT staff — whose primary job is running the environment — must carve out time to define requirements, map current infrastructure, and align stakeholders. Requirements documents reflect internal assumptions rather than market knowledge of what's available and at what price point."
-      agent_guidance: |
-        Emphasize the expertise brought to bear: 101 advisory specialists
-        with backgrounds from enterprise technology companies. This
-        component maps primarily to Pillar 2 (Expert Advisory). Position
-        the expertise as judgment on complex tradeoffs, not just domain
-        knowledge — the value that doesn't compress as AI improves.
-
-    - name: "Supplier & Solution Evaluation and Selection"
-      description: "Data-driven vendor evaluation using proprietary scorecards, side-by-side comparisons, and benchmarked pricing across 300+ suppliers."
-      methodology_mapping:
-        - "Sourcing & Evaluation"
-      without_it: "The enterprise evaluates whoever responds to the RFP, limited by their own vendor network. No visibility into the full market. No transaction data to benchmark pricing. Buying committees of multiple stakeholders each bring opinions but no comparative data."
-      agent_guidance: |
-        This is the core advisory activity. Always pair it with the data
-        advantage: "evaluated against real pricing from thousands of
-        comparable deals." Use category-specific evaluation volumes and
-        timelines from brand-assets.yaml. This component maps primarily
-        to Pillar 1.
-
-    - name: "Procurement & Contract Optimization"
-      description: "Negotiation of pricing, contract terms, and SLA requirements using proprietary market intelligence and relationship leverage with supplier organizations."
-      methodology_mapping:
-        - "Sourcing & Evaluation"
-      without_it: "The enterprise negotiates without knowing what comparable companies pay, which terms are standard vs. negotiable, or what leverage is available. Contract reviews happen once and are never revisited — terms that made sense at signing erode as the vendor relationship evolves."
-      agent_guidance: |
-        Emphasize the negotiation leverage that comes from volume: UPSTACK
-        closes 3,700+ deals annually, which creates structural leverage
-        with supplier organizations that individual enterprises can't
-        match. Use category-specific cost reduction data from brand-assets
-        where sample sizes are strong (30.6% on networking across 1,709
-        deals). This maps to Pillar 2.
-
-    - name: "Implementation Oversight & Governance"
-      description: "Dedicated project management through deployment — coordinating across vendors, tracking milestones, managing escalations, and ensuring solutions are delivered on time."
-      methodology_mapping:
-        - "Implementation & Deployment"
-      without_it: "Implementation is left to the vendor's standard onboarding process. Nobody coordinates across multiple vendors when a deployment touches networking, security, and communications simultaneously. Issues fall between the cracks. Research shows 66-70% of infrastructure projects fail or significantly underperform."
-      agent_guidance: |
-        This is where Pillar 3 ("we stay") begins. Reference the dedicated
-        CX team with project managers assigned to every engagement. Use
-        the implementation timeline metric (76-day average, 52-day median)
-        but note the thin sample. Position implementation oversight as
-        the beginning of the ongoing relationship, not a one-time service.
-
-    - name: "Ongoing Management Support & Escalation"
-      description: "Continuous vendor coordination, contract renewal management, trouble ticket resolution, billing audits, and strategic account reviews — serving as the enterprise's single point of contact across all technology vendors."
-      methodology_mapping:
-        - "Lifecycle Management"
-      without_it: "After the purchase, the enterprise is on its own. Vendors raise prices at renewal. Billing errors compound. SLA violations go uncontested. Escalations enter the standard support queue with no leverage. The institutional knowledge of what was negotiated and why evaporates when staff turns over. The cost of unmanaged vendor relationships far exceeds the cost of the original purchase decision."
-      agent_guidance: |
-        This is the core of the category creation argument and the
-        strongest expression of Pillar 3. This is what separates UPSTACK
-        from every other advisory firm. Lead with operational proof stories
-        (billing recovery, escalation intervention, zombie spend detection)
-        from the operational_proof section. Reference retention (99.8%),
-        tenure (3.5 years average), and multi-decade relationships as
-        quantitative proof. This component alone justifies the category.
-
-
+---
 
 intelligence_staging:
   status: "POPULATED"
 
   purpose: |
-    The intelligence staging framework controls what UPSTACK claims about
-    its technology platform and data capabilities at each level of proof
-    maturity. The platform is real — UPSTACK is converting 37 acquisitions'
-    worth of procurement data into a proprietary intelligence engine. The
-    risk isn't fabrication; it's premature specificity. Claiming
-    "AI-powered contract intelligence" before a prospect can see it in
-    action creates a credibility gap. The staging framework prevents this
-    while ensuring the intelligence story expands as proof accumulates.
+    UPSTACK's intelligence capabilities exist on a spectrum from verified
+    and differentiating (Layer 1) to operational but unproven externally
+    (Layer 2) to roadmap-only (Layer 3). This staging system prevents
+    agents from overstating capabilities while preserving the ability to
+    tell the intelligence story when appropriate.
 
   permanent_sentence: |
     Every engagement adds to a proprietary intelligence base that makes
@@ -451,6 +330,16 @@ intelligence_staging:
         - "Automated compliance monitoring"
         - "AI-enabled decision assist"
         - "80 million data points (unless methodology is documented — currently unverified)"
+        # ======================================================================
+        # EDIT (Issue 3): Healthcare/HIPAA compliance claims added as unsafe.
+        # Agents find these via web search and incorporate them into healthcare
+        # content despite BAA/HIPAA being documented capability gaps.
+        # ======================================================================
+        - "HIPAA compliance verification (documented capability gap — BAA signing not tracked)"
+        - "Healthcare-grade security audit (no formal healthcare security program documented)"
+        - "HIPAA-compliant infrastructure (UPSTACK does not certify infrastructure compliance)"
+        - "BAA coverage / BAA-ready / Business Associate Agreement capability (gap — not documented in systems)"
+        - "Compliance certification for healthcare clients (no formal compliance program exists)"
       use_when: "All research outputs, playbooks, outreach materials, and content unless explicitly working on platform-specific materials with documented proof points."
 
     - level: 2
@@ -503,7 +392,13 @@ intelligence_staging:
     integration into the workflows where decisions happen. UPSTACK has all
     three, plus a structural mechanism to compound their value."
 
+    HEALTHCARE NOTE: Do not claim HIPAA compliance verification, BAA
+    coverage, or healthcare-grade security capabilities. These are
+    documented gaps. Use "compliance-aware technology evaluation" or
+    "technology assessments informed by healthcare regulatory requirements"
+    as approved alternatives. See brand-assets.yaml healthcare constraint.
 
+---
 
 champion_enablement:
   status: "POPULATED"
@@ -513,6 +408,11 @@ champion_enablement:
     enablement strategy: 82% of opportunities involve 1-5 stakeholders,
     with an average of 1.9 per deal. This is fundamentally different from
     the generic Forrester benchmark of 25-person buying committees.
+
+    NOTE: The 25-person figure is an external B2B benchmark scoped in
+    brand-assets.yaml buyer_intelligence as "EXTERNAL BENCHMARK ONLY."
+    All UPSTACK-specific champion enablement content must use the 1.9
+    stakeholder CRM data, not the generic benchmark.
 
     The implication: champion enablement for UPSTACK should be designed
     for decision-maker confidence, not large-committee consensus building.
@@ -530,333 +430,149 @@ champion_enablement:
     - requirement: "Every piece of content must pass the forward test"
       detail: "Can the person receiving this forward it to their CFO, CISO, or procurement lead without it losing coherence or credibility? If it requires context from a prior conversation to make sense, it fails."
 
-    - requirement: "Financial framing in the first screen"
-      detail: "Decision-makers need to see the financial case immediately: zero procurement cost, 20-30% typical savings on evaluated categories, 99.8% retention proving ongoing value. The ROI case should be self-evident without a sales conversation."
+    - requirement: "Provide the answer, not the argument"
+      detail: "With 1-2 decision-makers, the champion doesn't need a 10-slide internal business case. They need a clear, specific description of what UPSTACK does, what it costs (nothing), and what proof exists that it works. One page, one email, one conversation."
 
-    - requirement: "Problem-first, not solution-first"
-      detail: "Content should open with the cost of inaction (zombie spend, renewal exposure, escalation failure) and let the solution emerge as the natural response. A VP who reads the problem description and recognizes their own situation is already half-sold."
+    - requirement: "Make the cost of inaction specific and personal"
+      detail: "The 35.4% no-decision rate means the primary competitor is the status quo. Champion enablement must make the invisible costs of unmanaged vendor relationships visible to the decision-maker — zombie spend, renewal exposure, escalation gaps — in terms that connect to their specific context."
 
-    - requirement: "Simplicity as a selling point"
-      detail: "Explicitly communicate that engaging UPSTACK is low-friction: 'You don't need procurement committee approval to stop overpaying your vendors. You need one conversation.' The zero-cost model plus 1-2 stakeholder buying motion removes the two biggest barriers to action."
+    - requirement: "Pre-answer the obvious objections"
+      detail: "Anticipate and answer the two questions every champion faces: 'If it's free, what's the catch?' (vendor-funded model explanation) and 'Don't we already have this?' (maturity model self-assessment)."
 
-    - requirement: "Competitive comparison that's honest and forwardable"
-      detail: "UPSTACK vs. doing it yourself, vs. hiring a consultant, vs. working with a TSD. Not traditional battle cards for BDRs, but honest comparison content designed for internal sharing. Position the comparison as informational, not adversarial."
-
-    - requirement: "Maturity model as the frame for executive-level content"
-      detail: "A board-ready summary of what Technology Vendor Lifecycle Management is and why it matters. The maturity model gives decision-makers a framework for understanding where they are and what better looks like — without requiring them to understand the channel."
-
-  forwardable_criteria:
-    good:
-      - "Self-contained — makes sense without prior context"
-      - "Opens with a problem the recipient will recognize"
-      - "Includes specific, verifiable numbers (not vague claims)"
-      - "Under one page for executive summaries"
-      - "Financial case is visible in the first 3 sentences"
-      - "Honest about the business model (vendor-funded, not free)"
-      - "Includes a clear 'what happens next' that's low-commitment"
-    bad:
-      - "Requires context from a sales conversation to understand"
-      - "Opens with UPSTACK's credentials or company description"
-      - "Uses unverified claims or blanket savings percentages"
-      - "Reads like marketing copy rather than peer-to-peer briefing"
-      - "Longer than two pages for anything other than a technical deep-dive"
-      - "Claims 'performance-based' or 'not commission-based' models"
-      - "Assumes the reader knows what a technology advisory firm is"
-
-  agent_guidance: |
-    When producing playbook sections, sales collateral, or outreach
-    content, structure every deliverable so that individual sections are
-    self-contained and forwardable. Word limits: executive summaries under
-    250 words, competitive comparisons under 500 words, ROI frameworks
-    under one page. Each section should include its own proof points —
-    don't require the reader to have seen earlier sections.
-
-    Key language for outreach: "This isn't a transformation project that
-    needs a steering committee. It's a decision one person can make — and
-    the results start in weeks, not quarters."
-
-    Use the maturity model as a decision-facilitation tool, not a
-    qualification gate. The prospect should be able to self-assess their
-    current level and see what the next level looks like without needing
-    UPSTACK to tell them.
-
-
-
-operational_proof:
-  status: "POPULATED"
-
-  purpose: |
-    Operational proof narratives are the most compelling messaging asset
-    UPSTACK possesses. They demonstrate what "we stay" actually means in
-    practice — the daily operational value delivered between procurement
-    events. These stories are more effective in outreach than any abstract
-    value proposition. They should be anonymized for external use (industry
-    + company size + specific problem) and named only with documented
-    client permission.
-
-  narratives:
-    - title: "Zombie Billing Recovery"
-      problem: "A national law firm was paying $2,000/month for equipment on circuits that had been disconnected over three years ago. Neither the carrier nor anyone on the internal team had noticed."
-      intervention: "UPSTACK's CX team identified the zombie charges during a routine billing audit, documented the discrepancy, and pursued recovery with the carrier."
-      counterfactual: "Without UPSTACK, the firm would have continued paying $24,000/year for equipment on dead circuits indefinitely. No internal process existed to catch it. The carrier had no incentive to flag it."
-      service_component: "Ongoing Management Support & Escalation"
-      source: "IRIS case data — Jackson Lewis (anonymize for external use)"
-
-    - title: "Carrier Misdiagnosis Override"
-      problem: "A major beauty retailer experienced a 25+ location Cradlepoint outage. The carrier said it was hardware failure. The internal IT team accepted that diagnosis."
-      intervention: "UPSTACK's technical team diagnosed the actual root cause: T-Mobile SIM failures, not hardware. They also identified and corrected static IP misconfigurations the carrier had missed."
-      counterfactual: "Without UPSTACK, the retailer would have replaced hardware at 25+ locations — costing tens of thousands in unnecessary equipment and extended downtime — while the actual problem (carrier SIM failures) persisted."
-      service_component: "Ongoing Management Support & Escalation"
-      source: "IRIS/Lumopath data — Sephora (anonymize for external use)"
-
-    - title: "Executive Escalation to Stop Live Circuit Disconnect"
-      problem: "A global financial services firm had a carrier accidentally disconnect a live trading circuit — not once, but twice. Standard support channels were unable to prevent the repeat occurrence."
-      intervention: "UPSTACK escalated to the executive level at Colt and got intervention to stop the physical disconnect in progress. The relationship leverage to reach carrier executives and get immediate action was decisive."
-      counterfactual: "Without UPSTACK's carrier executive relationships, the trading firm would have been in the standard support queue while a live trading circuit was being physically disconnected. The financial exposure from trading downtime at a firm of this caliber is measured in millions per hour."
-      service_component: "Ongoing Management Support & Escalation"
-      source: "IRIS/Lumopath data — D.E. Shaw/Colt (anonymize for external use)"
-
-    - title: "Post-Disconnection Billing Dispute Resolution"
-      problem: "A technology company was being billed $12,000 by Comcast for services that had already been disconnected. Despite the disconnection being confirmed, billing continued."
-      intervention: "UPSTACK's team documented the disconnection, pursued the billing dispute through carrier channels, and resolved the charges."
-      counterfactual: "Without dedicated vendor management, the company would have continued absorbing $12K in phantom charges while their AP team assumed the bill was legitimate — a common pattern when enterprises have dozens of vendor invoices flowing through monthly."
-      service_component: "Ongoing Management Support & Escalation"
-      source: "IRIS data — Snowflake/Comcast (anonymize for external use)"
-
-    - title: "Contract Leverage for ETF Waiver"
-      problem: "An enterprise needed to exit a circuit contract at one location but faced substantial early termination fees."
-      intervention: "UPSTACK leveraged a new circuit installation at another site to trigger revenue replacement clauses in the carrier agreement, waiving the ETFs entirely. This required knowledge of the contract terms, the carrier's revenue targets, and the timing of both transactions."
-      counterfactual: "Without UPSTACK's contract expertise and cross-portfolio view, the enterprise would have paid full ETFs — or stayed on a circuit they no longer needed to avoid the penalty. Neither the internal team nor the carrier would have identified the contract clause that made the waiver possible."
-      service_component: "Procurement & Contract Optimization"
-      source: "Lumopath data — Humana (anonymize for external use)"
-
-    - title: "Carrier Account Disruption Prevention"
-      problem: "A water utility's carrier changed bank accounts and suspended service despite payment being made. The enterprise was caught between a carrier's internal process failure and an immediate service outage."
-      intervention: "UPSTACK intervened directly with the carrier to resolve the payment processing issue and restore service, navigating the carrier's internal bureaucracy on behalf of the client."
-      counterfactual: "Without a dedicated partner with established carrier relationships, the enterprise would have been navigating carrier escalation processes alone during an active service outage — a process that can take days through standard channels."
-      service_component: "Ongoing Management Support & Escalation"
-      source: "IRIS data — Nexus Water Group (anonymize for external use)"
-
-  agent_guidance: |
-    Use these narratives as the emotional and evidential foundation of
-    outreach and playbook content. They are more effective than abstract
-    value propositions because they are specific, verifiable, and
-    visceral. Every narrative maps to a problem manifestation from the
-    category thesis (zombie spend, vendor drift, escalation failure,
-    renewal exposure, knowledge loss).
-
-    For external use: ALWAYS anonymize. Use "a national law firm," "a
-    major beauty retailer," "a global financial services firm." Named
-    clients require documented permission (brand-assets DQ-007 gap).
-    The only verified external client quote is from Sun Capital's CTO.
-
-    For internal training: Named examples can be used to teach BDRs
-    what the pain points actually look like in practice.
-
-    The six customer pain point archetypes from IRIS (Vendor Runaround,
-    Billing Chaos, Outage Panic, Spreadsheet Nightmare, Multi-Location
-    Madness, Critical Infrastructure Anxiety) should be used as the
-    emotional hooks that connect these operational stories to the
-    prospect's own experience.
-
-
-
-outreach_audit:
-  status: "POPULATED"
-
-  anti_patterns:
-    - pattern: "Solution-first messaging that leads with what UPSTACK does rather than the problem it solves"
-      why_it_matters: "Assumes the prospect already understands the category and just needs to choose a provider. 35.4% of losses are no-decision — the prospect doesn't recognize they have a problem that warrants action. Solution-first messaging fails to create urgency."
-      instead: "Open with a specific, recognizable problem manifestation. 'Your team is managing 30+ vendor relationships without portfolio-level oversight. The cost of that gap compounds every month.' Then introduce UPSTACK as the solution to the named problem."
-
-    - pattern: "Blanket savings claims without category-specific qualification"
-      why_it_matters: "Materials variously claim 20-30%, 20-40%, and 30-50% savings. Category data varies significantly (30.6% networking on 1,709 deals vs. 26.5% security on 3 deals). Inconsistent claims invite challenge and erode credibility with procurement-savvy buyers."
-      instead: "Use category-specific figures with sample sizes. 'Networking clients typically see 30% cost reduction based on 1,700+ evaluated deals.' For categories with thin data, frame as opportunity rather than guarantee."
-
-    - pattern: "Generic openers that could be any advisory firm's messaging"
-      why_it_matters: "Lines like 'We help you evaluate vendors side-by-side at no cost' describe the channel model, not UPSTACK's differentiation. Every technology advisory firm can say this. It fails the test: if a competitor could say the same sentence, it's not messaging — it's filler."
-      instead: "Lead with what no competitor can claim: operational proof, proprietary intelligence from thousands of deals, multi-decade relationships, 99.8% retention. 'Your evaluation will be informed by pricing data from 3,700+ comparable deals closed in the last 12 months.'"
-
-    - pattern: "Formal, scripted talk track language that contradicts the authentic voice"
-      why_it_matters: "Lines like 'Before you see my name come across your email or LinkedIn, I wanted to do you the courtesy of introducing myself directly' sound stiff and scripted. They contradict UPSTACK's own authenticity coaching doc. The authentic hooks ('If you could fix one pain point in your network stack tomorrow, what would it be?') are measurably better."
-      instead: "Default to the conversational, curiosity-driven tone of the authentic hooks. Every new piece of outreach should read like a knowledgeable peer, not a sales script."
-
-    - pattern: "Feature lists instead of value statements in 'How UPSTACK Helps' sections"
-      why_it_matters: "Bullet lists of services (vendor-neutral advisory, deep expertise, lifecycle support) tell the reader what UPSTACK does without making clear why it matters to them. Every bullet starts with UPSTACK as the subject. The customer doesn't appear until the final bullet."
-      instead: "Invert the framing: lead with the customer outcome, then explain how UPSTACK produces it. 'You stop paying for circuits nobody uses — because our team audits your vendor invoices and catches the charges your AP team assumes are legitimate.'"
-
-    - pattern: "Missing strongest proof points while including weaker ones"
-      why_it_matters: "99.8% retention, NPS of 78, 33-day evaluation cycle, and 5,759 annual evaluations are absent from every outreach kit. Meanwhile, kits include unsourced stats like '95% of AI projects show zero ROI' and unverifiable claims like 'saving our clients millions.' The strongest proof points are invisible while the weakest ones are prominent."
-      instead: "Every outreach kit must include the four core proof points: 99.8% retention, NPS 78, 33-day evaluation cycle, and trailing 12-month evaluation volume. Remove any claim that can't be traced to a verified source."
-
-    - pattern: "Inconsistent supplier counts, customer counts, and savings figures across materials"
-      why_it_matters: "A prospect who encounters 'hundreds of suppliers' in one touchpoint and '300+ suppliers' in another, or '6,000 customers' and '5,000+ clients' in successive emails, registers the inconsistency as sloppiness at best and dishonesty at worst."
-      instead: "Lock standardized figures: 300+ technology suppliers, 5,000+ enterprise clients, category-specific savings with sample sizes. No improvisation."
-
-    - pattern: "Using 'free' language that cheapens the advisory value"
-      why_it_matters: "'Free to your organization' and 'cost-free' imply low value. The advisory is not free — the vendor pays for it. The framing should convey that the cost exists but the client doesn't bear it."
-      instead: "Use 'at no cost to you' in conversation. Use 'vendor-funded advisory' when explaining the model. Never use 'free.'"
-
-  kill_items:
-    - item: "'Performance-based model' / 'compensated on infrastructure uptime and business outcomes'"
-      reason: "Not how UPSTACK is compensated. UPSTACK earns commissions from vendors. This false claim appeared in market intelligence battle cards and would immediately destroy credibility with any procurement leader who understands channel economics."
-
-    - item: "'We don't earn commissions from any supplier' / 'No Commission Bias: Not paid by suppliers'"
-      reason: "Factually wrong. UPSTACK is commission-based. Directly contradicts the actual revenue model."
-
-    - item: "'Technology Concierge' as positioning frame"
-      reason: "Implies luxury service, not expert advisory. Uncomfortable proximity to white-glove consulting language that implies premium pricing — wrong association for vendor-funded model."
-
-    - item: "'Advisory platform' / 'tech-enabled advisory platform' / 'sourcing platform'"
-      reason: "Confuses human advisory with SaaS product. Use 'technology advisory firm' or 'advisory firm.'"
-
-    - item: "'30-50% reduction in AI infrastructure costs'"
-      reason: "Unsupported. No data backs category-specific AI/ML savings claims."
-
-    - item: "'Saving our clients millions'"
-      reason: "Unverifiable as stated. Either cite a specific case study figure or remove."
-
-    - item: "'95% of AI projects show zero ROI'"
-      reason: "Unsourced. Either find and cite the source or cut entirely."
-
-    - item: "'6,000-customer advisory network'"
-      reason: "Outdated. Verified figure is 5,399 active revenue-generating clients. Use '5,000+ enterprise clients.'"
-
-    - item: "Under Armour '$106.3M in cost savings'"
-      reason: "Disconnected asset MRC does not equal savings. A circuit disconnected because a client closed an office is not a cost saving. Use '$250M+ in technology services under management over a 10-year partnership' instead."
-
-    - item: "Decade-old procurement overhead benchmarks (2014-2018 data) presented as current"
-      reason: "Erodes credibility if a prospect checks dates. Frame as historical context or commission updated research."
-
-    - item: "Placeholder '[X]' metrics in distributed talking points"
-      reason: "Verified figures exist in brand assets. Distributing talking points with blanks invites improvisation."
-
-
+---
 
 vertical_adaptations:
   status: "POPULATED"
 
-  financial_services:
-    category_thesis_adaptation: |
-      Financial services firms face an amplified version of the vendor
-      lifecycle management problem. Regulatory requirements (PCI DSS, SOX,
-      GLBA) mean that every technology vendor relationship carries
-      compliance implications that extend far beyond the procurement event.
-      A carrier change that modifies routing can affect data residency
-      compliance. A security vendor's SLA gap becomes an audit finding. A
-      contract auto-renewal locks in terms that may no longer meet
-      evolving regulatory requirements.
+  general_guidance: |
+    All vertical messaging follows the same architecture: category
+    definition -> problem manifestations -> UPSTACK differentiation.
+    Vertical-specific adaptations adjust which problem manifestations
+    lead (healthcare cares about compliance and patient care continuity;
+    financial services cares about regulatory audit trails and trading
+    infrastructure), which proof points are most relevant, and which
+    register the champion profile requires.
 
-      The complexity compounds because financial services enterprises
-      typically manage technology across multiple dimensions: trading
-      infrastructure with zero-tolerance latency requirements, branch
-      office connectivity across geographies, contact center platforms
-      handling sensitive financial data, and security infrastructure
-      subject to continuous regulatory scrutiny. Each dimension has its
-      own vendor ecosystem, and nobody owns the portfolio-level view of
-      whether all those relationships are performing, compliant, and
-      optimally structured.
+    INTELLIGENCE DENSITY RULE: Lead with intelligence density ("your
+    evaluation is informed by X comparable decisions in your industry"),
+    not track record ("we've done X deals"). The data is the same; the
+    framing inverts from our achievement to their advantage.
 
-      UPSTACK manages 2,124 active financial services client accounts
-      with $1.22M in MRR — the largest vertical by MRR — with 838
-      closed-won opportunities in the trailing 12 months and 3.9-year
-      average client tenure. The intelligence from those engagements
-      creates financial-services-specific benchmarking that no
-      general-purpose advisory can match.
+  verticals:
+    - name: "Healthcare"
+      framing_emphasis: "Patient care continuity, compliance-aware technology evaluation, multi-site clinical infrastructure coordination"
+      intelligence_density: "Your evaluation is informed by intelligence from 5,500+ comparable healthcare technology decisions — pricing benchmarks, vendor performance data, and implementation patterns that are most robust in healthcare."
 
-    maturity_model_emphasis: |
-      Most financial services enterprises are at Level 2 (Cobbled Together)
-      — they have compliance frameworks that force some process around
-      vendor management, but those processes are organized around compliance
-      events rather than ongoing vendor health. Procurement reviews happen
-      at audit time, not continuously. The typical progression is from
-      compliance-driven review (Level 2) to proactive lifecycle management
-      (Level 3), with the trigger often being a compliance finding that
-      reveals vendor drift the existing process didn't catch.
+      maturity_advancement_triggers: |
+        Technology decisions are often decentralized to individual
+        facilities or departments, with no enterprise-wide vendor
+        strategy. The trigger for maturity advancement is typically a
+        compliance event (HIPAA audit finding related to a vendor
+        relationship), a major technology refresh (EHR migration, contact
+        center modernization), or a consolidation event (M&A that surfaces
+        the chaos of managing dozens of disparate vendor relationships
+        across acquired entities).
 
-    primary_proof_narratives:
-      - "Executive Escalation to Stop Live Circuit Disconnect (D.E. Shaw/Colt — demonstrates the stakes of infrastructure failure in financial services)"
-      - "Zombie Billing Recovery (demonstrates the billing audit discipline financial services compliance requires but rarely receives)"
-      - "Strong banking relationships: BankUnited (272 opportunities, 249 won) and Seacoast Bank (336 opportunities, 297 won) demonstrate long-term depth"
+      primary_proof_narratives:
+        - "Carrier Misdiagnosis Override (Sephora — demonstrates technical diagnosis capability; healthcare analog: ensuring patient-facing systems stay up by catching what the carrier missed)"
+        - "Zombie Billing Recovery (Jackson Lewis — demonstrates the billing audit discipline; directly applicable to healthcare organizations with facilities spread across geographies)"
+        - "Rome Health Zoom UCaaS/CCaaS deployment (healthcare-specific: unified clinical and patient communications)"
+        - "Chautauqua Center VoIP/athenahealth EHR integration (healthcare-specific: technology integration with clinical systems)"
 
-    champion_profile: |
-      The internal champion in financial services is typically a VP of
-      Infrastructure or CTO who manages the technology vendor ecosystem
-      alongside their primary role and recognizes the compliance and
-      operational risk of ad-hoc management. They need to feel smart about
-      the decision — the data shows 1-2 people make this call, not a
-      committee. Give them: financial case (zero cost, documented savings
-      in comparable financial services engagements), compliance alignment
-      (PCI DSS awareness, audit-ready documentation), and the simplicity
-      message: "This is a decision one person can make — and results
-      start in weeks."
+      # EDIT (Issue 3): Added compliance constraint reminder to champion_profile
+      champion_profile: |
+        The internal champion in healthcare is typically a VP of IT or
+        Director of Infrastructure managing technology across multiple
+        clinical sites, often stretched thin between strategic initiatives
+        (EHR optimization, telehealth expansion) and operational firefighting
+        (outages, vendor issues, compliance requirements). They need
+        content that acknowledges the patient care stakes, demonstrates
+        compliance awareness, and emphasizes the multi-site coordination
+        value. The simplicity message is especially powerful here: these
+        leaders are overwhelmed and the prospect of a zero-cost partner
+        who handles vendor coordination is immediately appealing.
 
-  healthcare:
-    category_thesis_adaptation: |
-      Healthcare enterprises face a unique variant of the vendor lifecycle
-      management problem where technology failures have direct patient
-      care implications. A communications outage doesn't just disrupt
-      business operations — it disrupts clinical workflows, patient
-      communication, and care coordination. A security vendor's gap
-      becomes a HIPAA exposure. A connectivity failure at a clinic
-      means EHR access goes down and patient care is compromised.
+        COMPLIANCE CONSTRAINT: Do not claim HIPAA compliance verification,
+        BAA coverage, or healthcare-grade security audit capability.
+        UPSTACK's BAA signing ability is a documented gap pending
+        resolution with legal. Use "compliance-aware technology evaluation"
+        or "technology assessments informed by healthcare regulatory
+        requirements" as approved alternatives. See brand-assets.yaml
+        proof_points.by_vertical.healthcare for the full constraint.
 
-      The complexity is compounded by healthcare's distributed operating
-      model: multi-site practices, hospital systems with dozens of
-      facilities, and organizations where technology decisions were
-      historically made facility-by-facility rather than at the
-      enterprise level. The result is a sprawling vendor ecosystem
-      with no portfolio-level oversight — different carriers at
-      different sites, contracts negotiated at different times by
-      different people, and no institutional memory of what was
-      agreed or why.
+    - name: "Financial Services"
+      framing_emphasis: "Regulatory audit trails, trading infrastructure reliability, multi-location banking operations, vendor risk management"
+      intelligence_density: "Your evaluation is informed by intelligence from 838 financial services technology decisions in the past 12 months alone — the highest deal velocity of any industry we serve."
 
-      UPSTACK manages 1,981 active healthcare client accounts with
-      $890K in MRR, 589 closed-won opportunities in the trailing
-      12 months, and 4.0-year average client tenure. Healthcare-specific
-      engagements include VoIP integration with EHR systems
-      (Chautauqua Center/athenahealth), UCaaS/CCaaS deployments
-      designed for clinical and patient-facing communications
-      (Rome Health/Zoom), and compliance-aware technology assessments.
+      maturity_advancement_triggers: |
+        Financial services organizations typically advance from Level 1-2
+        to Level 3 after a regulatory event (audit finding related to
+        vendor management), a major infrastructure incident (trading floor
+        connectivity failure), or a compliance modernization initiative
+        (PCI DSS recertification that surfaces vendor dependencies).
+        M&A activity in banking frequently triggers the need for vendor
+        portfolio consolidation across acquired entities.
 
-    maturity_model_emphasis: |
-      Most healthcare enterprises are at Level 1 (Ad-Hoc) or early
-      Level 2 (Cobbled Together) for vendor lifecycle management.
-      Technology decisions are often decentralized to individual
-      facilities or departments, with no enterprise-wide vendor
-      strategy. The trigger for maturity advancement is typically a
-      compliance event (HIPAA audit finding related to a vendor
-      relationship), a major technology refresh (EHR migration, contact
-      center modernization), or a consolidation event (M&A that surfaces
-      the chaos of managing dozens of disparate vendor relationships
-      across acquired entities).
+      primary_proof_narratives:
+        - "Sun Capital Partners SD-WAN deployment (flagship verified case study with client quote)"
+        - "BankUnited: 272 opportunities, 249 won — demonstrates deep, sustained banking relationship"
+        - "Seacoast Bank: 336 opportunities, 297 won — multi-year banking partnership"
+        - "D.E. Shaw escalation intervention (demonstrates carrier-level leverage for trading infrastructure)"
 
-    primary_proof_narratives:
-      - "Carrier Misdiagnosis Override (Sephora — demonstrates technical diagnosis capability; healthcare analog: ensuring patient-facing systems stay up by catching what the carrier missed)"
-      - "Zombie Billing Recovery (Jackson Lewis — demonstrates the billing audit discipline; directly applicable to healthcare organizations with facilities spread across geographies)"
-      - "Rome Health Zoom UCaaS/CCaaS deployment (healthcare-specific: unified clinical and patient communications)"
-      - "Chautauqua Center VoIP/athenahealth EHR integration (healthcare-specific: technology integration with clinical systems)"
+      champion_profile: |
+        The internal champion in financial services is typically a VP of
+        IT Infrastructure or CTO managing technology across trading floors,
+        branch networks, and data centers. They operate under regulatory
+        scrutiny that makes vendor management decisions higher-stakes than
+        in most industries. They need content that demonstrates compliance
+        awareness (PCI DSS verified, SOX and GLBA directional only —
+        do not overstate), quantifies the operational burden of managing
+        vendor relationships across regulated environments, and
+        emphasizes the audit trail value of having a single partner
+        documenting all vendor interactions.
 
-    champion_profile: |
-      The internal champion in healthcare is typically a VP of IT or
-      Director of Infrastructure managing technology across multiple
-      clinical sites, often stretched thin between strategic initiatives
-      (EHR optimization, telehealth expansion) and operational firefighting
-      (outages, vendor issues, compliance requirements). They need
-      content that acknowledges the patient care stakes, demonstrates
-      compliance awareness (HIPAA, though UPSTACK's BAA capability is
-      a documented gap that needs resolution), and emphasizes the
-      multi-site coordination value. The simplicity message is especially
-      powerful here: these leaders are overwhelmed and the prospect of
-      a zero-cost partner who handles vendor coordination is immediately
-      appealing.
+        COMPLIANCE NOTE: PCI DSS compliance evaluations are verified in
+        Salesforce. SOX and GLBA capabilities are directional only —
+        use "supports compliance requirements" rather than claiming
+        formal programs. See brand-assets.yaml credentials.by_vertical
+        for current status.
 
+    - name: "Manufacturing"
+      framing_emphasis: "Multi-facility technology coordination, supply chain connectivity, operational continuity across distributed operations"
+      intelligence_density: "Your evaluation is informed by intelligence from 2,800+ manufacturing technology decisions — including multi-site deployments across facilities, distribution centers, and supply chain operations."
 
+      maturity_advancement_triggers: |
+        Manufacturing organizations typically advance when expansion or
+        consolidation events force a reckoning with fragmented vendor
+        relationships across facilities. Adding new production lines,
+        opening distribution centers, or acquiring competitors all surface
+        the hidden cost of managing technology vendor-by-vendor and
+        facility-by-facility with no portfolio-level coordination.
+
+      primary_proof_narratives:
+        - "Taylor Farms: 152/154 opportunities won, $30.3K active MRR, 20+ facilities across U.S. and Canada — flagship manufacturing relationship demonstrating multi-site coordination value"
+        - "Zombie Billing Recovery (Jackson Lewis — demonstrates billing audit discipline applicable to multi-facility operations)"
+        - "Carrier Misdiagnosis Override (Sephora — demonstrates technical diagnosis capability; manufacturing analog: keeping production-critical connectivity running)"
+
+      champion_profile: |
+        The internal champion in manufacturing is typically a VP of IT
+        or Director of Infrastructure managing technology across production
+        facilities, distribution centers, and corporate offices — often
+        with limited on-site IT staff at each location. They need content
+        that emphasizes the operational complexity of coordinating vendors
+        across dozens of facilities, the cost of connectivity downtime
+        in production environments, and the bandwidth relief of having
+        a single partner who manages vendor relationships across all
+        locations. The Taylor Farms story resonates strongly here —
+        it demonstrates exactly the multi-site, multi-vendor coordination
+        that manufacturing IT leaders struggle with.
+
+---
 
 metadata:
   generated_by: "messaging_strategist_agent"
-  version: "1.0"
-  generated_date: "2026-02-11"
+  version: "1.1"
+  generated_date: "2026-02-13"
   status: "POPULATED"
   source_documents:
     - "category-creation (project knowledge)"
@@ -879,3 +595,14 @@ metadata:
     - "Layer 2 intelligence capabilities producing documented customer outcomes"
     - "Customer survey results available (targeting 500 responses from 5,000+ clients)"
     - "Quarterly messaging durability review (beginning Q3 2026)"
+  changelog:
+    - version: "1.1"
+      date: "2026-02-13"
+      changes:
+        - "Added HIPAA/healthcare compliance claims to intelligence_staging Level 1 unsafe_language (Issue 3)"
+        - "Added compliance constraint reminder to healthcare vertical_adaptation champion_profile"
+        - "Added scope note to champion_enablement referencing UPSTACK-specific 1.9 stakeholder data vs. external 25-person benchmark"
+    - version: "1.0"
+      date: "2026-02-11"
+      changes:
+        - "Initial population of all sections from messaging architecture work"
