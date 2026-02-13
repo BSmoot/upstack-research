@@ -106,15 +106,16 @@ class TestLayer2VerticalAgentExecution:
         mock_orchestrator.state.can_execute_layer_2 = Mock(return_value=True)
         mock_orchestrator.state.mark_in_progress = Mock()
         mock_orchestrator.state.mark_complete = Mock()
-        
+        mock_orchestrator._build_company_context = Mock(return_value="Test company context")
+
         with patch('research_orchestrator.prompts.get_layer_1_context') as mock_get_context, \
              patch('research_orchestrator.prompts.build_vertical_prompt') as mock_build_prompt, \
              patch('research_orchestrator.orchestrator.ResearchSession') as mock_session:
-            
+
             layer_1_ctx = {'buyer_journey': {'content': 'test'}}
             mock_get_context.return_value = layer_1_ctx
             mock_build_prompt.return_value = "Test prompt"
-            
+
             mock_session_instance = Mock()
             mock_session_instance.execute_research = AsyncMock(return_value={
                 'deliverables': 'Test output',
@@ -125,10 +126,11 @@ class TestLayer2VerticalAgentExecution:
                 'estimated_cost_usd': 1.0
             })
             mock_session.return_value = mock_session_instance
-            
+
             await mock_orchestrator._execute_vertical_agent('healthcare')
-            
-            mock_build_prompt.assert_called_once_with('healthcare', layer_1_ctx)
+
+            mock_orchestrator._build_company_context.assert_called_once_with(vertical='healthcare')
+            mock_build_prompt.assert_called_once_with('healthcare', layer_1_ctx, company_context="Test company context")
     
     @pytest.mark.asyncio
     async def test_vertical_agent_saves_output(self, mock_orchestrator):
@@ -313,18 +315,19 @@ class TestLayer3TitleAgentExecution:
         mock_orchestrator.state.can_execute_layer_3 = Mock(return_value=True)
         mock_orchestrator.state.mark_in_progress = Mock()
         mock_orchestrator.state.mark_complete = Mock()
-        
+        mock_orchestrator._build_company_context = Mock(return_value="Test company context")
+
         with patch('research_orchestrator.prompts.get_layer_1_context') as mock_get_l1, \
              patch('research_orchestrator.prompts.get_layer_2_context') as mock_get_l2, \
              patch('research_orchestrator.prompts.build_title_prompt') as mock_build_prompt, \
              patch('research_orchestrator.orchestrator.ResearchSession') as mock_session:
-            
+
             layer_1_ctx = {'buyer_journey': {'content': 'l1'}}
             layer_2_ctx = {'healthcare': {'content': 'l2'}}
             mock_get_l1.return_value = layer_1_ctx
             mock_get_l2.return_value = layer_2_ctx
             mock_build_prompt.return_value = "Test prompt"
-            
+
             mock_session_instance = Mock()
             mock_session_instance.execute_research = AsyncMock(return_value={
                 'deliverables': 'Test output',
@@ -335,10 +338,11 @@ class TestLayer3TitleAgentExecution:
                 'estimated_cost_usd': 1.0
             })
             mock_session.return_value = mock_session_instance
-            
+
             await mock_orchestrator._execute_title_agent('cfo_cluster')
-            
-            mock_build_prompt.assert_called_once_with('cfo_cluster', layer_1_ctx, layer_2_ctx)
+
+            mock_orchestrator._build_company_context.assert_called_once_with()
+            mock_build_prompt.assert_called_once_with('cfo_cluster', layer_1_ctx, layer_2_ctx, company_context="Test company context")
     
     @pytest.mark.asyncio
     async def test_title_agent_marks_state_complete(self, mock_orchestrator):

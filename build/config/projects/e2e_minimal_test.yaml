@@ -46,6 +46,8 @@ company_context:
     glossary: "../../../research-manager/context/glossary.yaml"
     audience_personas: "../../../research-manager/context/audience-personas.yaml"
     writing_standards: "../../../research-manager/context/writing-standards.yaml"
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
 
   business_model: "vendor_reimbursed"
   business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"

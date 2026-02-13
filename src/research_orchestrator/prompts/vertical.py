@@ -81,6 +81,8 @@ PRIOR RESEARCH CONTEXT:
 
 {context_section}
 
+{company_context_section}
+
 VERTICAL CONTEXT:
 - Industry: {description}
 - Key Regulations: {key_regulations}
@@ -160,17 +162,18 @@ Begin research now.
 """
 
 
-def build_vertical_prompt(vertical_key: str, layer_1_context: Dict[str, Any]) -> str:
+def build_vertical_prompt(vertical_key: str, layer_1_context: Dict[str, Any], company_context: str = "") -> str:
     """
     Build complete vertical-specific prompt with Layer 1 context.
-    
+
     Args:
         vertical_key: Vertical identifier (e.g., 'healthcare', 'financial_services')
         layer_1_context: Dictionary of Layer 1 agent outputs
-        
+        company_context: Optional company context string
+
     Returns:
         Formatted prompt string ready for ResearchSession
-        
+
     Raises:
         ValueError: If vertical_key not found in VERTICALS
     """
@@ -179,17 +182,24 @@ def build_vertical_prompt(vertical_key: str, layer_1_context: Dict[str, Any]) ->
             f"Unknown vertical: {vertical_key}. "
             f"Valid options: {', '.join(VERTICALS.keys())}"
         )
-    
+
     vertical = VERTICALS[vertical_key]
-    
+
     # Format Layer 1 context for inclusion
     context_text = format_layer_1_context_for_vertical(layer_1_context)
-    
+
+    # Wrap company context if provided
+    if company_context:
+        company_section = f"=== COMPANY CONTEXT ===\n\n{company_context}\n\n---"
+    else:
+        company_section = ""
+
     # Build complete prompt
     return VERTICAL_AGENT_PROMPT_TEMPLATE.format(
         vertical_name=vertical['name'],
         description=vertical['description'],
         key_regulations=vertical['key_regulations'],
         key_challenges=vertical['key_challenges'],
-        context_section=context_text
+        context_section=context_text,
+        company_context_section=company_section
     )

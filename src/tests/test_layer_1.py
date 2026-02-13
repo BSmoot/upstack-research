@@ -276,13 +276,18 @@ class TestLayer1CompanyContextInjection:
         assert "TestCorp" in result
         assert "Vendor-reimbursed" in result
 
-    def test_other_agents_get_empty_company_context(self):
-        """Non-GTM agents should not get company context (empty by default)."""
+    def test_all_agents_receive_company_context_when_provided(self):
+        """All Layer 1 agents should receive company context when provided."""
+        company_ctx = "**Company**: TestCorp\n**Model**: Vendor-reimbursed"
+
         result = format_layer_1_prompt(
             prompt_template=BUYER_JOURNEY_PROMPT,
+            company_context=company_ctx,
         )
 
-        assert "COMPANY MODEL CONTEXT" not in result
+        assert "COMPANY MODEL CONTEXT" in result
+        assert "TestCorp" in result
+        assert "Vendor-reimbursed" in result
 
     def test_gtm_includes_model_constraints(self):
         """GTM prompt should include constraints about pricing and team building."""

@@ -21,6 +21,24 @@ MISSION: Research how enterprises in target verticals currently discover, evalua
 
 {company_context_section}
 
+CATEGORY FRAMING (MANDATORY):
+Upstack is a vendor-neutral, vendor-reimbursed infrastructure technology advisory firm.
+- Buyers/clients pay NOTHING for Upstack's services
+- Suppliers/vendors pay Upstack a commission on closed deals
+- This is NOT consulting, NOT reselling, NOT VAR/MSP -- it is independent advisory
+- Primary competition is buyers going DIRECT to vendors without advisory help
+- The advisory model is largely UNKNOWN to most enterprise buyers
+- Do NOT use industry jargon (master agent, TSD, channel partner) -- buyers don't know these terms
+- Frame everything from the BUYER'S perspective, not the advisor's perspective
+
+UPSTACK DATA OVERRIDES (USE THESE VERIFIED METRICS -- do not search for or contradict these):
+- Upstack manages 3,200+ enterprise client relationships
+- Net revenue retention: 115-120% annually
+- Average client relationship tenure: 7+ years
+- Upstack's advisory specialists average 15+ years of industry experience
+- Platform covers 300+ vetted technology suppliers across all infrastructure categories
+- Upstack operates across Network, Security, Cloud, CX/Contact Center, and Collaboration
+
 CRITICAL CONTEXT:
 You are researching for a vendor-neutral, vendor-reimbursed technology advisory firm. Buyers pay nothing - suppliers pay commission. This creates unique trust dynamics you MUST investigate.
 
@@ -134,6 +152,24 @@ MISSION: Research the competitive landscape for infrastructure advisory, includi
 {context_section}
 
 {company_context_section}
+
+CATEGORY FRAMING (MANDATORY):
+Upstack is a vendor-neutral, vendor-reimbursed infrastructure technology advisory firm.
+- Buyers/clients pay NOTHING for Upstack's services
+- Suppliers/vendors pay Upstack a commission on closed deals
+- This is NOT consulting, NOT reselling, NOT VAR/MSP -- it is independent advisory
+- Primary competition is buyers going DIRECT to vendors without advisory help
+- The advisory model is largely UNKNOWN to most enterprise buyers
+- Do NOT use industry jargon (master agent, TSD, channel partner) -- buyers don't know these terms
+- Frame everything from the BUYER'S perspective, not the advisor's perspective
+
+UPSTACK DATA OVERRIDES (USE THESE VERIFIED METRICS -- do not search for or contradict these):
+- Upstack manages 3,200+ enterprise client relationships
+- Net revenue retention: 115-120% annually
+- Average client relationship tenure: 7+ years
+- Upstack's advisory specialists average 15+ years of industry experience
+- Platform covers 300+ vetted technology suppliers across all infrastructure categories
+- Upstack operates across Network, Security, Cloud, CX/Contact Center, and Collaboration
 
 YOUR RESEARCH QUESTIONS:
 
@@ -249,6 +285,24 @@ MISSION: Research how advisory relationships expand over time.
 
 {company_context_section}
 
+CATEGORY FRAMING (MANDATORY):
+Upstack is a vendor-neutral, vendor-reimbursed infrastructure technology advisory firm.
+- Buyers/clients pay NOTHING for Upstack's services
+- Suppliers/vendors pay Upstack a commission on closed deals
+- This is NOT consulting, NOT reselling, NOT VAR/MSP -- it is independent advisory
+- Primary competition is buyers going DIRECT to vendors without advisory help
+- The advisory model is largely UNKNOWN to most enterprise buyers
+- Do NOT use industry jargon (master agent, TSD, channel partner) -- buyers don't know these terms
+- Frame everything from the BUYER'S perspective, not the advisor's perspective
+
+UPSTACK DATA OVERRIDES (USE THESE VERIFIED METRICS -- do not search for or contradict these):
+- Upstack manages 3,200+ enterprise client relationships
+- Net revenue retention: 115-120% annually
+- Average client relationship tenure: 7+ years
+- Upstack's advisory specialists average 15+ years of industry experience
+- Platform covers 300+ vetted technology suppliers across all infrastructure categories
+- Upstack operates across Network, Security, Cloud, CX/Contact Center, and Collaboration
+
 YOUR RESEARCH QUESTIONS:
 
 1. INITIAL ENGAGEMENT PATTERNS
@@ -333,6 +387,24 @@ MISSION: Research what language, framing, and proof points resonate with enterpr
 {context_section}
 
 {company_context_section}
+
+CATEGORY FRAMING (MANDATORY):
+Upstack is a vendor-neutral, vendor-reimbursed infrastructure technology advisory firm.
+- Buyers/clients pay NOTHING for Upstack's services
+- Suppliers/vendors pay Upstack a commission on closed deals
+- This is NOT consulting, NOT reselling, NOT VAR/MSP -- it is independent advisory
+- Primary competition is buyers going DIRECT to vendors without advisory help
+- The advisory model is largely UNKNOWN to most enterprise buyers
+- Do NOT use industry jargon (master agent, TSD, channel partner) -- buyers don't know these terms
+- Frame everything from the BUYER'S perspective, not the advisor's perspective
+
+UPSTACK DATA OVERRIDES (USE THESE VERIFIED METRICS -- do not search for or contradict these):
+- Upstack manages 3,200+ enterprise client relationships
+- Net revenue retention: 115-120% annually
+- Average client relationship tenure: 7+ years
+- Upstack's advisory specialists average 15+ years of industry experience
+- Platform covers 300+ vetted technology suppliers across all infrastructure categories
+- Upstack operates across Network, Security, Cloud, CX/Contact Center, and Collaboration
 
 CRITICAL CONTEXT:
 You are researching for a vendor-neutral, vendor-reimbursed technology advisory firm. The model is unfamiliar to most buyers. Your research must identify language that educates without confusing, and builds trust despite the "free to buyer" model.
@@ -482,6 +554,24 @@ MISSION: Synthesize all prior research into actionable go-to-market strategy.
 {context_section}
 
 {company_context_section}
+
+CATEGORY FRAMING (MANDATORY):
+Upstack is a vendor-neutral, vendor-reimbursed infrastructure technology advisory firm.
+- Buyers/clients pay NOTHING for Upstack's services
+- Suppliers/vendors pay Upstack a commission on closed deals
+- This is NOT consulting, NOT reselling, NOT VAR/MSP -- it is independent advisory
+- Primary competition is buyers going DIRECT to vendors without advisory help
+- The advisory model is largely UNKNOWN to most enterprise buyers
+- Do NOT use industry jargon (master agent, TSD, channel partner) -- buyers don't know these terms
+- Frame everything from the BUYER'S perspective, not the advisor's perspective
+
+UPSTACK DATA OVERRIDES (USE THESE VERIFIED METRICS -- do not search for or contradict these):
+- Upstack manages 3,200+ enterprise client relationships
+- Net revenue retention: 115-120% annually
+- Average client relationship tenure: 7+ years
+- Upstack's advisory specialists average 15+ years of industry experience
+- Platform covers 300+ vetted technology suppliers across all infrastructure categories
+- Upstack operates across Network, Security, Cloud, CX/Contact Center, and Collaboration
 
 CRITICAL: Your recommendations MUST align with the company model above (if provided):
 - Do NOT recommend pricing tiers or advisory fees — the model is vendor-reimbursed

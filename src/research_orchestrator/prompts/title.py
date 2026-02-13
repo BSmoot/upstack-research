@@ -96,6 +96,8 @@ PRIOR RESEARCH CONTEXT:
 
 {layer_2_context}
 
+{company_context_section}
+
 TITLE CLUSTER CONTEXT:
 - Roles: {titles}
 - Decision Authority: {decision_authority}
@@ -188,19 +190,21 @@ Begin research now.
 def build_title_prompt(
     title_key: str,
     layer_1_context: Dict[str, Any],
-    layer_2_context: Dict[str, Any]
+    layer_2_context: Dict[str, Any],
+    company_context: str = ""
 ) -> str:
     """
     Build complete title-specific prompt with Layer 1 & 2 context.
-    
+
     Args:
         title_key: Title cluster identifier (e.g., 'cfo_cluster', 'cio_cto_cluster')
         layer_1_context: Dictionary of Layer 1 agent outputs
         layer_2_context: Dictionary of Layer 2 vertical agent outputs
-        
+        company_context: Optional company context string
+
     Returns:
         Formatted prompt string ready for ResearchSession
-        
+
     Raises:
         ValueError: If title_key not found in TITLE_CLUSTERS
     """
@@ -209,15 +213,21 @@ def build_title_prompt(
             f"Unknown title cluster: {title_key}. "
             f"Valid options: {', '.join(TITLE_CLUSTERS.keys())}"
         )
-    
+
     title = TITLE_CLUSTERS[title_key]
-    
+
     # Format Layer 1 context
     layer_1_text = format_layer_1_context_for_vertical(layer_1_context)
-    
+
     # Format Layer 2 context
     layer_2_text = format_layer_2_context_for_title(layer_2_context)
-    
+
+    # Wrap company context if provided
+    if company_context:
+        company_section = f"=== COMPANY CONTEXT ===\n\n{company_context}\n\n---"
+    else:
+        company_section = ""
+
     # Build complete prompt
     return TITLE_AGENT_PROMPT_TEMPLATE.format(
         title_name=title['name'],
@@ -225,5 +235,6 @@ def build_title_prompt(
         decision_authority=title['decision_authority'],
         key_focus=title['key_focus'],
         layer_1_context=layer_1_text,
-        layer_2_context=layer_2_text
+        layer_2_context=layer_2_text,
+        company_context_section=company_section
     )

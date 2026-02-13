@@ -110,8 +110,8 @@ advanced:
 
 # Company context injection (early-stage context for playbooks, GTM, validation)
 company_context:
-  # Disabled by default - enable in project configs when needed
-  enabled: false
+  # Enabled by default - company context injected universally
+  enabled: true
 
   # Context files for company context (relative to project config)
   context_files:
@@ -125,8 +125,10 @@ company_context:
 
   # Where to inject company context
   inject_at:
+    - "layer_1"
+    - "layer_2"
+    - "layer_3"
     - "playbooks"
-    - "gtm_synthesis"
     - "validation"
 
 # Brand alignment settings (reusable)

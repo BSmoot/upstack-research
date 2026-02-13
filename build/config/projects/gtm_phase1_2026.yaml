@@ -33,6 +33,7 @@ company_context:
     writing_standards: "../../research-manager/context/writing-standards.yaml"
 
   assets_file: "../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../research-manager/context/strategic-messaging.yaml"
 
   inject_at:
     - "gtm_synthesis"

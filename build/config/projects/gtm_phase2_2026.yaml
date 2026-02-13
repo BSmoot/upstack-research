@@ -34,6 +34,7 @@ company_context:
     glossary: "../../research-manager/context/glossary.yaml"
     audience_personas: "../../research-manager/context/audience-personas.yaml"
     writing_standards: "../../research-manager/context/writing-standards.yaml"
+  strategic_messaging_file: "../../research-manager/context/strategic-messaging.yaml"
 
 # Phase 2 research focus: Service category expansion
 research_focus:

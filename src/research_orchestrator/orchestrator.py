@@ -1377,10 +1377,8 @@ class ResearchOrchestrator:
                         extra={"category_count": len(layer_0_context)}
                     )
 
-            # Build company context for GTM synthesis only
-            company_context_str = ""
-            if agent_name == 'gtm_synthesis':
-                company_context_str = self._build_company_context()
+            # Build company context for all Layer 1 agents
+            company_context_str = self._build_company_context()
 
             # Format prompt with Layer 0, prior agent, and company context
             prompt = format_layer_1_prompt(
@@ -1475,9 +1473,12 @@ class ResearchOrchestrator:
             
             # Extract Layer 1 context
             layer_1_context = get_layer_1_context(self.state)
-            
+
+            # Build company context for this vertical
+            company_context_str = self._build_company_context(vertical=vertical)
+
             # Build vertical-specific prompt
-            prompt = build_vertical_prompt(vertical, layer_1_context)
+            prompt = build_vertical_prompt(vertical, layer_1_context, company_context=company_context_str)
             
             # Resolve model for this vertical agent
             model = get_model_for_agent(self.config, 'layer_2', agent_name)
@@ -1590,9 +1591,12 @@ class ResearchOrchestrator:
                     self.logger.info(f"Using verticals from checkpoint: {verticals_for_context}")
 
             layer_2_context = get_layer_2_context(self.state, verticals_for_context)
-            
+
+            # Build company context (cross-vertical, no vertical param)
+            company_context_str = self._build_company_context()
+
             # Build title-specific prompt
-            prompt = build_title_prompt(title_cluster, layer_1_context, layer_2_context)
+            prompt = build_title_prompt(title_cluster, layer_1_context, layer_2_context, company_context=company_context_str)
             
             # Resolve model for this title agent
             model = get_model_for_agent(self.config, 'layer_3', agent_name)
