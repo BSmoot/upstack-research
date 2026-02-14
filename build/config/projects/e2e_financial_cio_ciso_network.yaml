@@ -1,0 +1,94 @@
+# E2E Research: Financial Services × CIO/CISO × Network
+# Date: 2026-02-14
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "e2e_financial_cio_ciso_network"
+  description: "E2E run: Financial Services CIO/CTO/CISO via Network services"
+
+verticals:
+  - "financial_services"
+
+title_clusters:
+  - "cio_cto_cluster"
+
+service_categories:
+  - "network"
+
+priority_combinations:
+  - vertical: "financial_services"
+    titles:
+      - "cio_cto_cluster"
+    service_categories:
+      - "network"
+    priority: 1
+
+company_context:
+  enabled: true
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+research_focus:
+  primary_questions:
+    - "How do financial services CIOs and CISOs evaluate network infrastructure partners?"
+    - "What network reliability requirements drive purchasing decisions in banking and insurance?"
+    - "How do SOX, PCI-DSS, and GLBA influence network vendor selection?"
+    - "What triggers financial organizations to seek external network advisory?"
+  output_usage:
+    buyer_journey: "Financial services buyer mapping, compliance-driven networking"
+    channels_competitive: "Financial services network vendor landscape"
+    customer_expansion: "Network cross-sell opportunities in financial services"
+    messaging_positioning: "Regulatory-focused network messaging for finance"
+    gtm_synthesis: "Financial services network GTM strategy"
+
+budget:
+  max_cost_usd: 60.0
+  max_searches: 200
+
+validation:
+  enabled: true
+  model: "claude-haiku-4-5-20251001"
+  min_score: 70
+
+brand_alignment:
+  enabled: true
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+  align_targets:
+    - "playbooks"
+  model: "claude-sonnet-4-5-20250929"
+  output:
+    suffix: ".aligned"
+    replace_original: false
+  review_gates:
+    after_playbooks: false
+
+target_alignment:
+  enabled: false
+
+execution_settings:
+  review_gates:
+    after_layer_0: false
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+    after_validation: false
