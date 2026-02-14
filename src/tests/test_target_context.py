@@ -411,6 +411,103 @@ class TestFormatResearchMetadata:
         assert "## Research Metadata" in result
 
 
+class TestStructuredSources:
+    """Test structured source formatting with URLs."""
+
+    def test_format_sources_with_url(self, loader):
+        sources = [
+            {"description": "Salesforce case study", "url": "https://salesforce.com/case", "date": "2025-07"}
+        ]
+        result = loader._format_sources_list(sources)
+        assert len(result) == 1
+        assert "[Salesforce case study](https://salesforce.com/case)" in result[0]
+        assert "(2025-07)" in result[0]
+
+    def test_format_sources_without_url(self, loader):
+        sources = [
+            {"description": "Earnings call Q3 2025", "url": "", "date": "2025-10"}
+        ]
+        result = loader._format_sources_list(sources)
+        assert "Earnings call Q3 2025" in result[0]
+        assert "[" not in result[0]  # No markdown link
+
+    def test_format_sources_plain_string(self, loader):
+        sources = ["LinkedIn executive profiles (2025)"]
+        result = loader._format_sources_list(sources)
+        assert "LinkedIn executive profiles (2025)" in result[0]
+
+    def test_format_sources_mixed(self, loader):
+        sources = [
+            {"description": "Press release", "url": "https://example.com/pr", "date": "2025-12"},
+            "Manual source note",
+        ]
+        result = loader._format_sources_list(sources)
+        assert len(result) == 2
+        assert "https://example.com/pr" in result[0]
+        assert "Manual source note" in result[1]
+
+    def test_pain_signal_with_source_url(self, tmp_path):
+        import yaml
+        data = {
+            "pain_signals": [
+                {
+                    "signal": "Hiring CISO",
+                    "source": "LinkedIn job posting",
+                    "source_url": "https://linkedin.com/jobs/123",
+                    "date": "2026-01",
+                    "relevance": "Security expansion",
+                    "confidence": "confirmed",
+                }
+            ]
+        }
+        file_path = tmp_path / "sourced.yaml"
+        with open(file_path, "w") as f:
+            yaml.dump(data, f)
+        loader = TargetContextLoader(config_dir=tmp_path, file_path="sourced.yaml")
+        result = loader.format_for_prompt(loader.load())
+        assert "[LinkedIn job posting](https://linkedin.com/jobs/123)" in result
+        assert "Confidence: confirmed" in result
+
+    def test_recent_event_with_source_url(self, tmp_path):
+        import yaml
+        data = {
+            "recent_events": [
+                {
+                    "event": "New CTO hired",
+                    "date": "2025-10",
+                    "source": "Press release",
+                    "source_url": "https://example.com/press/cto",
+                    "relevance": "Stack reassessment",
+                }
+            ]
+        }
+        file_path = tmp_path / "events.yaml"
+        with open(file_path, "w") as f:
+            yaml.dump(data, f)
+        loader = TargetContextLoader(config_dir=tmp_path, file_path="events.yaml")
+        result = loader.format_for_prompt(loader.load())
+        assert "[Press release](https://example.com/press/cto)" in result
+
+    def test_category_sources_render_urls(self, tmp_path):
+        import yaml
+        data = {
+            "north_star": {
+                "strategic_initiatives": ["Go digital"],
+                "sources": [
+                    {"description": "HIMSS keynote", "url": "https://himss.org/talk", "date": "2025"},
+                    "Company blog post",
+                ],
+            }
+        }
+        file_path = tmp_path / "urls.yaml"
+        with open(file_path, "w") as f:
+            yaml.dump(data, f)
+        loader = TargetContextLoader(config_dir=tmp_path, file_path="urls.yaml")
+        result = loader.format_for_prompt(loader.load())
+        assert "[HIMSS keynote](https://himss.org/talk)" in result
+        assert "Company blog post" in result
+
+
 class TestBackwardCompatibility:
     """Test that old YAML files without new sections still work."""
 

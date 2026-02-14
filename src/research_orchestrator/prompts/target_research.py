@@ -141,6 +141,19 @@ For EVERY piece of intelligence, assign a confidence level:
 - **speculative** — Educated guess based on industry patterns, not company-specific
   evidence. Clearly label as speculation.
 
+# Source Citation Requirements (CRITICAL)
+
+Every claim MUST be traceable to a source. For each source, provide:
+- **description**: What the source is (e.g., "Salesforce customer story — Rush deploys Agentforce")
+- **url**: The actual URL you found it at (e.g., "https://www.salesforce.com/customer/rush/")
+- **date**: When it was published or last updated (e.g., "2025-07")
+
+If a URL is not available (e.g., information came from a search snippet without a
+clickable result), still provide the description and date, and set url to "".
+
+Sources are used for human vetting — incomplete or vague citations reduce trust
+in the research output. Be specific.
+
 # Output Format
 
 Return your research as a YAML-structured document. Use this exact structure:
@@ -162,9 +175,11 @@ known_stack:
 
 pain_signals:
   - signal: ""
-    source: ""
+    source: ""           # Description of source
+    source_url: ""       # URL where this was found
     date: ""
     relevance: ""
+    confidence: ""       # confirmed|inferred|speculative
 
 compliance:
   # List of discovered compliance requirements
@@ -174,6 +189,8 @@ recent_events:
   - event: ""
     date: ""
     relevance: ""
+    source: ""           # Description of source
+    source_url: ""       # URL where this was found
 
 decision_making:
   buying_process: ""
@@ -181,14 +198,20 @@ decision_making:
   budget_cycle: ""
   evaluation_triggers: []
   confidence: ""  # confirmed|inferred|speculative
-  sources: []
+  sources:
+    - description: ""    # What is this source?
+      url: ""            # URL where it was found
+      date: ""           # When published/updated
 
 whitespace:
   missing_capabilities: []
   underserved_areas: []
   expansion_signals: []
   confidence: ""
-  sources: []
+  sources:
+    - description: ""
+      url: ""
+      date: ""
 
 upcoming_needs:
   announced_projects: []
@@ -196,7 +219,10 @@ upcoming_needs:
   budget_indicators: []
   timeline_signals: []
   confidence: ""
-  sources: []
+  sources:
+    - description: ""
+      url: ""
+      date: ""
 
 north_star:
   strategic_initiatives: []
@@ -204,7 +230,10 @@ north_star:
   industry_positioning: []
   transformation_signals: []
   confidence: ""
-  sources: []
+  sources:
+    - description: ""
+      url: ""
+      date: ""
 
 research_metadata:
   researched_at: ""  # ISO timestamp

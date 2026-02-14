@@ -214,15 +214,25 @@ class TargetContextLoader:
                 continue
             signal_text = signal.get('signal', '')
             source = signal.get('source', '')
+            source_url = signal.get('source_url', '')
             date = signal.get('date', '')
             relevance = signal.get('relevance', '')
+            confidence = signal.get('confidence', '')
 
             if signal_text:
                 lines.append(f"- **{signal_text}**")
-                if source or date:
-                    lines.append(f"  Source: {source} ({date})" if date else f"  Source: {source}")
+                if source and source_url:
+                    source_str = f"  Source: [{source}]({source_url})"
+                elif source:
+                    source_str = f"  Source: {source}"
+                else:
+                    source_str = ""
+                if source_str:
+                    lines.append(f"{source_str} ({date})" if date else source_str)
                 if relevance:
                     lines.append(f"  Relevance: {relevance}")
+                if confidence:
+                    lines.append(f"  Confidence: {confidence}")
                 lines.append("")
 
         return "\n".join(lines)
@@ -244,9 +254,15 @@ class TargetContextLoader:
             event_text = event.get('event', '')
             date = event.get('date', '')
             relevance = event.get('relevance', '')
+            source = event.get('source', '')
+            source_url = event.get('source_url', '')
 
             if event_text:
                 lines.append(f"- **{event_text}** ({date})" if date else f"- **{event_text}**")
+                if source and source_url:
+                    lines.append(f"  Source: [{source}]({source_url})")
+                elif source:
+                    lines.append(f"  Source: {source}")
                 if relevance:
                     lines.append(f"  Relevance: {relevance}")
                 lines.append("")
@@ -259,6 +275,36 @@ class TargetContextLoader:
         for item in engagement:
             lines.append(f"- {item}")
         return "\n".join(lines)
+
+    def _format_sources_list(self, sources: list) -> list[str]:
+        """
+        Format a sources list, handling both structured dicts and plain strings.
+
+        Structured: {"description": "...", "url": "...", "date": "..."}
+        Plain string: "Earnings call Q3 2025"
+
+        Returns list of formatted lines.
+        """
+        lines = []
+        for s in sources:
+            if isinstance(s, dict):
+                desc = s.get('description', '')
+                url = s.get('url', '')
+                date = s.get('date', '')
+                if desc and url:
+                    entry = f"- [{desc}]({url})"
+                elif desc:
+                    entry = f"- {desc}"
+                elif url:
+                    entry = f"- {url}"
+                else:
+                    continue
+                if date:
+                    entry += f" ({date})"
+                lines.append(entry)
+            elif isinstance(s, str) and s:
+                lines.append(f"- {s}")
+        return lines
 
     def _format_decision_making(self, data: dict[str, Any]) -> str:
         """Format decision making section (Category 1 expanded)."""
@@ -291,8 +337,7 @@ class TargetContextLoader:
         sources = data.get('sources', [])
         if sources:
             lines.append("**Sources:**")
-            for s in sources:
-                lines.append(f"- {s}")
+            lines.extend(self._format_sources_list(sources))
 
         return "\n".join(lines)
 
@@ -325,8 +370,7 @@ class TargetContextLoader:
         sources = data.get('sources', [])
         if sources:
             lines.append("**Sources:**")
-            for s in sources:
-                lines.append(f"- {s}")
+            lines.extend(self._format_sources_list(sources))
 
         return "\n".join(lines)
 
@@ -365,8 +409,7 @@ class TargetContextLoader:
         sources = data.get('sources', [])
         if sources:
             lines.append("**Sources:**")
-            for s in sources:
-                lines.append(f"- {s}")
+            lines.extend(self._format_sources_list(sources))
 
         return "\n".join(lines)
 
@@ -445,8 +488,7 @@ class TargetContextLoader:
         sources = data.get('sources', [])
         if sources:
             lines.append("**Sources:**")
-            for s in sources:
-                lines.append(f"- {s}")
+            lines.extend(self._format_sources_list(sources))
 
         return "\n".join(lines)
 
