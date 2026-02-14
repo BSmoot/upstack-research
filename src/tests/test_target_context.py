@@ -56,6 +56,53 @@ def sample_target_data():
             }
         ],
         "engagement_history": ["No prior UPSTACK engagement"],
+        "decision_making": {
+            "buying_process": "Committee-based evaluation",
+            "key_stakeholders": ["CTO", "CISO", "VP of Infrastructure"],
+            "budget_cycle": "Fiscal year starts July 1",
+            "evaluation_triggers": ["M&A integration", "Digital transformation"],
+            "confidence": "inferred",
+            "sources": ["Earnings call Q3 2025", "LinkedIn"]
+        },
+        "whitespace": {
+            "missing_capabilities": ["No unified observability", "No SD-WAN"],
+            "underserved_areas": ["Network monitoring"],
+            "expansion_signals": ["RFP for SD-WAN evaluation"],
+            "confidence": "inferred",
+            "sources": ["Job postings", "RFP database"]
+        },
+        "upcoming_needs": {
+            "announced_projects": ["15-clinic integration"],
+            "inferred_needs": ["Security stack consolidation"],
+            "budget_indicators": ["Board-approved transformation budget"],
+            "timeline_signals": ["18-month integration deadline"],
+            "confidence": "inferred",
+            "sources": ["Press release", "Earnings call"]
+        },
+        "internal_champions": [
+            {
+                "name": "Jane Smith",
+                "title": "VP of Infrastructure",
+                "relationship_status": "warm",
+                "influence_level": "influencer",
+                "notes": "Met at conference"
+            }
+        ],
+        "north_star": {
+            "strategic_initiatives": ["Digital-first patient experience"],
+            "thought_leadership": ["CTO article on cloud migration"],
+            "industry_positioning": ["Technology-forward health system"],
+            "transformation_signals": ["Board-level digital mandate"],
+            "confidence": "confirmed",
+            "sources": ["Healthcare IT News", "HIMSS 2025"]
+        },
+        "research_metadata": {
+            "researched_at": "2026-02-14T00:00:00Z",
+            "agent_model": "test",
+            "searches_performed": 35,
+            "categories_researched": ["company_profile_stack", "north_star_signals"],
+            "manual_sections": ["champion_goals", "internal_champions"]
+        },
         "metadata": {
             "updated": "2026-02-08",
             "source": "manual"
@@ -178,6 +225,246 @@ class TestFormatForPrompt:
         assert "## Observable Pain Signals" in result
         assert "## Compliance Requirements" in result
         assert "## Recent Events" in result
+
+
+class TestFormatDecisionMaking:
+    """Test _format_decision_making formatter."""
+
+    def test_includes_buying_process(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Committee-based evaluation" in result
+
+    def test_includes_stakeholders(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "CTO" in result
+        assert "CISO" in result
+
+    def test_includes_budget_cycle(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Fiscal year starts July 1" in result
+
+    def test_includes_evaluation_triggers(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "M&A integration" in result
+
+    def test_includes_confidence(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "inferred" in result
+
+    def test_includes_decision_making_header(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "## Decision Making" in result
+
+    def test_empty_decision_making_returns_empty(self, loader):
+        result = loader._format_decision_making({})
+        # Empty dict should produce just the header with no content
+        assert "## Decision Making" in result
+
+
+class TestFormatWhitespace:
+    """Test _format_whitespace formatter."""
+
+    def test_includes_missing_capabilities(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "No unified observability" in result
+
+    def test_includes_underserved_areas(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Network monitoring" in result
+
+    def test_includes_expansion_signals(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "RFP for SD-WAN evaluation" in result
+
+    def test_includes_whitespace_header(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "## Whitespace & Portfolio Gaps" in result
+
+
+class TestFormatUpcomingNeeds:
+    """Test _format_upcoming_needs formatter."""
+
+    def test_includes_announced_projects(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "15-clinic integration" in result
+
+    def test_includes_inferred_needs(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Security stack consolidation" in result
+
+    def test_includes_budget_indicators(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Board-approved transformation budget" in result
+
+    def test_includes_timeline_signals(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "18-month integration deadline" in result
+
+    def test_includes_upcoming_needs_header(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "## Upcoming Needs & Projects" in result
+
+
+class TestFormatNorthStar:
+    """Test _format_north_star formatter."""
+
+    def test_includes_strategic_initiatives(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Digital-first patient experience" in result
+
+    def test_includes_thought_leadership(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "CTO article on cloud migration" in result
+
+    def test_includes_industry_positioning(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Technology-forward health system" in result
+
+    def test_includes_transformation_signals(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Board-level digital mandate" in result
+
+    def test_includes_north_star_header(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "## North-Star Signals & Thought Leadership" in result
+
+    def test_includes_confirmed_confidence(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "confirmed" in result
+
+    def test_includes_sources(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Healthcare IT News" in result
+
+
+class TestFormatChampions:
+    """Test _format_champions formatter."""
+
+    def test_includes_champion_name(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "Jane Smith" in result
+
+    def test_includes_champion_title(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "VP of Infrastructure" in result
+
+    def test_includes_relationship_status(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "warm" in result
+
+    def test_empty_champions_returns_empty(self, loader):
+        """Champions with no name or title should produce empty string."""
+        result = loader._format_champions([{"name": "", "title": ""}])
+        assert result == ""
+
+    def test_no_champions_returns_empty(self, loader):
+        result = loader._format_champions([])
+        assert result == ""
+
+
+class TestFormatResearchMetadata:
+    """Test _format_research_metadata formatter."""
+
+    def test_includes_researched_at(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "2026-02-14" in result
+
+    def test_includes_searches_performed(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "35" in result
+
+    def test_includes_categories_researched(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "company_profile_stack" in result
+
+    def test_includes_research_metadata_header(self, loader):
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+        assert "## Research Metadata" in result
+
+
+class TestBackwardCompatibility:
+    """Test that old YAML files without new sections still work."""
+
+    def test_old_format_loads_and_formats(self, tmp_path):
+        """YAML without new sections should format without errors."""
+        old_data = {
+            "company": {
+                "name": "Old Corp",
+                "slug": "old_corp",
+                "industry": "Finance",
+            },
+            "known_stack": {"crm": "Salesforce"},
+            "pain_signals": [],
+            "compliance": ["SOX"],
+            "recent_events": [],
+            "engagement_history": ["Initial call completed"],
+        }
+        file_path = tmp_path / "old_format.yaml"
+        import yaml
+        with open(file_path, 'w') as f:
+            yaml.dump(old_data, f)
+
+        loader = TargetContextLoader(config_dir=tmp_path, file_path="old_format.yaml")
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+
+        assert "Old Corp" in result
+        assert "Salesforce" in result
+        assert "## Decision Making" not in result
+        assert "## Whitespace" not in result
+        assert "## Upcoming Needs" not in result
+        assert "## North-Star" not in result
+
+    def test_partial_new_sections(self, tmp_path):
+        """YAML with some but not all new sections should work."""
+        partial_data = {
+            "company": {"name": "Partial Corp"},
+            "north_star": {
+                "strategic_initiatives": ["Go digital"],
+                "confidence": "speculative",
+            },
+        }
+        import yaml
+        file_path = tmp_path / "partial.yaml"
+        with open(file_path, 'w') as f:
+            yaml.dump(partial_data, f)
+
+        loader = TargetContextLoader(config_dir=tmp_path, file_path="partial.yaml")
+        data = loader.load()
+        result = loader.format_for_prompt(data)
+
+        assert "Partial Corp" in result
+        assert "Go digital" in result
+        assert "## Decision Making" not in result
 
 
 class TestMissingTargetFile:

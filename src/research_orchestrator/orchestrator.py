@@ -10,7 +10,9 @@ from anthropic import AsyncAnthropic
 import asyncio
 import os
 import logging
+import re
 import uuid
+import yaml
 from pathlib import Path
 from typing import Any
 from datetime import datetime
@@ -41,6 +43,7 @@ from .utils.strategic_messaging import StrategicMessagingLoader
 from .utils.target_context import TargetContextLoader
 from .prompts.brand_alignment import build_brand_alignment_prompt
 from .prompts.target_alignment import build_target_alignment_prompt
+from .prompts.target_research import build_target_research_prompt
 from .prompts.validation import build_validation_prompt
 
 
@@ -142,7 +145,7 @@ class ResearchOrchestrator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create layer output directories
-        for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment', 'target_aligned']:
+        for layer in ['layer_0', 'layer_1', 'layer_2', 'layer_3', 'playbooks', 'validation', 'brand_alignment', 'target_research', 'target_aligned']:
             (self.output_dir / layer).mkdir(parents=True, exist_ok=True)
 
         # Initialize brand context and assets loaders
@@ -439,9 +442,18 @@ class ResearchOrchestrator:
                 self.logger.info("=" * 80)
                 await self.execute_brand_alignment()
 
-            # Target Company Alignment (if configured)
+            # Target Company Research + Alignment (if configured)
             target_config = self.config.get('target_alignment', {})
             if target_config.get('enabled', False):
+                # Target Research (if research sub-config is enabled)
+                research_config = target_config.get('research', {})
+                if research_config.get('enabled', False):
+                    self.logger.info("\n" + "=" * 80)
+                    self.logger.info("TARGET RESEARCH: Researching Target Company")
+                    self.logger.info("=" * 80)
+                    await self.execute_target_research()
+
+                # Target Alignment
                 self.logger.info("\n" + "=" * 80)
                 self.logger.info("TARGET ALIGNMENT: Personalizing for Target Company")
                 self.logger.info("=" * 80)
@@ -1153,6 +1165,215 @@ class ResearchOrchestrator:
             self.logger.error(f"Brand alignment {original_agent_name} failed: {e}", exc_info=True)
             self.state.mark_failed(alignment_agent_name, str(e), layer='brand_alignment')
             raise
+
+    async def execute_target_research(self):
+        """
+        Research a target company using web search and populate target YAML.
+
+        Reads seed information from config, builds a research prompt,
+        executes a web-search research session, parses the YAML output,
+        and merges results with the existing target file (preserving
+        human-supplied fields).
+        """
+        target_config = self.config.get('target_alignment', {})
+        research_config = target_config.get('research', {})
+        seed = research_config.get('seed', {})
+
+        company_name = seed.get('name', '')
+        if not company_name:
+            self.logger.error("Target research requires seed.name in config")
+            return
+
+        agent_name = "target_research"
+        self.state.initialize_target_research(agent_name)
+
+        if self.state.is_agent_complete(agent_name):
+            self.logger.info("Target research already complete, skipping")
+            return
+
+        try:
+            self.logger.info(f"Starting target research for: {company_name}")
+            self.state.mark_in_progress(agent_name, 'target_research')
+
+            # Load existing target data for known_context
+            known_context = ""
+            if self.target_context_loader:
+                existing_data = self.target_context_loader.load()
+                if existing_data:
+                    known_context = self.target_context_loader.format_for_prompt(existing_data)
+
+            # Load company context if available
+            company_context = ""
+            if self.brand_context_loader:
+                try:
+                    brand_data = self.brand_context_loader.load_all()
+                    if brand_data:
+                        company_context = self.brand_context_loader.format_for_prompt(brand_data)
+                except Exception as e:
+                    self.logger.warning(f"Could not load company context for research: {e}")
+
+            max_searches = research_config.get('max_searches', 40)
+
+            # Build research prompt
+            prompt = build_target_research_prompt(
+                company_name=company_name,
+                company_industry=seed.get('industry', ''),
+                company_size=seed.get('size', ''),
+                company_location=seed.get('location', ''),
+                known_context=known_context,
+                company_context=company_context,
+                max_searches=max_searches
+            )
+
+            # Resolve model
+            model = research_config.get('model', 'claude-haiku-4-5-20251001')
+            model_config = get_model_config(self.config, model)
+
+            self.logger.info(
+                f"[{agent_name}] Model: {model}, "
+                f"Max tokens: {model_config.get('max_tokens', self.max_tokens)}, "
+                f"Max searches: {max_searches}"
+            )
+
+            # Execute research session
+            session = ResearchSession(
+                agent_name=agent_name,
+                anthropic_client=self.client,
+                model=model,
+                max_tokens=model_config.get('max_tokens', self.max_tokens),
+                max_searches=max_searches,
+                logger=self.logger
+            )
+
+            result = await session.execute_research(
+                prompt=prompt,
+                context={'company_name': company_name},
+                max_turns=research_config.get('max_turns', 10)
+            )
+
+            # Check for errors
+            if result.get('completion_status') == 'error':
+                error_msg = f"Target research session ended in error after {result['total_turns']} turns"
+                self.logger.error(f"Target research failed: {error_msg}")
+                self.state.mark_failed(agent_name, error_msg, layer='target_research')
+                return
+
+            # Save raw output
+            output_path = self._save_agent_output(agent_name, 'target_research', result)
+
+            # Attempt to merge research results into target YAML
+            self._merge_target_research(result.get('deliverables', ''), target_config)
+
+            # Mark complete
+            self.state.mark_complete(
+                agent_name=agent_name,
+                outputs={
+                    'output_path': str(output_path),
+                    'searches_performed': result['searches_performed'],
+                    'total_turns': result['total_turns'],
+                    'execution_time_seconds': result['execution_time_seconds'],
+                    'completion_status': result['completion_status']
+                },
+                layer='target_research'
+            )
+
+            # Update budget
+            self._update_budget(result['searches_performed'], result.get('estimated_cost_usd', 0.0))
+            self._check_budget_limits()
+
+            # Invalidate target context cache so alignment picks up new data
+            if self.target_context_loader:
+                self.target_context_loader._cache = None
+
+            self.logger.info(f"Target research complete for: {company_name}")
+
+        except BudgetExceededError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Target research failed: {e}", exc_info=True)
+            self.state.mark_failed(agent_name, str(e), layer='target_research')
+            raise
+
+    def _merge_target_research(self, deliverables: str, target_config: dict[str, Any]):
+        """
+        Parse YAML from research deliverables and merge into target file.
+
+        Preserves human-supplied fields (champion_goals, internal_champions).
+        Updates agent-searchable fields with research results.
+
+        Args:
+            deliverables: Raw deliverables text (may contain YAML blocks)
+            target_config: Target alignment config section
+        """
+        if not deliverables:
+            self.logger.warning("No deliverables to merge into target YAML")
+            return
+
+        # Extract YAML from deliverables (may be wrapped in ```yaml blocks)
+        yaml_match = re.search(r'```ya?ml\s*\n(.*?)```', deliverables, re.DOTALL)
+        yaml_text = yaml_match.group(1) if yaml_match else deliverables
+
+        try:
+            research_data = yaml.safe_load(yaml_text)
+        except yaml.YAMLError as e:
+            self.logger.warning(f"Could not parse research YAML: {e}")
+            self.logger.info("Raw research output saved but not merged into target file")
+            return
+
+        if not isinstance(research_data, dict):
+            self.logger.warning("Research YAML is not a dictionary, skipping merge")
+            return
+
+        # Load existing target file
+        target_file_path = target_config.get('target_file', '')
+        if not target_file_path:
+            self.logger.warning("No target_file configured, skipping merge")
+            return
+
+        full_path = self.config_path.parent / target_file_path
+
+        existing_data = {}
+        if full_path.exists():
+            try:
+                with open(full_path, 'r', encoding='utf-8') as f:
+                    existing_data = yaml.safe_load(f) or {}
+            except yaml.YAMLError:
+                self.logger.warning("Could not parse existing target YAML, overwriting")
+
+        # Manual sections to preserve from existing data
+        manual_sections = ['champion_goals', 'internal_champions', 'engagement_history', 'notes']
+        preserved = {}
+        for section in manual_sections:
+            if section in existing_data:
+                preserved[section] = existing_data[section]
+
+        # Merge: research data takes priority for agent-searchable fields
+        merged = {**existing_data, **research_data}
+
+        # Restore preserved manual sections
+        for section, value in preserved.items():
+            if section not in research_data:
+                merged[section] = value
+
+        # Add research metadata
+        from datetime import datetime
+        if 'research_metadata' not in merged:
+            merged['research_metadata'] = {}
+        merged['research_metadata']['researched_at'] = datetime.utcnow().isoformat()
+        merged['research_metadata']['categories_researched'] = [
+            'company_profile_stack', 'problems_decision_making',
+            'whitespace_gaps', 'upcoming_needs', 'north_star_signals'
+        ]
+        merged['research_metadata']['manual_sections'] = ['champion_goals', 'internal_champions']
+
+        # Write merged result
+        try:
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(full_path, 'w', encoding='utf-8') as f:
+                yaml.dump(merged, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+            self.logger.info(f"Merged research results into: {full_path}")
+        except Exception as e:
+            self.logger.error(f"Failed to write merged target YAML: {e}")
 
     async def execute_target_alignment(self):
         """Execute target company alignment for configured outputs."""
@@ -2050,6 +2271,8 @@ class ResearchOrchestrator:
             output_dir = self.output_dir / 'validation'
         elif layer == 'brand_alignment':
             output_dir = self.output_dir / 'brand_alignment'
+        elif layer == 'target_research':
+            output_dir = self.output_dir / 'target_research'
         elif layer == 'target_alignment':
             output_dir = self.output_dir / 'target_aligned'
         else:
@@ -2119,7 +2342,7 @@ class ResearchOrchestrator:
         self.logger.info("")
         self.logger.info("Layer Status:")
 
-        for layer_name in ['layer_0_status', 'layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'validation_status', 'brand_alignment_status', 'target_alignment_status']:
+        for layer_name in ['layer_0_status', 'layer_1_status', 'layer_2_status', 'layer_3_status', 'integration_status', 'validation_status', 'brand_alignment_status', 'target_research_status', 'target_alignment_status']:
             status = summary[layer_name]
             layer_label = layer_name.replace('_status', '').replace('_', ' ').title()
             self.logger.info(f"  {layer_label}: {status['complete']}/{status['total']} complete")

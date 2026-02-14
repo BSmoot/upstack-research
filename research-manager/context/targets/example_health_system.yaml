@@ -1,5 +1,15 @@
 # Target Company Profile — Example Health System
 # This is a template/example file. Copy and populate for actual prospects.
+#
+# 8-Category Intelligence Framework:
+#   1. Problems & Decision Making (agent-searchable)
+#   2. Personal Goals (manual input only)
+#   3. Whitespace / Portfolio Gaps (agent-searchable)
+#   4. Current Setup / Portfolio (agent-searchable)
+#   5. Upcoming Needs / Projects (agent-searchable)
+#   6. Solution Compatibility (separate corpus — not per-target)
+#   7. Internal Champions (manual input only)
+#   8. North-Star Signals / Thought Leadership (agent-searchable)
 
 company:
   name: "Example Health System"
@@ -10,6 +20,7 @@ company:
   revenue: "$2B annual revenue"
   headquarters: "Chicago, IL"
 
+# Category 4: Current Setup / Portfolio
 known_stack:
   ehr: "Epic"
   crm: "Salesforce Health Cloud"
@@ -22,6 +33,7 @@ known_stack:
     - "Palo Alto Networks"
   communications: "Microsoft Teams"
 
+# Category 1: Problems & Decision Making (pain signals)
 pain_signals:
   - signal: "Hiring for CISO and multiple security analyst roles"
     source: "job posting"
@@ -53,11 +65,126 @@ recent_events:
 engagement_history:
   - "No prior UPSTACK engagement"
 
+# Category 1: Decision Making (expanded)
+decision_making:
+  buying_process: "Committee-based evaluation with IT governance board approval for purchases over $100K"
+  key_stakeholders:
+    - "CTO (new appointment — likely reassessing vendor relationships)"
+    - "CISO (position being filled — security decisions may be deferred)"
+    - "VP of Infrastructure"
+    - "Director of Clinical Informatics"
+  budget_cycle: "Fiscal year starts July 1; major procurement decisions finalized by Q1 (Oct-Dec)"
+  evaluation_triggers:
+    - "M&A integration timelines (clinic network must be consolidated within 18 months)"
+    - "Digital transformation initiative with board mandate"
+    - "New CTO bringing fresh perspective on vendor stack"
+  confidence: "inferred"
+  sources:
+    - "Earnings call Q3 2025 — budget cycle and transformation initiative"
+    - "LinkedIn — CTO appointment announcement"
+    - "Job postings — CISO search indicates security org restructuring"
+
+# Category 2: Personal Goals (manual input only)
+champion_goals:
+  - contact: ""
+    role: ""
+    known_priorities: []
+    communication_style: ""
+    notes: "To be populated after initial engagement conversations"
+
+# Category 3: Whitespace / Portfolio Gaps
+whitespace:
+  missing_capabilities:
+    - "No unified observability platform across hybrid cloud"
+    - "No SD-WAN for clinic network connectivity"
+    - "No dedicated identity governance solution (relying on AD only)"
+  underserved_areas:
+    - "Network monitoring across acquired clinic sites"
+    - "Endpoint management for clinical devices"
+    - "Cloud security posture management (CSPM)"
+  expansion_signals:
+    - "Job posting for 'Cloud Security Architect' — suggests CSPM gap"
+    - "RFP posted for SD-WAN evaluation across clinic network"
+  confidence: "inferred"
+  sources:
+    - "Job postings on LinkedIn and Indeed (Dec 2025 - Jan 2026)"
+    - "Public RFP database — SD-WAN evaluation notice"
+    - "Industry benchmark: 80% of health systems this size have dedicated CSPM"
+
+# Category 5: Upcoming Needs / Projects
+upcoming_needs:
+  announced_projects:
+    - "15-clinic network infrastructure integration (18-month mandate)"
+    - "Digital transformation initiative (board-approved, multi-year)"
+  inferred_needs:
+    - "Security stack consolidation post-CISO hire"
+    - "Cloud migration acceleration (hiring cloud architects)"
+    - "Communications platform expansion to acquired clinics"
+  budget_indicators:
+    - "Board-approved digital transformation budget (amount undisclosed)"
+    - "Capital expenditure increase noted in Q3 2025 earnings"
+  timeline_signals:
+    - "Clinic integration: 18-month deadline from acquisition close (Dec 2025)"
+    - "Fiscal year budget cycle: major decisions by Dec 2026"
+  confidence: "inferred"
+  sources:
+    - "Press release — acquisition announcement with integration timeline"
+    - "Earnings call Q3 2025 — capex increase and transformation budget"
+    - "Job postings — cloud architect and security roles"
+
+# Category 7: Internal Champions (manual input only)
+internal_champions:
+  - name: ""
+    title: ""
+    relationship_status: "cold"  # cold|warm|engaged|advocate
+    influence_level: ""  # decision_maker|influencer|user
+    notes: "To be populated after initial outreach"
+
+# Category 8: North-Star Signals
+north_star:
+  strategic_initiatives:
+    - "Digital-first patient experience (board mandate)"
+    - "Regional expansion through M&A"
+    - "Zero-trust security architecture transition"
+  thought_leadership:
+    - "CTO published article on 'Healthcare Cloud Migration Lessons' (Healthcare IT News, Nov 2025)"
+    - "CEO keynote at HIMSS 2025 on 'Scaling Health Systems Through Technology'"
+  industry_positioning:
+    - "Positioning as technology-forward regional health system"
+    - "Emphasizing innovation and patient experience in public communications"
+  transformation_signals:
+    - "Board-level digital transformation mandate"
+    - "New CTO hire from innovative health system (Cleveland Clinic)"
+    - "Cloud-first language in recent job postings"
+  confidence: "confirmed"
+  sources:
+    - "Healthcare IT News — CTO article, Nov 2025"
+    - "HIMSS 2025 conference program — CEO keynote"
+    - "Company website — about page and press releases"
+    - "LinkedIn — CTO profile and recent posts"
+
+# Research metadata (auto-populated by research agent)
+research_metadata:
+  researched_at: "2026-02-14T00:00:00Z"
+  agent_model: "example"
+  searches_performed: 0
+  categories_researched:
+    - "company_profile_stack"
+    - "problems_decision_making"
+    - "whitespace_gaps"
+    - "upcoming_needs"
+    - "north_star_signals"
+  manual_sections:
+    - "champion_goals"
+    - "internal_champions"
+
 notes: >
-  Example target profile for demonstration purposes.
-  In production, this would be populated with actual prospect data
-  from CRM, public sources, and advisor notes.
+  Example target profile demonstrating the full 8-category intelligence
+  framework. Categories 2 (Personal Goals) and 7 (Internal Champions)
+  are manual-input sections populated after human engagement.
+  Category 6 (Solution Compatibility) is maintained as a separate
+  reusable corpus, not per-target.
 
 metadata:
-  updated: "2026-02-08"
+  updated: "2026-02-14"
   source: "manual"

@@ -129,6 +129,36 @@ class TargetContextLoader:
         if engagement:
             sections.append(self._format_engagement(engagement))
 
+        # Decision making (Category 1 expanded)
+        decision_making = context.get('decision_making', {})
+        if decision_making:
+            sections.append(self._format_decision_making(decision_making))
+
+        # Whitespace / Portfolio Gaps (Category 3)
+        whitespace = context.get('whitespace', {})
+        if whitespace:
+            sections.append(self._format_whitespace(whitespace))
+
+        # Upcoming Needs / Projects (Category 5)
+        upcoming_needs = context.get('upcoming_needs', {})
+        if upcoming_needs:
+            sections.append(self._format_upcoming_needs(upcoming_needs))
+
+        # Internal Champions (Category 7 — manual, formatted if present)
+        champions = context.get('internal_champions', [])
+        if champions:
+            sections.append(self._format_champions(champions))
+
+        # North-Star Signals (Category 8)
+        north_star = context.get('north_star', {})
+        if north_star:
+            sections.append(self._format_north_star(north_star))
+
+        # Research metadata
+        research_metadata = context.get('research_metadata', {})
+        if research_metadata:
+            sections.append(self._format_research_metadata(research_metadata))
+
         # Filter out empty sections
         sections = [s for s in sections if s and s.strip()]
 
@@ -228,4 +258,220 @@ class TargetContextLoader:
         lines = ["## Engagement History", ""]
         for item in engagement:
             lines.append(f"- {item}")
+        return "\n".join(lines)
+
+    def _format_decision_making(self, data: dict[str, Any]) -> str:
+        """Format decision making section (Category 1 expanded)."""
+        lines = ["## Decision Making", ""]
+
+        buying_process = data.get('buying_process', '')
+        if buying_process:
+            lines.append(f"**Buying Process:** {buying_process}")
+
+        stakeholders = data.get('key_stakeholders', [])
+        if stakeholders:
+            lines.append("**Key Stakeholders:**")
+            for s in stakeholders:
+                lines.append(f"- {s}")
+
+        budget_cycle = data.get('budget_cycle', '')
+        if budget_cycle:
+            lines.append(f"**Budget Cycle:** {budget_cycle}")
+
+        triggers = data.get('evaluation_triggers', [])
+        if triggers:
+            lines.append("**Evaluation Triggers:**")
+            for t in triggers:
+                lines.append(f"- {t}")
+
+        confidence = data.get('confidence', '')
+        if confidence:
+            lines.append(f"**Confidence:** {confidence}")
+
+        sources = data.get('sources', [])
+        if sources:
+            lines.append("**Sources:**")
+            for s in sources:
+                lines.append(f"- {s}")
+
+        return "\n".join(lines)
+
+    def _format_whitespace(self, data: dict[str, Any]) -> str:
+        """Format whitespace / portfolio gaps section (Category 3)."""
+        lines = ["## Whitespace & Portfolio Gaps", ""]
+
+        missing = data.get('missing_capabilities', [])
+        if missing:
+            lines.append("**Missing Capabilities:**")
+            for m in missing:
+                lines.append(f"- {m}")
+
+        underserved = data.get('underserved_areas', [])
+        if underserved:
+            lines.append("**Underserved Areas:**")
+            for u in underserved:
+                lines.append(f"- {u}")
+
+        expansion = data.get('expansion_signals', [])
+        if expansion:
+            lines.append("**Expansion Signals:**")
+            for e in expansion:
+                lines.append(f"- {e}")
+
+        confidence = data.get('confidence', '')
+        if confidence:
+            lines.append(f"**Confidence:** {confidence}")
+
+        sources = data.get('sources', [])
+        if sources:
+            lines.append("**Sources:**")
+            for s in sources:
+                lines.append(f"- {s}")
+
+        return "\n".join(lines)
+
+    def _format_upcoming_needs(self, data: dict[str, Any]) -> str:
+        """Format upcoming needs / projects section (Category 5)."""
+        lines = ["## Upcoming Needs & Projects", ""]
+
+        announced = data.get('announced_projects', [])
+        if announced:
+            lines.append("**Announced Projects:**")
+            for a in announced:
+                lines.append(f"- {a}")
+
+        inferred = data.get('inferred_needs', [])
+        if inferred:
+            lines.append("**Inferred Needs:**")
+            for i in inferred:
+                lines.append(f"- {i}")
+
+        budget = data.get('budget_indicators', [])
+        if budget:
+            lines.append("**Budget Indicators:**")
+            for b in budget:
+                lines.append(f"- {b}")
+
+        timeline = data.get('timeline_signals', [])
+        if timeline:
+            lines.append("**Timeline Signals:**")
+            for t in timeline:
+                lines.append(f"- {t}")
+
+        confidence = data.get('confidence', '')
+        if confidence:
+            lines.append(f"**Confidence:** {confidence}")
+
+        sources = data.get('sources', [])
+        if sources:
+            lines.append("**Sources:**")
+            for s in sources:
+                lines.append(f"- {s}")
+
+        return "\n".join(lines)
+
+    def _format_champions(self, champions: list[dict[str, Any]]) -> str:
+        """Format internal champions section (Category 7 — manual input)."""
+        # Only format if there are champions with actual data
+        has_data = any(
+            c.get('name') or c.get('title')
+            for c in champions
+            if isinstance(c, dict)
+        )
+        if not has_data:
+            return ""
+
+        lines = ["## Internal Champions", ""]
+
+        for champion in champions:
+            if not isinstance(champion, dict):
+                continue
+            name = champion.get('name', '')
+            title = champion.get('title', '')
+            if not name and not title:
+                continue
+
+            label = f"{name} — {title}" if name and title else name or title
+            lines.append(f"- **{label}**")
+
+            status = champion.get('relationship_status', '')
+            if status:
+                lines.append(f"  Relationship: {status}")
+
+            influence = champion.get('influence_level', '')
+            if influence:
+                lines.append(f"  Influence: {influence}")
+
+            notes = champion.get('notes', '')
+            if notes:
+                lines.append(f"  Notes: {notes}")
+
+            lines.append("")
+
+        return "\n".join(lines)
+
+    def _format_north_star(self, data: dict[str, Any]) -> str:
+        """Format north-star signals section (Category 8)."""
+        lines = ["## North-Star Signals & Thought Leadership", ""]
+
+        initiatives = data.get('strategic_initiatives', [])
+        if initiatives:
+            lines.append("**Strategic Initiatives:**")
+            for i in initiatives:
+                lines.append(f"- {i}")
+
+        leadership = data.get('thought_leadership', [])
+        if leadership:
+            lines.append("**Thought Leadership:**")
+            for l in leadership:
+                lines.append(f"- {l}")
+
+        positioning = data.get('industry_positioning', [])
+        if positioning:
+            lines.append("**Industry Positioning:**")
+            for p in positioning:
+                lines.append(f"- {p}")
+
+        transformation = data.get('transformation_signals', [])
+        if transformation:
+            lines.append("**Transformation Signals:**")
+            for t in transformation:
+                lines.append(f"- {t}")
+
+        confidence = data.get('confidence', '')
+        if confidence:
+            lines.append(f"**Confidence:** {confidence}")
+
+        sources = data.get('sources', [])
+        if sources:
+            lines.append("**Sources:**")
+            for s in sources:
+                lines.append(f"- {s}")
+
+        return "\n".join(lines)
+
+    def _format_research_metadata(self, data: dict[str, Any]) -> str:
+        """Format research metadata section."""
+        lines = ["## Research Metadata", ""]
+
+        researched_at = data.get('researched_at', '')
+        if researched_at:
+            lines.append(f"**Researched At:** {researched_at}")
+
+        agent_model = data.get('agent_model', '')
+        if agent_model:
+            lines.append(f"**Agent Model:** {agent_model}")
+
+        searches = data.get('searches_performed', 0)
+        if searches:
+            lines.append(f"**Searches Performed:** {searches}")
+
+        categories = data.get('categories_researched', [])
+        if categories:
+            lines.append(f"**Categories Researched:** {', '.join(categories)}")
+
+        manual = data.get('manual_sections', [])
+        if manual:
+            lines.append(f"**Manual Sections:** {', '.join(manual)}")
+
         return "\n".join(lines)

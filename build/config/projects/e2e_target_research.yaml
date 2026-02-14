@@ -1,0 +1,86 @@
+# Target Research End-to-End Test Configuration
+# Purpose: Test target research agent with example health system
+# Date: 2026-02-14
+
+extends: "../defaults.yaml"
+
+execution:
+  id: "e2e_target_research"
+  description: "Target research test: research Example Health System"
+
+# Minimal layers (not running full pipeline)
+verticals:
+  - "healthcare"
+
+title_clusters:
+  - "cio_cto_cluster"
+
+service_categories:
+  - "security"
+
+priority_combinations:
+  - vertical: "healthcare"
+    titles:
+      - "cio_cto_cluster"
+    service_categories:
+      - "security"
+    priority: 1
+
+# Company context
+company_context:
+  name: "UPSTACK"
+  description: "Infrastructure technology advisory services"
+
+  context_files:
+    baseline: "../../../research-manager/context/baseline.yaml"
+    glossary: "../../../research-manager/context/glossary.yaml"
+    audience_personas: "../../../research-manager/context/audience-personas.yaml"
+    writing_standards: "../../../research-manager/context/writing-standards.yaml"
+  assets_file: "../../../research-manager/context/brand-assets.yaml"
+  strategic_messaging_file: "../../../research-manager/context/strategic-messaging.yaml"
+
+  business_model: "vendor_reimbursed"
+  business_model_description: "Buyers pay nothing - vendors/suppliers pay commission on closed deals"
+  primary_competition: "direct_vendor_sales"
+  competition_description: "Buyers going directly to carriers/cloud providers without advisory"
+  key_differentiator: "End-to-end solutions throughout the full technology lifecycle"
+  trust_challenge: "Buyers skeptical of 'free' advisory - need to validate independence"
+
+# Minimal budget for target research only
+budget:
+  max_cost_usd: 5.0
+  max_searches: 50
+
+# Target alignment with research enabled
+target_alignment:
+  enabled: true
+  target_file: "../../../research-manager/context/targets/example_health_system.yaml"
+  model: "claude-sonnet-4-5-20250929"
+  align_targets:
+    - "brand_alignment"
+
+  research:
+    enabled: true
+    model: "claude-haiku-4-5-20251001"
+    max_searches: 40
+    max_turns: 10
+    seed:
+      name: "Rush University System for Health"
+      industry: "Healthcare"
+      size: "10,000+ employees"
+      location: "Chicago, IL"
+
+# Disable everything else
+validation:
+  enabled: false
+
+brand_alignment:
+  enabled: false
+
+execution_settings:
+  review_gates:
+    after_layer_0: false
+    after_layer_1: false
+    after_layer_2: false
+    after_layer_3: false
+    after_validation: false

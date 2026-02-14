@@ -54,6 +54,16 @@ from .validation import (
     build_batch_validation_prompt
 )
 
+from .target_research import (
+    TARGET_RESEARCH_PROMPT_TEMPLATE,
+    build_target_research_prompt
+)
+
+from .solution_compatibility import (
+    SOLUTION_COMPATIBILITY_PROMPT,
+    build_solution_compatibility_prompt
+)
+
 __all__ = [
     'BUYER_JOURNEY_PROMPT',
     'CHANNELS_COMPETITIVE_PROMPT',
@@ -83,5 +93,9 @@ __all__ = [
     'build_target_alignment_prompt',
     'VALIDATION_PROMPT',
     'build_validation_prompt',
-    'build_batch_validation_prompt'
+    'build_batch_validation_prompt',
+    'TARGET_RESEARCH_PROMPT_TEMPLATE',
+    'build_target_research_prompt',
+    'SOLUTION_COMPATIBILITY_PROMPT',
+    'build_solution_compatibility_prompt'
 ]
