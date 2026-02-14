@@ -164,8 +164,8 @@ proof_points:
     - point: "Average 35% cost reduction vs. prior spend where measurable"
       source: "Salesforce quote line items with negative MRC delta"
       date: "2026-02"
-      use_when: "Quantifying financial value — must qualify with 'where measurable'"
-      status: "⚠️ CAUTION — weighted average across categories; sample sizes vary significantly (1,709 deals in networking vs. 3 in security). Not all deals have baseline cost data."
+      use_when: "ONLY when no category-specific cost reduction data is available. When a service category is specified, use the VERIFIED category-specific number instead (e.g., 30.6% for networking, 52.5% for CX, 40.1% for communications)."
+      status: "⚠️ CAUTION — DO NOT USE when category-specific data exists. This is a weighted average across categories where networking (1,709 deals) dominates and security has only 3 deals. Always prefer the VERIFIED category-specific cost reduction metric. If no category-specific data applies, qualify with 'weighted average across categories with varying sample sizes.'"
 
     # --- REMAINING GAPS ---
     - point: "🔲 GAP: Average cost savings as percentage — not reliably trackable"

@@ -895,13 +895,22 @@ class ResearchOrchestrator:
                 service_category=service_category_key
             )
 
+            # Build proof point audit for claim cross-checking
+            proof_point_audit_str = ""
+            if self.brand_assets_loader:
+                proof_point_audit_str = self.brand_assets_loader.format_proof_point_audit(
+                    vertical=vertical_key,
+                    service_category=service_category_key
+                )
+
             # Build validation prompt
             prompt = build_validation_prompt(
                 playbook_content=playbook_content,
                 vertical_name=vertical_name,
                 title_name=title_name,
                 service_category_name=service_category_name,
-                brand_context=brand_context_str
+                brand_context=brand_context_str,
+                proof_point_audit=proof_point_audit_str
             )
 
             # Get validation model configuration (use haiku for fast validation)

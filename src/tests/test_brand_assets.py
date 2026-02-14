@@ -289,14 +289,14 @@ class TestFormatCompactProofPoints:
             "proof_points": {
                 "general": [
                     {"point": "Verified general point", "status": "✅ VERIFIED"},
-                    {"point": "Caution general point", "status": "⚠️ CAUTION"},
+                    {"point": "Caution general point", "status": "⚠️ CAUTION — small sample size"},
                     {"point": "Gap point", "status": "🔲 GAP"},
                     {"point": "Another verified point", "status": "✅ VERIFIED — details"},
                 ],
                 "by_service_category": {
                     "security": [
                         {"point": "Verified security point", "status": "✅ VERIFIED"},
-                        {"point": "Unverified security point", "status": "⚠️ CAUTION"},
+                        {"point": "Unverified security point", "status": "⚠️ CAUTION — limited data"},
                     ]
                 },
                 "by_vertical": {
@@ -321,12 +321,21 @@ class TestFormatCompactProofPoints:
         return BrandAssetsLoader(config_dir=tmp_path, file_path="verified-assets.yaml")
 
     def test_filters_to_verified_only(self, verified_loader):
-        """Only VERIFIED proof points should be included."""
+        """Only VERIFIED proof points in the verified section, CAUTION separate."""
         result = verified_loader.format_compact_proof_points()
         assert "Verified general point" in result
         assert "Another verified point" in result
-        assert "Caution general point" not in result
+        # CAUTION items should NOT appear in the verified bullet list
+        assert "- Caution general point\n" not in result
         assert "Gap point" not in result
+
+    def test_caution_section_appears_separately(self, verified_loader):
+        """CAUTION items should appear in a separate warning section."""
+        result = verified_loader.format_compact_proof_points()
+        assert "## CAUTION" in result
+        assert "Do Not Use Without Qualification" in result
+        assert "REQUIRED QUALIFIER:" in result
+        assert "Caution general point" in result
 
     def test_respects_max_points(self, verified_loader):
         """Should limit to max_points."""
@@ -339,7 +348,11 @@ class TestFormatCompactProofPoints:
         """Should include service-category-specific verified points."""
         result = verified_loader.format_compact_proof_points(service_category="security")
         assert "Verified security point" in result
-        assert "Unverified security point" not in result
+        # CAUTION items appear in the CAUTION section, not the verified section
+        verified_section = result.split("## CAUTION")[0]
+        assert "Unverified security point" not in verified_section
+        # But they DO appear in the CAUTION section
+        assert "Unverified security point" in result
 
     def test_filters_by_vertical(self, verified_loader):
         """Should include vertical-specific verified points."""
@@ -416,3 +429,161 @@ class TestMissingFileHandling:
         )
         points = loader.get_proof_points()
         assert points == []
+
+
+class TestFormatProofPointAudit:
+    """Test BrandAssetsLoader.format_proof_point_audit() method."""
+
+    @pytest.fixture
+    def audit_assets_data(self):
+        """Return brand assets with mixed-status proof points, case studies, and unverified claims."""
+        return {
+            "proof_points": {
+                "general": [
+                    {"point": "99.8% retention rate", "status": "✅ VERIFIED"},
+                    {"point": "76-day implementation", "status": "⚠️ CAUTION — based on 2% of projects"},
+                    {"point": "Gap metric", "status": "🔲 GAP"},
+                ],
+                "by_service_category": {
+                    "security": [
+                        {"point": "Verified security stat", "status": "✅ VERIFIED"},
+                        {"point": "35% cost reduction", "status": "⚠️ CAUTION — weighted average across categories"},
+                    ]
+                },
+                "by_vertical": {
+                    "healthcare": [
+                        {"point": "Healthcare verified point", "status": "✅ VERIFIED"},
+                    ]
+                },
+            },
+            "case_studies": [
+                {
+                    "id": "cs_001",
+                    "headline": "Test Case Study",
+                    "vertical": "healthcare",
+                    "service_categories": ["security"],
+                    "metrics": ["$45K savings", "6-week deployment"],
+                },
+            ],
+            "unverified_claims": [
+                {"id": "UV-001", "claim": "40+ financial institutions", "status": "UNVERIFIED"},
+                {"id": "UV-002", "claim": "200+ years combined experience", "status": "UNVERIFIED"},
+            ],
+        }
+
+    @pytest.fixture
+    def audit_loader(self, audit_assets_data, tmp_path):
+        """Create a loader with audit test data."""
+        file_path = tmp_path / "audit-assets.yaml"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(audit_assets_data, f, default_flow_style=False)
+        return BrandAssetsLoader(config_dir=tmp_path, file_path="audit-assets.yaml")
+
+    def test_verified_section_present(self, audit_loader):
+        """Audit should include a VERIFIED CLAIMS section."""
+        result = audit_loader.format_proof_point_audit()
+        assert "### VERIFIED CLAIMS" in result
+        assert "[VERIFIED] 99.8% retention rate" in result
+
+    def test_caution_section_with_qualifiers(self, audit_loader):
+        """Audit should include CAUTION claims with their qualifier text."""
+        result = audit_loader.format_proof_point_audit()
+        assert "### CAUTION CLAIMS" in result
+        assert "[CAUTION] 76-day implementation" in result
+        assert "QUALIFIER:" in result
+        assert "2% of projects" in result
+
+    def test_unverified_section_present(self, audit_loader):
+        """Audit should include UNVERIFIED CLAIMS section."""
+        result = audit_loader.format_proof_point_audit()
+        assert "### UNVERIFIED CLAIMS" in result
+        assert "[UNVERIFIED] 40+ financial institutions" in result
+        assert "[UNVERIFIED] 200+ years combined experience" in result
+
+    def test_case_study_metrics_present(self, audit_loader):
+        """Audit should include case study metrics when filtered."""
+        result = audit_loader.format_proof_point_audit(
+            vertical="healthcare", service_category="security"
+        )
+        assert "### VERIFIED CASE STUDY METRICS" in result
+        assert "Test Case Study" in result
+        assert "$45K savings" in result
+
+    def test_critical_instruction_present(self, audit_loader):
+        """Audit should include the critical fabrication warning."""
+        result = audit_loader.format_proof_point_audit()
+        assert "### CRITICAL INSTRUCTION" in result
+        assert "FABRICATED" in result
+
+    def test_filters_by_service_category(self, audit_loader):
+        """Should include category-specific points when filtered."""
+        result = audit_loader.format_proof_point_audit(service_category="security")
+        assert "Verified security stat" in result
+        assert "35% cost reduction" in result
+
+    def test_filters_by_vertical(self, audit_loader):
+        """Should include vertical-specific points when filtered."""
+        result = audit_loader.format_proof_point_audit(vertical="healthcare")
+        assert "Healthcare verified point" in result
+
+    def test_returns_empty_for_missing_file(self, tmp_path):
+        """Should return empty string when file doesn't exist."""
+        loader = BrandAssetsLoader(config_dir=tmp_path, file_path="nonexistent.yaml")
+        result = loader.format_proof_point_audit()
+        assert result == ""
+
+    def test_returns_empty_for_empty_file(self, tmp_path):
+        """Should return empty string when assets are empty."""
+        file_path = tmp_path / "empty.yaml"
+        file_path.write_text("{}", encoding='utf-8')
+        loader = BrandAssetsLoader(config_dir=tmp_path, file_path="empty.yaml")
+        result = loader.format_proof_point_audit()
+        assert result == ""
+
+
+class TestCautionInFormatForPrompt:
+    """Test that format_for_prompt includes CAUTION warnings."""
+
+    @pytest.fixture
+    def caution_assets_data(self):
+        """Return brand assets with CAUTION-flagged proof points."""
+        return {
+            "proof_points": {
+                "general": [
+                    {"point": "Verified point", "status": "✅ VERIFIED"},
+                    {"point": "Caution point", "status": "⚠️ CAUTION — small sample size"},
+                ],
+            },
+        }
+
+    @pytest.fixture
+    def caution_loader(self, caution_assets_data, tmp_path):
+        file_path = tmp_path / "caution-assets.yaml"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(caution_assets_data, f, default_flow_style=False)
+        return BrandAssetsLoader(config_dir=tmp_path, file_path="caution-assets.yaml")
+
+    def test_format_for_prompt_includes_caution_section(self, caution_loader):
+        """format_for_prompt should include CAUTION warning section."""
+        data = caution_loader.load()
+        result = caution_loader.format_for_prompt(data)
+        assert "CAUTION" in result
+        assert "Do Not Use Without Qualification" in result
+        assert "Caution point" in result
+        assert "REQUIRED QUALIFIER:" in result
+
+    def test_format_for_prompt_no_caution_when_none_exist(self, tmp_path):
+        """format_for_prompt should not include CAUTION section when no CAUTION items."""
+        data = {
+            "proof_points": {
+                "general": [
+                    {"point": "Only verified", "status": "✅ VERIFIED"},
+                ],
+            },
+        }
+        file_path = tmp_path / "no-caution.yaml"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(data, f, default_flow_style=False)
+        loader = BrandAssetsLoader(config_dir=tmp_path, file_path="no-caution.yaml")
+        result = loader.format_for_prompt(loader.load())
+        assert "Do Not Use Without Qualification" not in result

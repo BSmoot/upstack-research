@@ -128,6 +128,8 @@ Check that recommendations are grounded in research from prior layers:
 
 {brand_context_section}
 
+{proof_point_audit_section}
+
 Check that the playbook accurately represents the company's business model, uses verified proof points, maintains brand positioning, and follows language standards:
 
 **Alignment Indicators:**
@@ -194,6 +196,12 @@ STATUS: [APPROVED | NEEDS_REVISION | REJECTED]
 
 **Language Standards Compliance:** [PASS / FAIL — list specific violations]
 
+**Fabricated Statistics Found:**
+- [List every quantitative claim in the playbook that does NOT appear in the Proof Point Audit reference above. If none, write NONE.]
+
+**CAUTION Claims Used Without Qualification:**
+- [List every CAUTION-flagged claim used in the playbook without its required qualifier. If none, write NONE.]
+
 ### 4. CRITICAL ISSUES (if any)
 
 List any issues that MUST be fixed before the playbook is production-ready:
@@ -238,7 +246,8 @@ def build_validation_prompt(
     vertical_name: str,
     title_name: str,
     service_category_name: str | None = None,
-    brand_context: str = ""
+    brand_context: str = "",
+    proof_point_audit: str = ""
 ) -> str:
     """
     Build validation prompt for a specific playbook.
@@ -249,6 +258,7 @@ def build_validation_prompt(
         title_name: Display name of the title cluster (e.g., "CFO")
         service_category_name: Optional service category name for 3D playbooks
         brand_context: Optional pre-formatted brand/company context string
+        proof_point_audit: Optional proof point audit for cross-checking claims
 
     Returns:
         Formatted validation prompt ready for execution
@@ -264,12 +274,20 @@ def build_validation_prompt(
             "No company context provided. Use default scoring (16/20) for this dimension."
         )
 
+    if proof_point_audit:
+        audit_section = (
+            f"**QUANTITATIVE CLAIM CROSS-CHECK (MANDATORY):**\n\n{proof_point_audit}"
+        )
+    else:
+        audit_section = ""
+
     return VALIDATION_PROMPT.format(
         playbook_content=playbook_content,
         vertical_name=vertical_name,
         title_name=title_name,
         service_category_name=sc_name,
-        brand_context_section=brand_section
+        brand_context_section=brand_section,
+        proof_point_audit_section=audit_section
     )
 
 

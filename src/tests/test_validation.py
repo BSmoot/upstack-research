@@ -209,6 +209,61 @@ class TestBuildValidationPromptBrandContext:
         assert "BRAND & MODEL ALIGNMENT" in result
 
 
+class TestBuildValidationPromptAudit:
+    """Test build_validation_prompt with proof_point_audit parameter."""
+
+    def test_audit_included_when_provided(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            proof_point_audit="### VERIFIED CLAIMS\n- [VERIFIED] 99.8% retention"
+        )
+        assert "QUANTITATIVE CLAIM CROSS-CHECK" in result
+        assert "99.8% retention" in result
+
+    def test_audit_section_contains_fabricated_stats_deliverable(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            proof_point_audit="### VERIFIED CLAIMS\n- [VERIFIED] 99.8% retention"
+        )
+        assert "Fabricated Statistics Found:" in result
+
+    def test_audit_section_contains_caution_claims_deliverable(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            proof_point_audit="### CAUTION CLAIMS\n- [CAUTION] 76-day timeline"
+        )
+        assert "CAUTION Claims Used Without Qualification:" in result
+
+    def test_backward_compatible_without_audit(self):
+        """Prompt works without proof_point_audit (default empty string)."""
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+        )
+        assert isinstance(result, str)
+        assert "QUANTITATIVE CLAIM CROSS-CHECK" not in result
+        assert "BRAND & MODEL ALIGNMENT" in result
+
+    def test_audit_and_brand_context_coexist(self):
+        result = build_validation_prompt(
+            playbook_content="content",
+            vertical_name="Healthcare",
+            title_name="CIO",
+            brand_context="**Company**: TestCorp",
+            proof_point_audit="### VERIFIED CLAIMS\n- [VERIFIED] test stat"
+        )
+        assert "TestCorp" in result
+        assert "QUANTITATIVE CLAIM CROSS-CHECK" in result
+        assert "test stat" in result
+
+
 class TestBuildBatchValidationPrompt:
     """Test build_batch_validation_prompt function."""
 

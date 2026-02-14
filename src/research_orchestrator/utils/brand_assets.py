@@ -230,8 +230,26 @@ class BrandAssetsLoader:
                 lines.append(f"- {point_text}")
 
         if len(lines) <= 2:
-            # No verified points found
+            # No verified points found — return empty
             return ""
+
+        # Append CAUTION items as explicit warnings
+        caution = [
+            c for c in candidates
+            if 'CAUTION' in str(c.get('status', ''))
+        ]
+        if caution:
+            lines.append("")
+            lines.append("## CAUTION — Do Not Use Without Qualification")
+            for item in caution:
+                point_text = item.get('point', '')
+                status_text = str(item.get('status', ''))
+                qualifier = status_text.split('CAUTION')[-1].strip(' —-')
+                if point_text:
+                    if qualifier:
+                        lines.append(f"- {point_text} → REQUIRED QUALIFIER: {qualifier}")
+                    else:
+                        lines.append(f"- {point_text} → REQUIRES QUALIFICATION")
 
         # Add positioning lines (compact)
         positioning = assets.get('positioning_lines', {})
@@ -246,6 +264,127 @@ class BrandAssetsLoader:
                 value = positioning.get(key, '')
                 if value:
                     lines.append(f"**{label}:** {value.strip()}")
+
+        return "\n".join(lines)
+
+    def format_proof_point_audit(
+        self,
+        vertical: str | None = None,
+        service_category: str | None = None
+    ) -> str:
+        """
+        Format a comprehensive proof point audit for validation cross-checking.
+
+        Returns ALL proof points with status tags, case study metrics, and
+        unverified claims as a closed-corpus reference. Any quantitative claim
+        not in this output should be flagged as fabricated.
+
+        Args:
+            vertical: Optional vertical for filtering
+            service_category: Optional service category for filtering
+
+        Returns:
+            Formatted audit string for validation prompt injection
+        """
+        assets = self.load()
+        if not assets:
+            return ""
+
+        lines: list[str] = []
+
+        # Collect all candidate proof points (same pattern as format_compact)
+        candidates: list[dict[str, Any]] = []
+        proof_points_data = assets.get('proof_points', {})
+
+        for item in proof_points_data.get('general', []):
+            if isinstance(item, dict):
+                candidates.append(item)
+
+        if service_category:
+            by_cat = proof_points_data.get('by_service_category', {})
+            for item in by_cat.get(service_category, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        if vertical:
+            by_vert = proof_points_data.get('by_vertical', {})
+            for item in by_vert.get(vertical, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        # Partition by status
+        verified = [
+            c for c in candidates
+            if 'VERIFIED' in str(c.get('status', ''))
+        ]
+        caution = [
+            c for c in candidates
+            if 'CAUTION' in str(c.get('status', ''))
+        ]
+
+        # Section 1: Verified claims
+        lines.append("### VERIFIED CLAIMS (safe to use as-is)")
+        if verified:
+            for item in verified:
+                point_text = item.get('point', '')
+                if point_text:
+                    lines.append(f"- [VERIFIED] {point_text}")
+        else:
+            lines.append("- (none)")
+
+        # Section 2: Caution claims
+        lines.append("")
+        lines.append("### CAUTION CLAIMS (require qualification)")
+        if caution:
+            for item in caution:
+                point_text = item.get('point', '')
+                status_text = str(item.get('status', ''))
+                qualifier = status_text.split('CAUTION')[-1].strip(' —-')
+                if point_text:
+                    qualifier_str = f" → QUALIFIER: {qualifier}" if qualifier else ""
+                    lines.append(f"- [CAUTION] {point_text}{qualifier_str}")
+        else:
+            lines.append("- (none)")
+
+        # Section 3: Unverified claims
+        lines.append("")
+        lines.append("### UNVERIFIED CLAIMS (DO NOT USE)")
+        unverified = assets.get('unverified_claims', [])
+        if unverified:
+            for claim in unverified:
+                if isinstance(claim, dict):
+                    claim_text = claim.get('claim', '')
+                    if claim_text:
+                        lines.append(f"- [UNVERIFIED] {claim_text}")
+        else:
+            lines.append("- (none)")
+
+        # Section 4: Verified case study metrics
+        lines.append("")
+        lines.append("### VERIFIED CASE STUDY METRICS")
+        case_studies = self.get_case_studies(
+            vertical=vertical,
+            service_category=service_category
+        )
+        if case_studies:
+            for study in case_studies:
+                headline = study.get('headline', 'Unknown')
+                metrics = study.get('metrics', [])
+                if metrics:
+                    lines.append(f"**{headline}:**")
+                    for metric in metrics:
+                        lines.append(f"- {metric}")
+        else:
+            lines.append("- (none)")
+
+        # Critical instruction
+        lines.append("")
+        lines.append("### CRITICAL INSTRUCTION")
+        lines.append(
+            "Any quantitative claim, statistic, or case study figure NOT listed "
+            "above is FABRICATED and must be flagged. Do not accept claims that "
+            "are 'close to' or 'similar to' listed data — only exact matches count."
+        )
 
         return "\n".join(lines)
 
@@ -343,6 +482,13 @@ class BrandAssetsLoader:
         if proof_points:
             sections.append(self._format_proof_points(proof_points))
 
+        # CAUTION warnings for proof points that require qualification
+        caution_section = self._format_caution_warnings(
+            vertical=vertical, service_category=service_category
+        )
+        if caution_section:
+            sections.append(caution_section)
+
         # Filtered case studies
         case_studies = self.get_case_studies(
             vertical=vertical,
@@ -412,6 +558,68 @@ class BrandAssetsLoader:
         lines = ["## Proof Points", ""]
         for point in proof_points:
             lines.append(f"- {point}")
+        return "\n".join(lines)
+
+    def _format_caution_warnings(
+        self,
+        vertical: str | None = None,
+        service_category: str | None = None
+    ) -> str:
+        """
+        Format CAUTION-flagged proof points as explicit warnings.
+
+        Args:
+            vertical: Optional vertical for filtering
+            service_category: Optional service category for filtering
+
+        Returns:
+            Formatted warning block, or empty string if no CAUTION items
+        """
+        assets = self.load()
+        if not assets:
+            return ""
+
+        candidates: list[dict[str, Any]] = []
+        proof_points_data = assets.get('proof_points', {})
+
+        for item in proof_points_data.get('general', []):
+            if isinstance(item, dict):
+                candidates.append(item)
+
+        if service_category:
+            by_cat = proof_points_data.get('by_service_category', {})
+            for item in by_cat.get(service_category, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        if vertical:
+            by_vert = proof_points_data.get('by_vertical', {})
+            for item in by_vert.get(vertical, []):
+                if isinstance(item, dict):
+                    candidates.append(item)
+
+        caution = [
+            c for c in candidates
+            if 'CAUTION' in str(c.get('status', ''))
+        ]
+
+        if not caution:
+            return ""
+
+        lines = [
+            "## CAUTION — Do Not Use Without Qualification",
+            "",
+            "The following claims have known limitations. Do NOT use them",
+            "without including the required qualifier.",
+            ""
+        ]
+        for item in caution:
+            point_text = item.get('point', '')
+            status_text = str(item.get('status', ''))
+            qualifier = status_text.split('CAUTION')[-1].strip(' —-')
+            if point_text and qualifier:
+                lines.append(f"- {point_text} → REQUIRED QUALIFIER: {qualifier}")
+
         return "\n".join(lines)
 
     def _format_case_studies(self, case_studies: list[dict[str, Any]]) -> str:
